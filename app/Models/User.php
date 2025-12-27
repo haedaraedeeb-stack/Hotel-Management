@@ -8,12 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasApiTokens , Notifiable , HasRoles;
+    use HasFactory, HasApiTokens , Notifiable , HasRoles , SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -48,4 +48,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservations::class);
+    }
+
 }
