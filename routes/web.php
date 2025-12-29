@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Room\RoomController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\RoomTypeController;
 Route::get('/', function () {
@@ -15,7 +16,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    
+    Route::resource('rooms', RoomController::class);
+    Route::resource('room_types', RoomTypeController::class);
 });
 
 require __DIR__.'/auth.php';
-Route::resource('room_types', RoomTypeController::class);
