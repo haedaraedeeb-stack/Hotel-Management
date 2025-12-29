@@ -21,6 +21,6 @@ class RoomType extends Model
     }
     public function images()
     {
-        return $this->morphMany(Images::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable');
     }
 }
