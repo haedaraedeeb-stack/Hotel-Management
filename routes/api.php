@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\RoomController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
+// guest and user (customer) have the same routes:
+Route::get('rooms', [RoomController::class, 'index']);
+Route::get('rooms/{room}', [RoomController::class, 'show']);
