@@ -14,22 +14,24 @@
             <li>
                 <h2>{{ $type->type }}</h2>
                 <p>{{ $type->description }}</p>
+                <div>
+                    <strong>Services:</strong>
+                    @foreach ($type->services as $service)
+                        <span class="badge bg-info text-dark">{{ $service->name }}</span>
+                    @endforeach
+                </div>
                 <p>Base Price: {{ $type->base_price }}$</p>
 
                 @if ($type->images->isNotEmpty())
                     <div style="display:flex; gap:10px; margin:10px 0;">
                         @foreach ($type->images as $image)
-                            <img
-                                src="{{ asset('storage/' . $image->path) }}"
-                                alt="{{ $type->type }}"
-                                width="120"
-                            >
+                            <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $type->type }}" width="120">
                         @endforeach
                     </div>
                 @else
                     <p>No images available</p>
                 @endif
-                    <a href="{{ route('room_types.show', $type->id) }}">Show</a>
+                <a href="{{ route('room_types.show', $type->id) }}">Show</a>
                 <form action="{{ route('room_types.edit', $type->id) }}" method="GET" style="display:inline;">
                     @csrf
                     @method('PUT')

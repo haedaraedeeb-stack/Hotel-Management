@@ -11,6 +11,12 @@
         <li>
             <h2>{{ $roomType->type }}</h2>
             <p>{{ $roomType->description }}</p>
+            <div>
+                <strong>Services:</strong>
+                @foreach ($roomType->services as $service)
+                    <span class="badge bg-info text-dark">{{ $service->name }}</span>
+                @endforeach
+            </div>
             <p>Base Price: {{ $roomType->base_price }}</p>
             @if ($roomType->images->isNotEmpty())
                 <div style="display:flex; gap:10px; margin:10px 0;">
