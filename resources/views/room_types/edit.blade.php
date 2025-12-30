@@ -25,4 +25,16 @@
             <br>
             <button type="submit">Update</button>
         </form>
+         <div class="form-group">
+        <label>Services:</label>
+        <div class="row">
+            @foreach ($services as $service)
+                <div class="col-md-3">
+                    <input type="checkbox" name="services[]" value="{{ $service->id }}" id="service_{{ $service->id }}"
+                        @if (isset($roomType) && $roomType->services->contains($service->id)) checked @endif>
+                    <label for="service_{{ $service->id }}">{{ $service->name }}</label>
+                </div>
+            @endforeach
+        </div>
+    </div>
 @endsection
