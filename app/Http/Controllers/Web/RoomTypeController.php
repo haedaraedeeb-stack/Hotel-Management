@@ -28,18 +28,23 @@ class RoomTypeController extends Controller
     public function store(RoomTypeRequest $request)
     {
         $data = $request->validated();
+
         $roomType = RoomType::create($data);
+
+        if ($request->has('services')) {
+            $roomType->services()->attach($request->services);
+        }
+
         if ($request->hasFile('images')) {
-            if ($request->has('services')) {
-                $roomType->services()->attach($request->services);
-            }
             foreach ($request->file('images') as $file) {
                 $path = $file->store('room_types', 'public');
-                $roomType->images()->create(['path' => $path]);
+                $roomType->images()->create([
+                    'path' => $path,
+                ]);
             }
         }
 
-        return redirect()->route('room_types.index')->with('success', 'Room type created successfully');
+        return redirect()->route('room_types.index');
     }
 
     public function show(RoomType $roomType)
@@ -74,6 +79,7 @@ class RoomTypeController extends Controller
         } else {
             $roomType->services()->detach();
         }
+
         return redirect()->route('room_types.index')->with('success', 'Room type updated successfully');
     }
 
