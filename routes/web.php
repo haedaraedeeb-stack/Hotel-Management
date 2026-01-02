@@ -5,6 +5,8 @@ use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\RoomController;
 use App\Http\Controllers\Web\ReservationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\RatingController;
+use App\Http\Controllers\Web\RolesController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +31,9 @@ Route::middleware('auth')->group(function () {
     // Custom Actions (Check In/Out)
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
+    
+    Route::resource('roles', RolesController::class);
+    Route::resource('ratings', RatingController::class)->except(['edit', 'update', 'create', 'store']);
 });
 
 require __DIR__.'/auth.php';
