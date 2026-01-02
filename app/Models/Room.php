@@ -17,7 +17,7 @@ class Room extends Model
 
     public function reservations()
     {
-        return $this->hasMany(Reservations::class);
+        return $this->hasMany(Reservation::class);
     }
 
     public function roomType()
@@ -27,5 +27,14 @@ class Room extends Model
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function getCurrentPriceAttribute()
+    {
+        if(!empty($this->price_per_night) && $this->price_per_night > 0)
+        {
+            return $this->price_per_night;
+        }
+        return $this->roomType->base_price;
     }
 }
