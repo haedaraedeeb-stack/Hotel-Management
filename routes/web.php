@@ -15,18 +15,18 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // Profile Routes
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Management Routes (Rooms, Types, Reservations)
+    // Rooms & Types (Management)
     Route::resource('rooms', RoomController::class);
     Route::resource('room_types', RoomTypeController::class);
 
-    // Reservations Routes
+    // Reservations
     Route::resource('reservations', ReservationController::class);
-    // Custom Actions for Check In/Out
+    // Custom Actions (Check In/Out)
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
 });
