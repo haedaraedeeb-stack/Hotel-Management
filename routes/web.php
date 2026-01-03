@@ -6,6 +6,9 @@ use App\Http\Controllers\Web\RoomController;
 use App\Http\Controllers\Web\ReservationController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Web\UserController;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -30,5 +33,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
 });
+
+
+
+    Route::resource('users', UserController::class);
+    Route::get('users-trash', [UserController::class,'trash'])->name('users.trash');
+    Route::post('users/{id}/restore', [UserController::class,'restore'])->name('users.restore');
+    Route::delete('users/{id}/force-delete', [UserController::class,'forceDelete'])->name('users.forceDelete');
+
 
 require __DIR__.'/auth.php';
