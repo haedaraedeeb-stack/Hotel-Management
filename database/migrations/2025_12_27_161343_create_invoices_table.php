@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->enum('payment_method', ['credit_card', 'cash'])->default('cash');
             $table->enum('payment_status', ['paid', 'unpaid'])->default('unpaid');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

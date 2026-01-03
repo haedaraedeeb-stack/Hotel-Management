@@ -1,12 +1,20 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController; 
 use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\RoomController;
+use App\Http\Controllers\Web\InvoiceController;
+use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\ReservationController;
+
+use App\Http\Controllers\Web\ServiceController;
+ 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\RatingController;
 use App\Http\Controllers\Web\RolesController;
+use App\Http\Controllers\Web\UserController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,7 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Rooms & Types (Management)
     Route::resource('rooms', RoomController::class);
     Route::resource('room_types', RoomTypeController::class);
 
@@ -35,5 +42,58 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RolesController::class);
     Route::resource('ratings', RatingController::class)->except(['edit', 'update', 'create', 'store']);
 });
+
+require __DIR__.'/auth.php';
+Route::middleware('auth')->group(function () {
+
+    // CRUD الخدمات (باستثناء show)
+    Route::resource('services', ServiceController::class)
+        ->except(['show']);
+
+    // صفحة المهملات
+    Route::get('services-trash', [ServiceController::class, 'trash'])
+        ->name('services.trash');
+
+    // استعادة خدمة
+    Route::patch('services/{id}/restore', [ServiceController::class, 'restore'])
+        ->name('services.restore');
+
+    // حذف نهائي
+    Route::delete('services/{id}/force-delete', [ServiceController::class, 'forceDelete'])
+        ->name('services.forceDelete');
+});
+
+require __DIR__.'/auth.php';
+    Route::get(
+        'invoices/trashed',[InvoiceController::class, 'trashed']
+    )->name('invoices.trashed');
+    Route::get(
+        'reservations/{reservationId}/invoices/create',[InvoiceController::class, 'create']
+    )->name('invoices.create');
+    Route::post(
+        'reservations/{reservationId}/invoices',[InvoiceController::class, 'store']
+    )->name('invoices.store');
+    Route::patch(
+        'invoices/{id}/restore',[InvoiceController::class, 'restore']
+    )->name('invoices.restore');
+    Route::delete(
+        'invoices/{id}/force',[InvoiceController::class, 'forceDelete']
+    )->name('invoices.forceDelete');
+
+    Route::resource('invoices', InvoiceController::class)
+        ->except(['store', 'create']);
+
+});
+
+
+
+require __DIR__ . '/auth.php';
+
+
+    Route::resource('users', UserController::class);
+    Route::get('users-trash', [UserController::class,'trash'])->name('users.trash');
+    Route::post('users/{id}/restore', [UserController::class,'restore'])->name('users.restore');
+    Route::delete('users/{id}/force-delete', [UserController::class,'forceDelete'])->name('users.forceDelete');
+
 
 require __DIR__.'/auth.php';
