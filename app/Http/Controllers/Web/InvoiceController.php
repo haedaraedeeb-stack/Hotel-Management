@@ -41,7 +41,7 @@ class InvoiceController extends Controller
     public function store(StoreInvoiceRequest $request, $reservationId)
     {
         $reservation = Reservation::findOrFail($reservationId);
-        $invoice = $this->invoiceService->createInvoice($reservation, $request->all());
+        $invoice = $this->invoiceService->createInvoice($reservation, $request->validated());
         return redirect()->route('invoices.show', $invoice->id)
             ->with('success', 'Invoice successfully created.');
     }
@@ -55,7 +55,7 @@ class InvoiceController extends Controller
     public function update(UpdateInvoiceRequest $request, $id)
     {
         $invoice = $this->invoiceService->invoiceDetails($id);
-        $this->invoiceService->updateInvoice($invoice, $request->all());
+        $this->invoiceService->updateInvoice($invoice, $request->validated());
         return redirect()->route('invoices.show', $invoice->id)
             ->with('success', 'Invoice successfully updated.');
     }
