@@ -1,12 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileController; 
+use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\RoomController;
 use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\ReservationController;
 
+use App\Http\Controllers\Web\ServiceController;
+ 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\UserController;
 
 
@@ -35,6 +39,25 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    // CRUD الخدمات (باستثناء show)
+    Route::resource('services', ServiceController::class)
+        ->except(['show']);
+
+    // صفحة المهملات
+    Route::get('services-trash', [ServiceController::class, 'trash'])
+        ->name('services.trash');
+
+    // استعادة خدمة
+    Route::patch('services/{id}/restore', [ServiceController::class, 'restore'])
+        ->name('services.restore');
+
+    // حذف نهائي
+    Route::delete('services/{id}/force-delete', [ServiceController::class, 'forceDelete'])
+        ->name('services.forceDelete');
+});
+
+require __DIR__.'/auth.php';
     Route::get(
         'invoices/trashed',[InvoiceController::class, 'trashed']
     )->name('invoices.trashed');
