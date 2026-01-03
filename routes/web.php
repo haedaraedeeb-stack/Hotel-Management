@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Web\RoomTypeController;
-use App\Http\Controllers\Web\RoomController;
-use App\Http\Controllers\Web\ReservationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\RoomController;
+use App\Http\Controllers\Web\InvoiceController;
+use App\Http\Controllers\Web\RoomTypeController;
+use App\Http\Controllers\Web\ReservationController;
 
 use App\Http\Controllers\Web\UserController;
 
@@ -23,7 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Rooms & Types (Management)
     Route::resource('rooms', RoomController::class);
     Route::resource('room_types', RoomTypeController::class);
 
@@ -34,6 +34,31 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get(
+        'invoices/trashed',[InvoiceController::class, 'trashed']
+    )->name('invoices.trashed');
+    Route::get(
+        'reservations/{reservationId}/invoices/create',[InvoiceController::class, 'create']
+    )->name('invoices.create');
+    Route::post(
+        'reservations/{reservationId}/invoices',[InvoiceController::class, 'store']
+    )->name('invoices.store');
+    Route::patch(
+        'invoices/{id}/restore',[InvoiceController::class, 'restore']
+    )->name('invoices.restore');
+    Route::delete(
+        'invoices/{id}/force',[InvoiceController::class, 'forceDelete']
+    )->name('invoices.forceDelete');
+
+    Route::resource('invoices', InvoiceController::class)
+        ->except(['store', 'create']);
+
+});
+
+
+
+require __DIR__ . '/auth.php';
 
 
     Route::resource('users', UserController::class);

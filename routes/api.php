@@ -4,13 +4,15 @@
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\RoomTypeController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\RoomTypeController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+Route::apiResource('services', ServiceController::class);
+Route::post('services/{id}/restore', [ServiceController::class, 'restore']);
 
 
 // --- Public Routes (Customer/Guest) ---
