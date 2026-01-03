@@ -1,9 +1,13 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+ 
 use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\RoomController;
 use App\Http\Controllers\Web\ReservationController;
+
+use App\Http\Controllers\Web\ServiceController;
+ 
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +33,25 @@ Route::middleware('auth')->group(function () {
     // Custom Actions (Check In/Out)
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
+});
+
+Route::middleware('auth')->group(function () {
+
+    // CRUD الخدمات (باستثناء show)
+    Route::resource('services', ServiceController::class)
+        ->except(['show']);
+
+    // صفحة المهملات
+    Route::get('services-trash', [ServiceController::class, 'trash'])
+        ->name('services.trash');
+
+    // استعادة خدمة
+    Route::patch('services/{id}/restore', [ServiceController::class, 'restore'])
+        ->name('services.restore');
+
+    // حذف نهائي
+    Route::delete('services/{id}/force-delete', [ServiceController::class, 'forceDelete'])
+        ->name('services.forceDelete');
 });
 
 require __DIR__.'/auth.php';
