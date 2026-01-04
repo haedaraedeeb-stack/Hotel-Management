@@ -1,128 +1,213 @@
-@extends('layout.app')
-
-@section('header')
-    <div class="flex justify-between items-center">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Reservations List
-        </h2>
-        <a href="{{ route('reservations.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-            + New Reservation
-        </a>
-    </div>
-@endsection
+@extends('layouts.app')
 
 @section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200 overflow-x-auto">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">Reservations</h2>
+                        <a href="{{ route('reservations.create') }}"
+                            class="bg-blue-500 hover:bg-blue-700 text-blue font-bold py-2 px-4 rounded">
+                            New Reservation
+                        </a>
+                    </div>
 
-                    <table class="min-w-full w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                                <th class="py-3 px-6">ID</th>
-                                <th class="py-3 px-6">Guest Name</th>
-                                <th class="py-3 px-6">Room Info</th>
-                                <th class="py-3 px-6">Dates</th>
-                                <th class="py-3 px-6">Status</th>
-                                <th class="py-3 px-6 text-center">Check-In/Out</th>
-                                <th class="py-3 px-6 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-600 text-sm font-light">
-                            @foreach ($reservations as $res)
-                                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="py-3 px-6 text-gray-400">#{{ $res->id }}</td>
+                    @if (session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+                            role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
 
-                                    <td class="py-3 px-6 font-medium">
-                                        {{ $res->user->name ?? 'Unknown' }}
-                                    </td>
+                    @if (session('error'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                            role="alert">
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                    @endif
 
-                                    <td class="py-3 px-6">
-                                        <div class="flex flex-col">
-                                            <span class="font-bold">Room {{ $res->room->room_number }}</span>
-                                            <span
-                                                class="text-xs text-gray-500">{{ $res->room->roomType->type ?? '' }}</span>
-                                        </div>
-                                    </td>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        ID
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Guest
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Room
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Dates
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Payment
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Check-in/Check-out
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach ($reservations as $reservation)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $reservation->id }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $reservation->user->name ?? 'N/A' }}</div>
+                                            <div class="text-sm text-gray-500">{{ $reservation->user->email ?? '' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Room
+                                                {{ $reservation->room->room_number }}</div>
+                                            <div class="text-sm text-gray-500">
+                                                {{ $reservation->room->roomType->type ?? 'N/A' }}</div>
+                                            <div class="text-xs">
+                                                @if ($reservation->room->status == 'available')
+                                                    <span class="text-green-600">Available</span>
+                                                @elseif($reservation->room->status == 'occupied')
+                                                    <span class="text-red-600">Occupied</span>
+                                                @elseif($reservation->room->status == 'under maintenance')
+                                                    <span class="text-yellow-600">Under Maintenance</span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">From: {{ $reservation->start_date }}</div>
+                                            <div class="text-sm text-gray-900">To: {{ $reservation->end_date }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if ($reservation->status == 'confirmed')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Confirmed
+                                                </span>
+                                            @elseif($reservation->status == 'pending')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                    Pending
+                                                </span>
+                                            @elseif($reservation->status == 'rejected')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                    Rejected
+                                                </span>
+                                            @elseif($reservation->status == 'cancelled')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                    Cancelled
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if ($reservation->invoice)
+                                                <div class="text-sm text-gray-900">Total:
+                                                    ${{ $reservation->invoice->total_amount }}</div>
+                                                <div class="text-sm">
+                                                    @if ($reservation->invoice->payment_status == 'paid')
+                                                        <span class="text-green-600">Paid</span>
+                                                    @else
+                                                        <span class="text-red-600">Unpaid</span>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <div class="text-sm text-gray-500">No invoice</div>
+                                            @endif
+                                        <td class="py-3 px-6 text-center">
 
-                                    <td class="py-3 px-6">
-                                        <div class="text-xs">
-                                            <span class="block text-green-600">Start: {{ $res->start_date }}</span>
-                                            <span class="block text-red-600">End: {{ $res->end_date }}</span>
-                                        </div>
-                                    </td>
 
-                                    <td class="py-3 px-6">
-                                        <span
-                                            class="px-2 py-1 rounded text-xs font-bold
-                                            {{ $res->status == 'confirmed'
-                                                ? 'bg-green-100 text-green-700'
-                                                : ($res->status == 'pending'
-                                                    ? 'bg-yellow-100 text-yellow-700'
-                                                    : ($res->status == 'cancelled'
-                                                        ? 'bg-red-100 text-red-700'
-                                                        : 'bg-gray-100 text-gray-700')) }}">
-                                            {{ ucfirst($res->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="py-3 px-6 text-center">
-                                        @if ($res->status == 'confirmed' && is_null($res->check_in))
-                                            <form method="POST" action="{{ route('reservations.checkIn', $res->id) }}">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs transition">
-                                                    Check In
-                                                </button>
-                                            </form>
-                                        @elseif (!is_null($res->check_in) && is_null($res->check_out))
-                                            <div class="flex flex-col items-center gap-1">
-                                                <span class="text-[10px] text-gray-500">In: {{ $res->check_in }}</span>
+                                            @if ($reservation->status == 'pending' && is_null($reservation->check_in))
                                                 <form method="POST"
-                                                    action="{{ route('reservations.checkOut', $res->id) }}">
+                                                    action="{{ route('reservations.checkIn', $reservation->id) }}">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs transition">
-                                                        Check Out
+                                                        class="bg-blue-600 hover:bg-blue-700 text-blue font-bold py-1.5 px-3 rounded text-xs transition shadow-sm animate-pulse"
+                                                        title="Confirm & Check In & Pay">
+                                                        Check In (Confirm)
                                                     </button>
                                                 </form>
-                                            </div>
-                                        @elseif (!is_null($res->check_out))
-                                            <div class="text-center">
-                                                <span class="text-green-600 text-xs font-bold">Checked Out</span>
-                                                <span class="block text-[10px] text-gray-400">{{ $res->check_out }}</span>
-                                            </div>
-                                        @else
-                                            <span class="text-gray-400 text-xs italic">Waiting Confirmation</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 px-6 text-center">
-                                        <div class="flex item-center justify-center">
-                                            <a href="{{ route('reservations.show', $res->id) }}"
-                                                class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                            </a>
-                                            <a href="{{ route('reservations.edit', $res->id) }}"
-                                                class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                </svg>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
 
+                                            @elseif ($reservation->status == 'confirmed' && is_null($reservation->check_in))
+                                                <form method="POST"
+                                                    action="{{ route('reservations.checkIn', $reservation->id) }}">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="bg-green-600 hover:bg-green-700 text-blue font-bold py-1.5 px-3 rounded text-xs transition shadow-sm">
+                                                        Check In Now
+                                                    </button>
+                                                </form>
+
+                                            @elseif (!is_null($reservation->check_in) && is_null($reservation->check_out))
+                                                <div class="flex flex-col items-center gap-1">
+                                                    <span class="text-[10px] text-gray-500 font-mono">In:
+                                                        {{ \Carbon\Carbon::parse($reservation->check_in)->format('H:i') }}</span>
+                                                    <form method="POST"
+                                                        action="{{ route('reservations.checkOut', $reservation->id) }}">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="bg-orange-500 hover:bg-orange-600 text-blue font-bold py-1.5 px-3 rounded text-xs transition shadow-sm">
+                                                            Check Out
+                                                        </button>
+                                                    </form>
+                                                </div>
+
+                                            @elseif (!is_null($reservation->check_out))
+                                                <div class="text-center">
+                                                    <span
+                                                        class="text-gray-400 text-xs font-bold flex items-center justify-center gap-1">
+                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd"
+                                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                        Done
+                                                    </span>
+                                                    <span
+                                                        class="block text-[10px] text-gray-400 font-mono">{{ \Carbon\Carbon::parse($reservation->check_out)->format('d M') }}</span>
+                                                </div>
+
+                                            @else
+                                                <span class="text-gray-400 text-xs italic">-</span>
+                                            @endif
+
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{{ route('reservations.show', $reservation) }}"
+                                                class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            <a href="{{ route('reservations.edit', $reservation) }}"
+                                                class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
+                                            <form action="{{ route('reservations.destroy', $reservation) }}" method="POST"
+                                                class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900"
+                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

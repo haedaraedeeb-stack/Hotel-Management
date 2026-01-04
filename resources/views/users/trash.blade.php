@@ -1,63 +1,59 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Deleted Users
-        </h2>
-    </x-slot>
+@extends('layout.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+@section('title', 'Deleted Users')
 
-                <!-- زر الرجوع -->
-                <div class="mb-6">
-                    <a href="{{ route('users.index') }}" 
-                       class="inline-flex items-center bg-blue-200 hover:bg-blue-300 text-black font-bold px-6 py-3 rounded-lg shadow-lg">
-                        ⬅️ back
-                    </a>
-                </div>
-
-                <!-- جدول المستخدمين المحذوفين -->
-                <div class="overflow-x-auto">
-                    <table class="min-w-full border border-gray-200 rounded-lg shadow-sm">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">name</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">email</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">procedures</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @foreach($users as $user)
-                            <tr>
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ $user->name }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ $user->email }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 flex gap-3">
-                                    <!-- زر الاسترجاع -->
-                                    <form action="{{ route('users.restore',$user->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" 
-                                                class="inline-flex items-center bg-green-200 hover:bg-green-300 text-black font-bold px-4 py-2 rounded-lg shadow">
-                                            ♻️ restore
-                                        </button>
-                                    </form>
-                                    <!-- زر الحذف النهائي -->
-                                    <form action="{{ route('users.forceDelete',$user->id) }}" method="POST" 
-                                          onsubmit="return confirm('Are you sure about the final deletion?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" 
-                                                class="inline-flex items-center bg-red-300 hover:bg-red-400 text-black font-bold px-4 py-2 rounded-lg shadow">
-                                            🗑️ Permanent deletion
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
+@section('header')
+    <div style="padding: 20px; background-color: #ffeeba; border-bottom: 1px solid #ffdf7e; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; color: #856404;">Deleted Users (Trash)</h2>
+        <a href="{{ route('users.index') }}" style="text-decoration: none; color: #856404; font-weight: bold;">&larr; Back to Active Users</a>
     </div>
-</x-app-layout>
+@endsection
+
+@section('content')
+    <div style="margin: 20px;">
+
+        @if(session('success'))
+            <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px;">{{ session('success') }}</div>
+        @endif
+
+        <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse; font-family: sans-serif; border-color: #ddd;">
+            <thead>
+                <tr style="background-color: #f8f9fa;">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Deleted At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($users as $user)
+                    <tr>
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td style="color: #dc3545;">{{ $user->deleted_at->format('Y-m-d') }}</td>
+                        <td>
+                            {{-- استرجاع --}}
+                            <form action="{{ route('users.restore', $user->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="submit" style="background: none; border: none; color: #28a745; cursor: pointer; font-weight: bold; margin-right: 10px;">Restore ♻️</button>
+                            </form>
+
+                            {{-- حذف نهائي --}}
+                            <form action="{{ route('users.forceDelete', $user->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('PERMANENTLY DELETE? This cannot be undone!')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-weight: bold;">Force Delete ❌</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999;">Trash is empty.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+@endsection

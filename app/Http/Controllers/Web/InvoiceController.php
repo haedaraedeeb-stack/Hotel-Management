@@ -20,7 +20,7 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $invoices = $this->invoiceService->userInvoices(Auth::id());
+        $invoices = $this->invoiceService->getAllInvoices();
         return view('invoices.index', compact('invoices'));
     }
 

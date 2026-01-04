@@ -12,7 +12,7 @@
         </div>
     @endif
 
-    <a href="{{ route('services.index') }}" class="btn btn-secondary mb-3">
+    <a href="{{ route('serv.index') }}" class="btn btn-secondary mb-3">
         Back to services
     </a>
 
@@ -34,7 +34,7 @@
                 <td>{{ $service->description ?? '-' }}</td>
                 <td>
                     {{-- Restore --}}
-                    <form action="{{ route('services.restore', $service->id) }}"
+                    <form action="{{ route('serv.restore', $service->id) }}"
                           method="POST"
                           style="display:inline-block">
                         @csrf
@@ -47,7 +47,7 @@
                     </form>
 
                     {{-- Permanent delete --}}
-                    <form action="{{ route('services.forceDelete', $service->id) }}"
+                    <form action="{{ route('serv.forceDelete', $service->id) }}"
                           method="POST"
                           style="display:inline-block">
                         @csrf

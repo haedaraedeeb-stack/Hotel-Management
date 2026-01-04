@@ -160,40 +160,55 @@ class ReservationController extends Controller
 
     public function checkIn(Reservation $reservation)
     {
-        if ($reservation->status !== 'confirmed') {
-            return back()->with('error', 'Reservation must be confirmed first!');
-        }
+        if (!in_array($reservation->status, ['confirmed', 'pending'])) {
+        return back()->with('error', 'Reservation is cancelled or rejected!');
+    }
 
         if ($reservation->check_in) {
-            return back()->with('error', 'Already checked in!');
+            return back()->with('error', 'checkin already');
         }
 
-        $reservation->update([
-            'check_in' => now(),
-        ]);
+        if ($reservation->room->status === 'occupied') {
+            return back()->with('error', 'sorry room still occuiped , the user must exit from room now!');
+        }
 
-        return back()->with('success', 'Guest Checked In Successfully at ' . now());
+        DB::transaction(function () use ($reservation) {
+
+            $reservation->update([
+                'check_in' => now(),
+                'status' => 'confirmed'
+            ]);
+
+            $reservation->room->update(['status' => 'occupied']);
+            if ($reservation->invoice && $reservation->invoice->payment_status == 'unpaid') {
+                $reservation->invoice->update([
+                    'payment_status' => 'paid',
+                ]);
+            }
+
+        });
+
+        return back()->with('success', 'checkin done successufly!');
     }
 
     public function checkOut(Reservation $reservation)
     {
-        if (!$reservation->check_in) {
-            return back()->with('error', 'Guest has not checked in yet!');
+        if (! $reservation->check_in) {
+            return back()->with('error', 'can not checkout because there is no checkin yet!');
         }
 
         if ($reservation->check_out) {
-            return back()->with('error', 'Already checked out!');
+            return back()->with('error', 'already cheackout done');
         }
 
-        $reservation->update([
-            'check_out' => now(),
-            'status' => 'confirmed',
-        ]);
+        DB::transaction(function () use ($reservation) {
 
-        if($reservation->invoice && $reservation->invoice->payment_status == 'unpaid') {
-            $reservation->invoice->update(['payment_status' => 'paid']);
-        }
+            $reservation->update([
+                'check_out' => now(),
+            ]);
+            $reservation->room->update(['status' => 'available']);
+        });
 
-        return back()->with('success', 'Guest Checked Out Successfully. Invoice marked as Paid.');
+        return back()->with('success', ' the checkout is done , and the invoice done , room is avaiable!');
     }
 }

@@ -1,61 +1,58 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-             edit user
-        </h2>
-    </x-slot>
+@extends('layout.app')
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form action="{{ route('users.update',$user->id) }}" method="POST" class="space-y-6">
-                    @csrf @method('PUT')
+@section('title', 'Edit User')
 
-                    <!-- الاسم -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">name</label>
-                        <input type="text" name="name" value="{{ $user->name }}" required
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-
-                    <!-- البريد الإلكتروني -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">email</label>
-                        <input type="email" name="email" value="{{ $user->email }}" required
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-
-                    <!-- كلمة المرور -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">
-                             password <span class="text-sm text-gray-500">(Leave it blank if you don't want to change it.)</span>
-                        </label>
-                        <input type="password" name="password"
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-
-                    <!-- الدور -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">role</label>
-                        <select name="role" required
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            @foreach($roles as $role)
-                                <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
-                                    {{ $role->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- زر التحديث -->
-                    <div>
-                        <button type="submit"
-                                class="bg-yellow-300 hover:bg-yellow-400 text-black font-bold px-6 py-3 rounded-lg shadow-lg">
-                            ✏️ update
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+@section('header')
+    <div style="padding: 20px; background-color: #f4f4f4; border-bottom: 1px solid #ddd;">
+        <h1 style="margin: 0; color: #333;">Edit User: {{ $user->name }}</h1>
+        <a href="{{ route('users.index') }}" style="text-decoration: none; color: #007bff; font-size: 14px;">&larr; Back to Users List</a>
     </div>
-</x-app-layout>
+@endsection
+
+@section('content')
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; font-family: sans-serif;">
+
+        @if ($errors->any())
+            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px;">
+                <ul>
+                    @foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('users.update', $user->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold;">Name:</label>
+                <input type="text" name="name" value="{{ old('name', $user->name) }}" required style="width: 100%; padding: 8px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold;">Email:</label>
+                <input type="email" name="email" value="{{ old('email', $user->email) }}" required style="width: 100%; padding: 8px;">
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold;">New Password (Optional):</label>
+                <input type="password" name="password" placeholder="Leave blank to keep current password" style="width: 100%; padding: 8px;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold;">Role:</label>
+                <select name="role" required style="width: 100%; padding: 8px;">
+                    @foreach($roles as $role)
+                        <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                            {{ ucfirst($role->name) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div style="text-align: right;">
+                <button type="submit" style="background-color: #ffc107; color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Update User</button>
+            </div>
+        </form>
+    </div>
+@endsection

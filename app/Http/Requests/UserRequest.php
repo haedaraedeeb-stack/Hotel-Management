@@ -9,7 +9,7 @@ class UserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; 
+        return true;
     }
 
     public function rules(): array
@@ -19,7 +19,7 @@ class UserRequest extends FormRequest
         return [
             'name' => ['required','string','max:255'],
             'email' => ['required','email', Rule::unique('users','email')->ignore($id)],
-            'password' => $id ? ['nullable','min:6'] : ['required','min:6'],
+            'password' => $id ? ['nullable','min:8'] : ['required','min:8'],
             'role' => ['required','string'], // مدير فندق أو موظف استقبال
         ];
     }

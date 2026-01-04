@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('services.store') }}" method="POST">
+    <form action="{{ route('serv.store') }}" method="POST">
         @csrf
 
         {{-- Service name  --}}
@@ -62,7 +62,7 @@
             Save
         </button>
 
-        <a href="{{ route('services.index') }}" class="btn btn-secondary">
+        <a href="{{ route('serv.index') }}" class="btn btn-secondary">
             Back
         </a>
 

@@ -1,99 +1,83 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController; 
-use App\Http\Controllers\Web\RoomTypeController;
-use App\Http\Controllers\Web\RoomController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\InvoiceController;
-use App\Http\Controllers\Web\RoomTypeController;
-use App\Http\Controllers\Web\ReservationController;
-
-use App\Http\Controllers\Web\ServiceController;
- 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\RatingController;
+use App\Http\Controllers\Web\ReservationController;
 use App\Http\Controllers\Web\RolesController;
+use App\Http\Controllers\Web\RoomController;
+use App\Http\Controllers\Web\RoomTypeController;
+use App\Http\Controllers\Web\ServiceController;
 use App\Http\Controllers\Web\UserController;
+use Illuminate\Support\Facades\Route;
 
-
+/*
+|--------------------------------------------------------------------------
+| Public Routes (Accessible by everyone)
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| Protected Routes (Require Login)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware('auth')->group(function () {
-    // Profile
+    // 1. Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // 2. Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // 3. User Management
+    Route::get('users/trash', [UserController::class, 'trash'])->name('users.trash');
+    Route::post('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
+    Route::delete('users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
+    Route::resource('users', UserController::class);
+
+    // 4. Role Management
+    Route::resource('roles', RolesController::class);
+
+    // 5. Room & Room Type Management
     Route::resource('rooms', RoomController::class);
     Route::resource('room_types', RoomTypeController::class);
 
-    // Reservations
-    Route::resource('reservations', ReservationController::class);
-    // Custom Actions (Check In/Out)
-    Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
-    Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
-    
-    Route::resource('roles', RolesController::class);
-    Route::resource('ratings', RatingController::class)->except(['edit', 'update', 'create', 'store']);
-});
-
-require __DIR__.'/auth.php';
-Route::middleware('auth')->group(function () {
-
-    // CRUD الخدمات (باستثناء show)
-    Route::resource('services', ServiceController::class)
+    // 6. Service Management
+    Route::get('serv/trash', [ServiceController::class, 'trash'])->name('serv.trash');
+    Route::patch('serv/{id}/restore', [ServiceController::class, 'restore'])->name('serv.restore');
+    Route::delete('serv/{id}/force-delete', [ServiceController::class, 'forceDelete'])->name('serv.forceDelete');
+    Route::resource('serv', ServiceController::class)
+        ->parameters(['serv' => 'service'])
         ->except(['show']);
 
-    // صفحة المهملات
-    Route::get('services-trash', [ServiceController::class, 'trash'])
-        ->name('services.trash');
+    // 7. Reservation Management
+    // Custom Actions first
+    Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
+    Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
+    Route::resource('reservations', ReservationController::class);
 
-    // استعادة خدمة
-    Route::patch('services/{id}/restore', [ServiceController::class, 'restore'])
-        ->name('services.restore');
+    // 8. Invoice Management
+    Route::get('invoices/trashed', [InvoiceController::class, 'trashed'])->name('invoices.trashed');
+    Route::patch('invoices/{id}/restore', [InvoiceController::class, 'restore'])->name('invoices.restore');
+    Route::delete('invoices/{id}/force', [InvoiceController::class, 'forceDelete'])->name('invoices.forceDelete');
+    // Invoice Creation linked to Reservation
+    Route::get('reservations/{reservationId}/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('reservations/{reservationId}/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
 
-    // حذف نهائي
-    Route::delete('services/{id}/force-delete', [ServiceController::class, 'forceDelete'])
-        ->name('services.forceDelete');
-});
+    Route::resource('invoices', InvoiceController::class)->except(['store', 'create']);
 
-require __DIR__.'/auth.php';
-    Route::get(
-        'invoices/trashed',[InvoiceController::class, 'trashed']
-    )->name('invoices.trashed');
-    Route::get(
-        'reservations/{reservationId}/invoices/create',[InvoiceController::class, 'create']
-    )->name('invoices.create');
-    Route::post(
-        'reservations/{reservationId}/invoices',[InvoiceController::class, 'store']
-    )->name('invoices.store');
-    Route::patch(
-        'invoices/{id}/restore',[InvoiceController::class, 'restore']
-    )->name('invoices.restore');
-    Route::delete(
-        'invoices/{id}/force',[InvoiceController::class, 'forceDelete']
-    )->name('invoices.forceDelete');
-
-    Route::resource('invoices', InvoiceController::class)
-        ->except(['store', 'create']);
+    // 9. Ratings (Read Only for Admin)
+    Route::resource('ratings', RatingController::class)->except(['edit', 'update', 'create', 'store']);
 
 });
 
-
-
-require __DIR__ . '/auth.php';
-
-
-    Route::resource('users', UserController::class);
-    Route::get('users-trash', [UserController::class,'trash'])->name('users.trash');
-    Route::post('users/{id}/restore', [UserController::class,'restore'])->name('users.restore');
-    Route::delete('users/{id}/force-delete', [UserController::class,'forceDelete'])->name('users.forceDelete');
-
-
+// Authentication Routes (Login, Register...) - Must be at the end
 require __DIR__.'/auth.php';
