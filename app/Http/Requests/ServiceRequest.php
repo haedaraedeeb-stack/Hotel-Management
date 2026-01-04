@@ -22,7 +22,8 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:services,name,' . $this->id, 'description' => 'nullable|string',
+            'name' => 'required|string|max:255|unique:services,name,' . $this->id,
+            'description' => 'nullable|string',
         ];
     }
 }

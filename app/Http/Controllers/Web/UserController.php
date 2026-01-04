@@ -65,6 +65,10 @@ class UserController extends Controller
             return back()->withErrors('فشل في تعديل المستخدم');
         }
     }
+    public function show()
+    {
+        
+    }
 
     public function destroy($id)
     {

@@ -13,13 +13,13 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::with('roomTypes')->latest()->get();
-        return view('services.index', compact('services'));
+        return view('serv.index', compact('services'));
     }
 
     public function create()
     {
         $roomTypes = RoomType::all();
-        return view('services.create', compact('roomTypes'));
+        return view('serv.create', compact('roomTypes'));
     }
 
     public function store(StoreServiceRequest $request)
@@ -33,7 +33,7 @@ class ServiceController extends Controller
             $service->roomTypes()->sync($request->room_types);
         }
 
-        return redirect()->route('services.index')
+        return redirect()->route('serv.index')
             ->with('success', ' The service has been created successfully  ');
     }
 
@@ -42,7 +42,7 @@ class ServiceController extends Controller
         $roomTypes = RoomType::all();
         $service->load('roomTypes');
 
-        return view('services.edit', compact('service', 'roomTypes'));
+        return view('serv.edit', compact('service', 'roomTypes'));
     }
 
     public function update(UpdateServiceRequest $request, Service $service)
@@ -58,7 +58,7 @@ class ServiceController extends Controller
             $service->roomTypes()->detach();
         }
 
-        return redirect()->route('services.index')
+        return redirect()->route('serv.index')
             ->with('success', 'The service has been edited successfully   ');
     }
 
@@ -66,21 +66,21 @@ class ServiceController extends Controller
     {
         $service->delete();
 
-        return redirect()->route('services.index')
+        return redirect()->route('serv.index')
             ->with('success', 'The service has been moved to the trash');
     }
 
     public function trash()
     {
         $services = Service::onlyTrashed()->get();
-        return view('services.trash', compact('services'));
+        return view('serv.trash', compact('services'));
     }
 
     public function restore($id)
     {
         Service::onlyTrashed()->findOrFail($id)->restore();
 
-        return redirect()->route('services.trash')
+        return redirect()->route('serv.trash')
             ->with('success', 'service has been restored');
     }
 
@@ -88,7 +88,7 @@ class ServiceController extends Controller
     {
         Service::onlyTrashed()->findOrFail($id)->forceDelete();
 
-        return redirect()->route('services.trash')
+        return redirect()->route('serv.trash')
             ->with('success', 'The service has been permanently deleted ');
     }
 }

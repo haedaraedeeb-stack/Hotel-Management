@@ -14,6 +14,7 @@ class StoreInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'reservation_id' => 'required|exists:reservations,id',
             'payment_method' => 'required|in:cash,credit_card',
             'payment_status' => 'required|in:paid,unpaid',
         ];

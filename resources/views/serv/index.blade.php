@@ -14,11 +14,11 @@
 
     {{--  Control buttons --}}
     <div class="mb-3">
-        <a href="{{ route('services.create') }}" class="btn btn-primary">
+        <a href="{{ route('serv.create') }}" class="btn btn-primary">
               Add a new service
         </a>
 
-        <a href="{{ route('services.trash') }}" class="btn btn-secondary">
+        <a href="{{ route('serv.trash') }}" class="btn btn-secondary">
             Trash
         </a>
     </div>
@@ -53,12 +53,12 @@
                 </td>
 
                 <td>
-                    <a href="{{ route('services.edit', $service->id) }}"
+                    <a href="{{ route('serv.edit', $service->id) }}"
                        class="btn btn-sm btn-warning">
                         edit
                     </a>
 
-                    <form action="{{ route('services.destroy', $service->id) }}"
+                    <form action="{{ route('serv.destroy', $service->id) }}"
                           method="POST"
                           style="display:inline-block">
                         @csrf

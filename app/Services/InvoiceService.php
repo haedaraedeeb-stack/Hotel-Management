@@ -22,8 +22,7 @@ class InvoiceService
         $end_date = Carbon::parse($reservation->end_date)->startOfDay();
         $nights = $start_date->diffInDays($end_date);
         $nights = ($nights > 0) ? $nights : 1;
-        return $nights * $reservation->room->price_per_night;
-    }
+        return $nights * $reservation->room->current_price;    }
 
     public function createInvoice(Reservation $reservation, array $data): Invoice
     {
@@ -102,4 +101,9 @@ class InvoiceService
             'payment_status' => $data['payment_status'],
         ]);
     }
+public function getAllInvoices() {
+    return Invoice::with(['reservation.user'])->latest()->paginate(10);
+}
+
+
 }
