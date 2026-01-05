@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoomController;
@@ -26,3 +27,8 @@ Route::prefix('room-types')->group(function () {
 // 4. Rooms
 Route::get('rooms', [RoomController::class, 'index']);
 Route::get('rooms/{room}', [RoomController::class, 'show']);
+
+// --- Customer/Guest Auth Routes ---
+Route::post('/register', [AuthController::class, 'register']); // يُرجع توكن
+Route::post('/login', [AuthController::class, 'login']);       // يُرجع توكن
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
