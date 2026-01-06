@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\RoomTypeController;
+use App\Http\Controllers\Api\CustomerInvoiceController;
 
 // 1. Authenticated User (Sanctum)
 Route::get('/user', function (Request $request) {
@@ -26,3 +27,7 @@ Route::prefix('room-types')->group(function () {
 // 4. Rooms
 Route::get('rooms', [RoomController::class, 'index']);
 Route::get('rooms/{room}', [RoomController::class, 'show']);
+
+// 5. invoices
+
+Route::get('customer/invoices/{id?}', [CustomerInvoiceController::class, 'getInvoices']);
