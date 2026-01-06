@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\RoomTypeController;
 
@@ -32,3 +33,23 @@ Route::get('rooms/{room}', [RoomController::class, 'show']);
 Route::post('/register', [AuthController::class, 'register']); // يُرجع توكن
 Route::post('/login', [AuthController::class, 'login']);       // يُرجع توكن
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+// 5. Ratings:
+Route::prefix('ratings')->group(function () {
+
+    Route::get('/', [RatingController::class, 'index']);
+    Route::get('/reservation/{reservationId}', [RatingController::class, 'getByReservation']);
+    
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('my-ratings',[RatingController::class, 'myRatings']);
+        Route::post('/', [RatingController::class, 'store']);
+        Route::put('/{id}', [RatingController::class, 'update']);
+        Route::delete('/{id}', [RatingController::class, 'destroy']);
+    });
+    
+    Route::get('/{id}', [RatingController::class, 'show']);
+    
+    Route::middleware(['auth:sanctum', 'role:admin,manager'])->group(function () {
+        Route::get('/stats', [RatingController::class, 'stats']);
+    });
+});
