@@ -32,5 +32,4 @@ class Reservation extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class);
-    }
-}
+    }}

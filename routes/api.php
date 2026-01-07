@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\RoomTypeController;
+use App\Http\Controllers\Api\CustomerInvoiceController;
 
 // 1. Authenticated User (Sanctum)
 Route::get('/user', function (Request $request) {
@@ -29,7 +30,6 @@ Route::prefix('room-types')->group(function () {
 // 4. Rooms
 Route::get('rooms', [RoomController::class, 'index']);
 Route::get('rooms/{room}', [RoomController::class, 'show']);
-
 
 // --- Customer/Guest Auth Routes ---
 Route::post('/register', [AuthController::class, 'register']); // يُرجع توكن
@@ -61,5 +61,11 @@ Route::prefix('ratings')->group(function () {
         Route::get('/stats', [RatingController::class, 'stats']);
     });
 });
+// 7. invoices
 
+Route::middleware('auth:sanctum')->group(function () {
 
+    Route::get('my-invoices', [CustomerInvoiceController::class, 'index']);
+    Route::get('my-invoices/{id}', [CustomerInvoiceController::class, 'show']);
+
+});
