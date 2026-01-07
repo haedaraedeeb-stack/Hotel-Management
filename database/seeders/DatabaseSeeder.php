@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             DevUsersSeeder::class,
+            RoomSeeder::class,
+            ServiceSeeder::class,
+            ReservationSeeder::class,
+            RatingSeeder::class,
         ]);
 
         User::factory()->create([
