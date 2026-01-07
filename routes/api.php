@@ -63,4 +63,9 @@ Route::prefix('ratings')->group(function () {
 });
 // 7. invoices
 
-Route::get('customer/invoices/{id?}', [CustomerInvoiceController::class, 'getInvoices']);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('my-invoices', [CustomerInvoiceController::class, 'index']);
+    Route::get('my-invoices/{id}', [CustomerInvoiceController::class, 'show']);
+
+});
