@@ -10,6 +10,10 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct() {
+        // السماح فقط للـ admin بالوصول لهذه الدوال 
+        $this->middleware('role:admin'); 
+    }
     public function index()
     {
         try {

@@ -11,6 +11,16 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+
+    public function __construct()
+    {
+        // السماح فقط للـ client باستخدام هذه الدوال
+        $this->middleware('role:client')->only(['logout']);
+        // register و login مفتوحين للجميع، لذلك لم نقيّدهم
+    }
+    
+
+
     // POST /api/client/register
     public function register(RegisterRequest $request)
     {

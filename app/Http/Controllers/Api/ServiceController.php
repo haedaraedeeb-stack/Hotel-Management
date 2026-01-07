@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ServiceController extends Controller
 {
+    public function __construct() {
+        // السماح فقط للمستخدمين الذين لديهم دور "client" 
+        $this->middleware('role:client'); 
+    }
 
     public function index()
     {
