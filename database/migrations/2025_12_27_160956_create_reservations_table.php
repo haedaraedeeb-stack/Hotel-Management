@@ -19,7 +19,7 @@ return new class extends Migration
             $table->datetime('check_out')->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'rejected','completed'])->default('pending');
             $table->timestamps();
         });
     }

@@ -9,7 +9,9 @@ use App\Http\Controllers\Web\RoomController;
 use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\ServiceController;
 use App\Http\Controllers\Web\UserController;
+use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +30,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // 1. Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard' , [DashboardController::class, 'index'])->name('dashboard');
 
     // 2. Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -62,6 +62,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Custom Actions first
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
+    Route::post('reservations/available_rooms', [ReservationController::class, 'getAvailableRooms'])->name('reservations.getAvailableRooms');
     Route::resource('reservations', ReservationController::class);
 
     // 8. Invoice Management
@@ -71,7 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Invoice Creation linked to Reservation
     Route::get('reservations/{reservationId}/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
     Route::post('reservations/{reservationId}/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
-
+    
     Route::resource('invoices', InvoiceController::class)->except(['store', 'create']);
 
     // 9. Ratings (Read Only for Admin)
@@ -79,5 +80,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-// Authentication Routes (Login, Register...) - Must be at the end
+
 require __DIR__.'/auth.php';

@@ -9,8 +9,36 @@ use App\Models\RoomType;
 use App\Models\Service;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class RoomTypeController
+ * @package App\Http\Controllers\Web
+ * Controller for managing room types
+ * @author Haedara Deeb
+ *Permissions:
+ * - view room_types
+ * - create room_types
+ * - edit room_types
+ * - delete room_types
+ * - CRUD operations for room types
+ * - Image handling for room types
+ */
+
 class RoomTypeController extends Controller
 {
+    public const PERMISSIONS = [
+        'view'  => 'view room_types',
+        'create' => 'create room_types',
+        'edit' => 'edit room_types',
+        'delete' => 'delete room_types',
+    ];
+    public function __construct()
+    {
+        $this->middleware('permission:' . self::PERMISSIONS['view'])->only(['index', 'show']);
+        $this->middleware('permission:' . self::PERMISSIONS['create'])->only(['create', 'store']);
+        $this->middleware('permission:' . self::PERMISSIONS['edit'])->only(['edit', 'update']);
+        $this->middleware('permission:' . self::PERMISSIONS['delete'])->only(['destroy']);
+    }
+
     public function index()
     {
         $roomTypes = RoomType::with(['images', 'services'])->get();

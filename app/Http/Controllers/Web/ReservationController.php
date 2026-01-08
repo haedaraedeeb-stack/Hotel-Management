@@ -3,24 +3,54 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Reservation\AvailableRoomsRequest;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
+use App\Services\WebReservationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class ReservationController
+ * @package App\Http\Controllers\Web
+ * Controller for managing reservations
+ * @author Haedara Deeb
+ * @edit by Mohammad Shaheen
+ *Permissions:
+ * - view reservations
+ * - create reservations
+ * - edit reservations
+ * - delete reservations
+ * - checkin reservations
+ * - checkout reservations
+ * - CRUD operations for reservations
+ * - Check-in and Check-out handling
+ */
 class ReservationController extends Controller
 {
+    protected $reservationService;
+
+    public function __construct(WebReservationService $reservationService)
+    {
+        $this->reservationService = $reservationService;
+        $this->middleware('permission:reservation-list', ['only' => ['index']]);
+        $this->middleware('permission:reservation-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:reservation-show', ['only' => ['show', 'availableRooms']]);
+        $this->middleware('permission:reservation-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:reservation-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:reservation-checkin-checkout', ['only' => ['checkIn', 'checkOut']]);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $reservations = Reservation::with(['room', 'user'])->get();
-
+        $reservations = $this->reservationService->getallReservations();
         return view('reservations.index', compact('reservations'));
     }
 
@@ -29,10 +59,10 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        $rooms = Room::where('status', 'available')->get();
+        // $rooms = Room::where('status', 'available')->get();
         $users = User::all();
 
-        return view('reservations.create', compact('rooms', 'users'));
+        return view('reservations.create', compact( 'users'));
     }
 
     /**
@@ -40,44 +70,9 @@ class ReservationController extends Controller
      */
     public function store(StoreReservationRequest $request)
     {
-        $isBooked = Reservation::where('room_id', $request->room_id)
-            ->where('status', 'confirmed')
-            ->where(function ($query) use ($request) {
-                $query->where('start_date', '<', $request->end_date)
-                    ->where('end_date', '>', $request->start_date);
-            })->exists();
-
-        if ($isBooked) {
-            return back()->withErrors(['room_id' => 'Sorry, This room is occupied in this date!'])
-                ->withInput();
-        }
-
-        $room = Room::with('roomType')->findOrFail($request->room_id);
-        $start = Carbon::parse($request->start_date);
-        $end = Carbon::parse($request->end_date);
-        $nights = $start->diffInDays($end) ?: 1;
-
-        $totalAmount = $room->current_price * $nights;
-
-        DB::transaction(function () use ($request, $totalAmount) {
-            $reservation = Reservation::create([
-                'user_id' => $request->user_id,
-                'room_id' => $request->room_id,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'status' => 'pending',
-            ]);
-
-            Invoice::create([
-                'reservation_id' => $reservation->id,
-                'total_amount' => $totalAmount,
-                'payment_status' => 'unpaid',
-                'payment_method' => 'cash',
-            ]);
-        });
-
+        $totalAmount = $this->reservationService->storeReservation($request->validated());
         return redirect()->route('reservations.index')
-            ->with('success', 'Reservation Done And The Invoice Created With Value: '.$totalAmount.'$');
+            ->with('success', 'Reservation Done And The Invoice Created With Value: ' . $totalAmount . '$');
     }
 
     /**
@@ -86,7 +81,6 @@ class ReservationController extends Controller
     public function show(Reservation $reservation)
     {
         $reservation->load(['room.roomType', 'user', 'invoice']);
-
         return view('reservations.show', compact('reservation'));
     }
 
@@ -95,10 +89,10 @@ class ReservationController extends Controller
      */
     public function edit(Reservation $reservation)
     {
-        $rooms = Room::all();
+        // $rooms = Room::all();
         $users = User::all();
 
-        return view('reservations.edit', compact('reservation', 'rooms', 'users'));
+        return view('reservations.edit', compact('reservation', 'users'));
     }
 
     /**
@@ -106,45 +100,7 @@ class ReservationController extends Controller
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
-        $isBooked = Reservation::where('room_id', $request->room_id)
-            ->where('status', 'confirmed')
-            ->where('id', '!=', $reservation->id)
-            ->where(function ($query) use ($request) {
-                $query->where('start_date', '<', $request->end_date)
-                    ->where('end_date', '>', $request->start_date);
-            })
-            ->exists();
-
-        if ($isBooked) {
-            return back()->withErrors(['room_id' => 'Sorry this new dates is unavailable!'])
-                ->withInput();
-        }
-
-        $dateChanged = $request->start_date != $reservation->start_date || $request->end_date != $reservation->end_date;
-        $roomChanged = $request->room_id != $reservation->room_id;
-
-        DB::transaction(function () use ($request, $reservation, $dateChanged, $roomChanged) {
-            $reservation->update([
-                'room_id' => $request->room_id,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'status' => $request->status,
-            ]);
-
-            if (($dateChanged || $roomChanged) && $reservation->invoice) {
-                $room = Room::with('roomType')->find($request->room_id);
-                $start = Carbon::parse($request->start_date);
-                $end = Carbon::parse($request->end_date);
-                $nights = $start->diffInDays($end) ?: 1;
-
-                $newTotal = $room->current_price * $nights;
-
-                $reservation->invoice()->update([
-                    'total_amount' => $newTotal,
-                ]);
-            }
-        });
-
+        $updateReservation = $this->reservationService->updateReservation($reservation, $request->validated());
         return redirect()->route('reservations.index')->with('success', 'Updated Done...');
     }
 
@@ -154,15 +110,14 @@ class ReservationController extends Controller
     public function destroy(Reservation $reservation)
     {
         $reservation->delete();
-
         return redirect()->route('reservations.index')->with('success', 'Deleted..');
     }
 
     public function checkIn(Reservation $reservation)
     {
         if (!in_array($reservation->status, ['confirmed', 'pending'])) {
-        return back()->with('error', 'Reservation is cancelled or rejected!');
-    }
+            return back()->with('error', 'Reservation is cancelled or rejected!');
+        }
 
         if ($reservation->check_in) {
             return back()->with('error', 'checkin already');
@@ -172,21 +127,7 @@ class ReservationController extends Controller
             return back()->with('error', 'sorry room still occuiped , the user must exit from room now!');
         }
 
-        DB::transaction(function () use ($reservation) {
-
-            $reservation->update([
-                'check_in' => now(),
-                'status' => 'confirmed'
-            ]);
-
-            $reservation->room->update(['status' => 'occupied']);
-            if ($reservation->invoice && $reservation->invoice->payment_status == 'unpaid') {
-                $reservation->invoice->update([
-                    'payment_status' => 'paid',
-                ]);
-            }
-
-        });
+        $CheckIn = $this->reservationService->checkIn($reservation);
 
         return back()->with('success', 'checkin done successufly!');
     }
@@ -201,14 +142,18 @@ class ReservationController extends Controller
             return back()->with('error', 'already cheackout done');
         }
 
-        DB::transaction(function () use ($reservation) {
-
-            $reservation->update([
-                'check_out' => now(),
-            ]);
-            $reservation->room->update(['status' => 'available']);
-        });
-
+        $checkOut = $this->reservationService->checkOut($reservation);
         return back()->with('success', ' the checkout is done , and the invoice done , room is avaiable!');
+    }
+
+    public function getAvailableRooms(AvailableRoomsRequest $request)
+    {
+        $availableRooms = $this->reservationService->availableRooms($request->validated());
+        return response()->json([
+            'rooms' => $availableRooms,
+            'count' => $availableRooms->count(),
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
     }
 }

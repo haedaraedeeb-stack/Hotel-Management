@@ -20,9 +20,29 @@ class RoleSeeder extends Seeder
         Role::firstOrCreate(['name' => 'client']);
 
         $prmissions = [
-            'create_user', 'edit_user', 'delete_user', 'view_user',
-            'create_role', 'edit_role', 'delete_role', 'view_role',
-            'create_permission', 'edit_permission', 'delete_permission', 'view_permission',
+            'reservation-list',
+            'reservation-create',
+            'reservation-show',
+            'reservation-edit',
+            'reservation-delete',
+            'reservation-checkin-checkout',
+
+            'room-list',
+            'room-create',
+            'room-show',
+            'room-edit',
+            'room-delete',
+
+            'role-list',
+            'role-create',
+            'role-show',
+            'role-edit',
+            'role-delete',
+
+            'view room_types',
+            'create room_types',
+            'edit room_types',
+            'delete room_types',
         ];
         foreach ($prmissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);

@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Reservations;
+use App\Models\Reservation; // <--- تصحيح الاسم للمفرد
+use App\Models\Invoice;     // <--- سنحتاج لإنشاء فواتير للحجوزات!
 use App\Models\User;
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
@@ -11,50 +12,47 @@ use Carbon\Carbon;
 
 class ReservationSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        // Get users and rooms from database
         $users = User::all();
         $rooms = Room::all();
-        
-        // If no users or rooms exist, create some dummy data
+
         if ($users->isEmpty() || $rooms->isEmpty()) {
-            $this->command->warn('No users or rooms found. Please seed Users and Rooms first!');
             return;
         }
-        
-        $reservations = [];
+
         $statuses = ['pending', 'confirmed', 'cancelled', 'rejected'];
-        
-        // Create 50 sample reservations
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 100; $i++) { // زدنا العدد لـ 100 لتظهر بيانات أكثر
             $user = $users->random();
             $room = $rooms->random();
-            
-            // Generate random dates
-            $startDate = Carbon::now()->addDays(rand(-30, 60)); // Past and future dates
-            $endDate = $startDate->copy()->addDays(rand(1, 14)); // 1-14 days stay
-            
-            // For check-in/check-out (actual dates, can be null if not checked in yet)
+
+            // --- التعديل الجوهري هنا ---
+            // نختار شهراً عشوائياً من السنة الحالية (من 1 إلى 12)
+            $randomMonth = rand(1, 12);
+            // نختار يوماً عشوائياً في ذلك الشهر
+            $randomDay = rand(1, 28);
+
+            // تاريخ البداية
+            $startDate = Carbon::create(date('Y'), $randomMonth, $randomDay);
+            // مدة الإقامة
+            $endDate = (clone $startDate)->addDays(rand(1, 7));
+
+            $status = $statuses[array_rand($statuses)];
+
+            // منطق الدخول والخروج (كما هو)
             $checkIn = null;
             $checkOut = null;
-            
-            $status = $statuses[array_rand($statuses)];
-            
-            // Set check-in/check-out based on status
-            if (in_array($status, ['checked_in', 'checked_out'])) {
+
+            // إذا كان التاريخ في الماضي، نعتبر أنه اكتمل ودفع
+            if ($endDate < now()) {
+                $status = 'confirmed'; // لضمان احتساب الفاتورة
                 $checkIn = $startDate;
-                if ($status === 'checked_out') {
-                    $checkOut = $endDate;
-                }
+                $checkOut = $endDate;
             }
-            
-            $reservations[] = [
+
+            // إنشاء الحجز
+            // ملاحظة: نعدل created_at ليكون في نفس شهر الحجز لكي يظهر في الرسم البياني حسب تاريخ الإنشاء
+            $reservation = Reservation::create([
                 'user_id' => $user->id,
                 'room_id' => $room->id,
                 'start_date' => $startDate,
@@ -62,14 +60,23 @@ class ReservationSeeder extends Seeder
                 'check_in' => $checkIn,
                 'check_out' => $checkOut,
                 'status' => $status,
-                'created_at' => now()->subDays(rand(0, 90)),
-                'updated_at' => now()->subDays(rand(0, 90)),
-            ];
+                'created_at' => $startDate, // حيلة ذكية: نجعل تاريخ الإنشاء هو تاريخ الحجز
+            ]);
+
+            // إنشاء الفاتورة
+            $pricePerNight = $room->current_price ?? 150;
+            $totalAmount = $pricePerNight * $startDate->diffInDays($endDate);
+
+            Invoice::create([
+                'reservation_id' => $reservation->id,
+                'total_amount' => $totalAmount,
+                // الفاتورة مدفوعة فقط إذا كان التاريخ في الماضي (اكتملت)
+                'payment_status' => ($endDate < now()) ? 'paid' : 'unpaid',
+                'payment_method' => 'cash',
+                'created_at' => $startDate, // مهم جداً: الفاتورة أيضاً بتاريخ قديم
+            ]);
         }
-        
-        // Insert data
-        DB::table('reservations')->insert($reservations);
-        
-        $this->command->info('Successfully created ' . count($reservations) . ' reservations!');
+
+        $this->command->info('Reservations & Invoices Seeded Successfully!');
     }
 }
