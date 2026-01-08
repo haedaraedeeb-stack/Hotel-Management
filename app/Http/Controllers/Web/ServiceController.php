@@ -10,6 +10,33 @@ use App\Models\RoomType;
 
 class ServiceController extends Controller
 {
+    public function __construct(){
+        //تحديد صلاحيات الكونترولر حسب الدور
+    $this->middleware(function($request,$next){
+        $user =auth()->user();
+        if (!$user){
+            abort(403,"Unauthorized: Please login.");
+        }
+        $action =$request->route()->getActionMethod();
+        //تحديد الصلاحيات حسب الميثود 
+        $permissions = [
+            'index'=>['super admin','admin','receptionist'],
+            'create'=>['super admin'],
+            'store'=>['super admin'],
+            'edit'=>['super admin'],
+            'update'=>['super admin'],
+            'destroy'=>['super admin'],
+            'trash'=>['super admin'],
+           'restore'=>['super admin'],
+           'forceDelete'=>['super admin'],
+        ];
+        //التحقق من الدور
+        if(!in_array(strtolower($user->role),$permissions[$action])){
+            abort(403,'You do not have permission to perform this action.');
+        }
+    return $next($request);
+    });
+    }
     public function index()
     {
         $services = Service::with('roomTypes')->latest()->get();
