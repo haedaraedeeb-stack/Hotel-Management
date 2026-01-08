@@ -5,55 +5,44 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerInvoiceController extends Controller
 {
-    /**
-     * عرض الفاتورة الحالية أولاً، وإذا لم يتم تحديدها يعرض جميع الفواتير
-     */
-    public function getInvoices(Request $request, $id = null)
+    public function index()
     {
-        // نحدد الزبون من الواجهة
-        $userId = $request->query('user_id');
+        $userId = Auth::id(); 
 
-        if (!$userId) {
-            return response()->json([
-                'message' => 'user_id is required'
-            ], 400);
-        }
-
-        /**
-         *   عرض الفاتورة الحالية فقط
-         */
-        if ($id !== null) {
-            $invoice = Invoice::with('reservation')
-                ->whereHas('reservation', function ($q) use ($userId) {
-                    $q->where('user_id', $userId);
-                })
-                ->find($id);
-
-            if (!$invoice) {
-                return response()->json([
-                    'message' => 'Invoice not found'
-                ], 404);
-            }
-
-            return response()->json([
-                'invoice' => $invoice
-            ]);
-        }
-
-        /**
-         *  عرض جميع الفواتير
-         */
-        $invoices = Invoice::with('reservation')
+        $invoices = Invoice::with(['reservation.room.roomType']) 
             ->whereHas('reservation', function ($q) use ($userId) {
                 $q->where('user_id', $userId);
             })
             ->get();
 
         return response()->json([
-            'invoices' => $invoices
+            'status' => 'success',
+            'data' => $invoices
+        ]);
+    }
+
+    
+    public function show($id)
+    {
+        $userId = Auth::id();
+
+        $invoice = Invoice::with(['reservation.room'])
+            ->whereHas('reservation', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->find($id);
+
+        if (!$invoice) {
+            return response()->json(['message' => 'Invoice not found or access denied'], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $invoice
         ]);
     }
 }
