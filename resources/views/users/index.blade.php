@@ -6,8 +6,12 @@
     <div style="padding: 20px; background-color: #f4f4f4; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">
         <h2 style="margin: 0; color: #333;">User Management</h2>
         <div>
+            @can('create_user')
             <a href="{{ route('users.create') }}" style="background-color: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin-right: 10px;">+ Add User</a>
+            @endcan
+            @can('view_user')
             <a href="{{ route('users.trash') }}" style="background-color: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px;">Trash 🗑️</a>
+            @endcan
         </div>
     </div>
 @endsection
@@ -44,13 +48,16 @@
                             @endforeach
                         </td>
                         <td>
+                            @can('edit_user')
                             <a href="{{ route('users.edit', $user->id) }}" style="color: #ffc107; text-decoration: none; margin-right: 10px; font-weight: bold;">Edit</a>
-
+                            @endcan
+                            @can('delete_user')
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this user?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-weight: bold; text-decoration: underline;">Delete</button>
                             </form>
+                            @endcan
                         </td>
                     </tr>
                 @empty

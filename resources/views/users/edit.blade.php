@@ -19,7 +19,8 @@
                 </ul>
             </div>
         @endif
-
+        
+        @can('edit_user')
         <form action="{{ route('users.update', $user->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -54,5 +55,6 @@
                 <button type="submit" style="background-color: #ffc107; color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">Update User</button>
             </div>
         </form>
+        @endcan
     </div>
 @endsection
