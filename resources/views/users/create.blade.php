@@ -1,74 +1,87 @@
-@extends('layout.app') {{-- أو اسم ملف اللايوت تبعك --}}
+@extends('layouts.admin')
 
-@section('title', 'Create New User')
-
-@section('header')
-    <div style="padding: 20px; background-color: #f4f4f4; border-bottom: 1px solid #ddd;">
-        <h1 style="margin: 0; color: #333;">Create New User</h1>
-        <a href="{{ route('users.index') }}" style="text-decoration: none; color: #007bff; font-size: 14px;">&larr; Back to Users List</a>
-    </div>
-@endsection
+@section('title', 'Create User')
 
 @section('content')
-    <div style="max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; font-family: sans-serif;">
+<div class="py-6">
+    <div class="max-w-3xl mx-auto">
 
-        {{-- عرض الأخطاء --}}
-        @if ($errors->any())
-            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-                <strong>Oops! Something went wrong:</strong>
-                <ul style="margin: 5px 0 0 20px;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        {{-- Header & Back --}}
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Add New User</h2>
+            <a href="{{ route('users.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition">
+                &larr; Back to Users
+            </a>
+        </div>
+
+        {{-- Form Card --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-8">
+
+                {{-- Errors --}}
+                @if ($errors->any())
+                    <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded text-red-700 text-sm">
+                        <p class="font-bold">Please fix the following errors:</p>
+                        <ul class="list-disc list-inside mt-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    {{-- Name --}}
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition duration-150 ease-in-out"
+                            placeholder="John Doe">
+                    </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition duration-150 ease-in-out"
+                            placeholder="john@example.com">
+                    </div>
+
+                    {{-- Password --}}
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" name="password" id="password" required
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition duration-150 ease-in-out"
+                            placeholder="••••••••">
+                    </div>
+
+                    {{-- Role --}}
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                        <select name="role" id="role" required
+                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition duration-150 ease-in-out bg-white">
+                            <option value="" disabled selected>Select a Role...</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="flex items-center justify-end pt-4 border-t border-gray-100">
+                        <a href="{{ route('users.index') }}" class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 mr-3 transition">
+                            Cancel
+                        </a>
+                        <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-md transition transform hover:-translate-y-0.5">
+                            Create User
+                        </button>
+                    </div>
+
+                </form>
             </div>
-        @endif
-        @can('create_user')
-        <form action="{{ route('users.store') }}" method="POST">
-            @csrf
-
-            {{-- الاسم --}}
-            <div style="margin-bottom: 15px;">
-                <label for="name" style="display: block; font-weight: bold; margin-bottom: 5px;">Full Name:</label>
-                <input type="text" name="name" id="name" required value="{{ old('name') }}"
-                       style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-            </div>
-
-            {{-- البريد الإلكتروني --}}
-            <div style="margin-bottom: 15px;">
-                <label for="email" style="display: block; font-weight: bold; margin-bottom: 5px;">Email Address:</label>
-                <input type="email" name="email" id="email" required value="{{ old('email') }}"
-                       style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-            </div>
-
-            {{-- كلمة المرور --}}
-            <div style="margin-bottom: 15px;">
-                <label for="password" style="display: block; font-weight: bold; margin-bottom: 5px;">Password:</label>
-                <input type="password" name="password" id="password" required
-                       style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-            </div>
-
-            {{-- الدور --}}
-            <div style="margin-bottom: 20px;">
-                <label for="role" style="display: block; font-weight: bold; margin-bottom: 5px;">Role:</label>
-                <select name="role" id="role" required
-                        style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; background-color: white;">
-                    <option value="" disabled selected>Select a Role...</option>
-                    @foreach($roles as $role)
-                        <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- زر الحفظ --}}
-            <div style="text-align: right;">
-                <button type="submit"
-                        style="background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">
-                    Save User
-                </button>
-            </div>
-
-        </form>
-        @endcan
+        </div>
     </div>
+</div>
 @endsection

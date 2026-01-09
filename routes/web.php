@@ -9,7 +9,9 @@ use App\Http\Controllers\Web\RoomController;
 use App\Http\Controllers\Web\RoomTypeController;
 use App\Http\Controllers\Web\ServiceController;
 use App\Http\Controllers\Web\UserController;
+use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +30,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // 1. Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard' , [DashboardController::class, 'index'])->name('dashboard');
 
     // 2. Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -79,5 +79,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-// Authentication Routes (Login, Register...) - Must be at the end
+
 require __DIR__.'/auth.php';
