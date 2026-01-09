@@ -56,46 +56,50 @@
                                     <span class="text-sm font-bold text-gray-800">{{ $service->name }}</span>
                                 </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate" title="{{ $service->description }}">
-                                    {{ $service->description ?? '-' }}
-                                </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate" title="{{ $service->description }}">
+    {{ $service->description ?? '-' }}
+</td>
 
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex flex-wrap gap-1">
-                                        @forelse($service->roomTypes as $roomType)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                                                {{ $roomType->type }}
-                                            </span>
-                                        @empty
-                                            <span class="text-xs text-gray-400 italic">Not linked</span>
-                                        @endforelse
-                                    </div>
-                                </td>
-
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('serv.edit', $service->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4 transition">Edit</a>
-
-                                    <form action="{{ route('serv.destroy', $service->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to move this service to trash?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 transition">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                    <div class="flex flex-col items-center">
-                                        <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                        <p>No services found. Start by adding one.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<td class="px-6 py-4 whitespace-nowrap">
+    <div class="flex flex-wrap gap-1">
+        @forelse($service->roomTypes as $roomType)
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                {{ $roomType->type }}
+            </span>
+        @empty
+            <span class="text-xs text-gray-400 italic">Not linked</span>
+        @endforelse
     </div>
+</td>
+
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    @can('edit services')
+        <a href="{{ route('serv.edit', $service->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4 transition">Edit</a>
+    @endcan
+
+    @can('delete services')
+        <form action="{{ route('serv.destroy', $service->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to move this service to trash?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="text-red-600 hover:text-red-900 transition">Delete</button>
+        </form>
+    @endcan
+</td>
+</tr>
+@empty
+<tr>
+    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+        <div class="flex flex-col items-center">
+            <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <p>No services found. Start by adding one.</p>
+        </div>
+    </td>
+</tr>
+@endforelse
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 @endsection
