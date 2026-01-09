@@ -30,6 +30,8 @@
                     </div>
                 @endif
 
+                {{-- السماح فقط لمن يملك create_user --}}
+                @can('create_user')
                 <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
                     @csrf
 
@@ -80,6 +82,8 @@
                     </div>
 
                 </form>
+                @endcan
+                {{-- نهاية can --}}
             </div>
         </div>
     </div>
