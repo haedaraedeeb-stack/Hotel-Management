@@ -27,7 +27,54 @@ class RoleSeeder extends Seeder
         foreach ($prmissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
+
+        // Invoice-related permissions
+        $invoicePermissions = [
+            'view invoices',
+            'create invoice',
+            'edit invoice',
+            'delete invoice',
+        ];
+
+        foreach ($invoicePermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
         $adminRole = Role::where('name', 'admin')->first();
-        $adminRole->givePermissionTo($prmissions);
+        $adminRole->givePermissionTo(array_merge($prmissions, $invoicePermissions));
+
+        // Manager: full invoice management
+        $managerRole = Role::where('name', 'manager')->first();
+        $managerRole->givePermissionTo($invoicePermissions);
+
+        // Receptionist: can view/create/edit invoices, but cannot delete
+        $receptionistRole = Role::where('name', 'receptionist')->first();
+        $receptionistRole->givePermissionTo([
+            'view invoices',
+            'create invoice',
+            'edit invoice',
+        ]);
+
+        // Rating-related permissions
+        $ratingPermissions = [
+            'delete rating',
+            'create rating',
+            'edit rating',
+            'view rating',
+        ];
+
+        foreach ($ratingPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // Admin and Manager can delete ratings
+        $adminRole->givePermissionTo($ratingPermissions);
+        $managerRole->givePermissionTo($ratingPermissions);
+        $receptionistRole->givePermissionTo(
+            [
+                'edit rating',
+                'view rating',
+            ]
+            );
     }
 }

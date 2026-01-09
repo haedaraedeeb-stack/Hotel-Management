@@ -10,12 +10,24 @@ use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
+    public const PERMISSIONS = [
+        'create' => 'create invoice',
+        'edit' => 'edit invoice',
+        'delete' => 'delete invoice',
+    ];
 
     protected $invoiceService;
     public function __construct(InvoiceService $invoiceService)
     {
         $this->middleware('auth');
         $this->invoiceService = $invoiceService;
+
+        $this->middleware('permission:' . self::PERMISSIONS['create'])
+            ->only(['create', 'store']);
+        $this->middleware('permission:' . self::PERMISSIONS['edit'])
+            ->only(['edit', 'update']);
+        $this->middleware('permission:' . self::PERMISSIONS['delete'])
+            ->only(['destroy', 'forceDelete', 'trashed', 'restore']);
     }
 
     public function index()

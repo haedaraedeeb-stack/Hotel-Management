@@ -10,11 +10,18 @@ use App\Models\Rating;
 
 class RatingController extends Controller
 {
+    public const PERMISSIONS = [
+        'delete' => 'delete rating',
+    ];
+
     protected RatingService $ratingService;
 
     public function __construct(RatingService $ratingService)
     {
         $this->ratingService = $ratingService;
+
+        $this->middleware('permission:' . self::PERMISSIONS['delete'])
+            ->only(['destroy']);
     }
 
 // Normal user (not registered or logged in)
