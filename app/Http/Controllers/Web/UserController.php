@@ -11,8 +11,8 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
     public function __construct() {
-        // السماح فقط للـ admin بالوصول لهذه الدوال 
-        $this->middleware('role:admin'); 
+        // السماح فقط للـ admin بالوصول لهذه الدوال
+        $this->middleware('role:admin|manager');
     }
     public function index()
     {
@@ -71,7 +71,7 @@ class UserController extends Controller
     }
     public function show()
     {
-        
+
     }
 
     public function destroy($id)

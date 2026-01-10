@@ -42,23 +42,36 @@ class RoleSeeder extends Seeder
             'create invoice',
             'edit invoice',
             'delete invoice',
-     
+            'create services',
+            'edit services',
+            'view services',
+            'delete services',
+            'view services trash',
+            'restore services',
+            'force delete services',
 
             'create_user', 'edit_user', 'delete_user', 'view_user',
             'create_permission', 'edit_permission', 'delete_permission', 'view_permission',
             'create room_types', 'edit room_types', 'delete room_types', 'view room_types',
-
 
         ];
         foreach ($prmissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-
         $adminRole = Role::where('name', 'admin')->first();
         $adminRole->givePermissionTo($prmissions);
         $managerRole = Role::where('name', 'manager')->first();
         $managerRole->givePermissionTo($prmissions);
+        $receptionistRole = Role::where('name', 'receptionist')->first();
+        $receptionistRole->givePermissionTo([
+            'reservation-list',
+            'reservation-create',
+            'reservation-show',
+            'reservation-edit',
+            'reservation-delete',
+            'reservation-checkin-checkout',
+        ]);
 
     }
 }
