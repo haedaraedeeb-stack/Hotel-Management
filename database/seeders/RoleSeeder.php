@@ -38,7 +38,10 @@ class RoleSeeder extends Seeder
             'role-show',
             'role-edit',
             'role-delete',
-
+            'view invoices',
+            'create invoice',
+            'edit invoice',
+            'delete invoice',
      
 
             'create_user', 'edit_user', 'delete_user', 'view_user',
@@ -50,6 +53,8 @@ class RoleSeeder extends Seeder
         foreach ($prmissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
+
+
         $adminRole = Role::where('name', 'admin')->first();
         $adminRole->givePermissionTo($prmissions);
         $managerRole = Role::where('name', 'manager')->first();
