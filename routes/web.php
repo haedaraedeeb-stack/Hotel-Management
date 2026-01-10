@@ -62,6 +62,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Custom Actions first
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
+    Route::post('reservations/available_rooms', [ReservationController::class, 'getAvailableRooms'])->name('reservations.getAvailableRooms');
     Route::resource('reservations', ReservationController::class);
 
     // 8. Invoice Management
@@ -71,7 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Invoice Creation linked to Reservation
     Route::get('reservations/{reservationId}/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
     Route::post('reservations/{reservationId}/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
-
+    
     Route::resource('invoices', InvoiceController::class)->except(['store', 'create']);
 
     // 9. Ratings (Read Only for Admin)
