@@ -7,6 +7,7 @@
     <div class="max-w-7xl mx-auto">
 
         {{-- Header & Actions --}}
+        @can('room-create')
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
             <h2 class="text-2xl font-bold text-gray-800">Rooms Management</h2>
             <a href="{{ route('rooms.create') }}"
@@ -15,6 +16,7 @@
                 Add New Room
             </a>
         </div>
+        @endcan
 
         {{-- Flash Message --}}
         @if(session('success'))
@@ -76,14 +78,19 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                    @can('room-show')
                                     <a href="{{ route('rooms.show', $room->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                                    @endcan
+                                    @can('room-edit')
                                     <a href="{{ route('rooms.edit', $room->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-
+                                    @endcan
+                                    @can('room-delete')
                                     <form action="{{ route('rooms.destroy', $room->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Delete this room?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

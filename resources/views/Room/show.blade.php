@@ -13,9 +13,11 @@
                 <a href="{{ route('rooms.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition flex items-center">
                     &larr; Back to Rooms
                 </a>
+                @can('room-edit')
                 <a href="{{ route('rooms.edit', $room->id) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
                     Edit Room
                 </a>
+                @endcan
             </div>
         </div>
 
@@ -83,6 +85,7 @@
         </div>
 
         {{-- Delete Button (Bottom) --}}
+        @can('room-delete')
         <div class="mt-8 flex justify-end">
             <form action="{{ route('rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this room?');">
                 @csrf
@@ -92,6 +95,7 @@
                 </button>
             </form>
         </div>
+        @endcan
 
     </div>
 </div>

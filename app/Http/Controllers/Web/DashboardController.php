@@ -7,30 +7,113 @@ use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
+    // public function index()
+    // {
+    //     $user = auth()->user();
+
+    //     $stats = [
+    //         'occupancy' => $this->calculateOccupancy(),
+    //         'reservations_count' => Reservation::count(),
+    //     ];
+
+    //     $roomTypeStats = $this->getRoomTypeStats();
+    //     $monthlyReservations = $this->getMonthlyReservations();
+
+    //     if ($user->hasAnyRole(['admin', 'manager'])) {
+
+    //         $stats['revenue'] = Invoice::where('payment_status', 'paid')->sum('total_amount');
+    //         $stats['guests_count'] = User::whereDoesntHave('roles', fn ($q) => $q->whereIn('name', ['admin', 'manager', 'receptionist'])
+    //         )->count();
+
+    //         $recentBookings = Reservation::with(['user', 'room'])
+    //             ->latest()
+    //             ->take(5)
+    //             ->get();
+
+    //         $chartData = $this->getMonthlyRevenue();
+
+    //         return view('dashboard', compact(
+    //             'stats',
+    //             'roomTypeStats',
+    //             'monthlyReservations',
+    //             'recentBookings',
+    //             'chartData'
+    //         ));
+    //     }
+
+    //     if ($user->hasRole('receptionist')) {
+
+    //         $recentBookings = Reservation::with(['user', 'room'])
+    //             ->latest()
+    //             ->take(10)
+    //             ->get();
+
+    //         return view('dashboard', compact(
+    //             'stats',
+    //             'roomTypeStats',
+    //             'monthlyReservations',
+    //             'recentBookings'
+    //         ));
+    //     }
+
+    //     abort(403);
+    // }
+public function index()
+{
+    $user = auth()->user();
+
+    // بيانات مشتركة للجميع
+    $recentBookings = Reservation::with(['user', 'room'])
+        ->latest()
+        ->take(10)
+        ->get();
+
+    $roomTypeStats = $this->getRoomTypeStats();
+    $monthlyReservations = $this->getMonthlyReservations();
+
+    // قيم افتراضية
+    $stats = [];
+    $chartData = [
+        'labels' => [],
+        'values' => [],
+    ];
+
+    // admin & manager
+    if ($user->hasAnyRole(['admin', 'manager'])) {
+
         $stats = [
             'reservations_count' => Reservation::count(),
             'revenue' => Invoice::where('payment_status', 'paid')->sum('total_amount'),
-            'guests_count' => User::whereDoesntHave('roles', fn ($q) => $q->whereIn('name', ['admin', 'manager', 'receptionist']))->count(),
+            'guests_count' => User::whereDoesntHave(
+                'roles',
+                fn ($q) => $q->whereIn('name', ['admin', 'manager', 'receptionist'])
+            )->count(),
             'occupancy' => $this->calculateOccupancy(),
         ];
 
-        $recentBookings = Reservation::with(['user', 'room'])
-            ->latest()
-            ->take(5)
-            ->get();
-
         $chartData = $this->getMonthlyRevenue();
-
-        $roomTypeStats = $this->getRoomTypeStats();
-
-        return view('dashboard', compact('stats', 'recentBookings', 'chartData', 'roomTypeStats'));
     }
+
+    // receptionist (يشوف فقط الغرف + الحجوزات)
+    if ($user->hasRole('receptionist')) {
+        $stats = [
+            'occupancy' => $this->calculateOccupancy(),
+        ];
+    }
+
+    return view('dashboard', compact(
+        'stats',
+        'recentBookings',
+        'roomTypeStats',
+        'monthlyReservations',
+        'chartData'
+    ));
+}
 
     private function calculateOccupancy()
     {
@@ -38,6 +121,7 @@ class DashboardController extends Controller
         $occupied = Room::where('status', 'occupied')->count();
 
         return $total > 0 ? round(($occupied / $total) * 100) : 0;
+
     }
 
     private function getMonthlyRevenue()
@@ -71,5 +155,26 @@ class DashboardController extends Controller
             'labels' => $data->pluck('type'),
             'values' => $data->pluck('total'),
         ];
+    }
+
+    private function getMonthlyReservations()
+    {
+        $data = Reservation::select(
+            DB::raw('COUNT(*) as total'),
+            DB::raw('MONTH(created_at) as month_num')
+        )
+            ->whereYear('created_at', Carbon::now()->year)
+            // ->where('status', 'confirmed')
+            ->groupBy('month_num')
+            ->orderBy('month_num')
+            ->get();
+
+        $months = collect(range(1, 12))->map(function ($month) use ($data) {
+            $record = $data->firstWhere('month_num', $month);
+
+            return $record ? $record->total : 0;
+        });
+
+        return $months;
     }
 }
