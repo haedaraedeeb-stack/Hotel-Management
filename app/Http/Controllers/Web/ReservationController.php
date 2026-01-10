@@ -11,6 +11,8 @@ use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 /**
  * Class ReservationController
@@ -30,24 +32,24 @@ use Illuminate\Support\Facades\DB;
  */
 class ReservationController extends Controller
 {
-    public const PERMISSIONS = [
-        'view'  => 'view reservations',
-        'create' => 'create reservations',
-        'edit' => 'edit reservations',
-        'delete' => 'delete reservations',
-        'checkin' => 'checkin reservations',
-        'checkout' => 'checkout reservations',
-    ];
+    // public const PERMISSIONS = [
+    //     'view'  => 'view reservations',
+    //     'create' => 'create reservations',
+    //     'edit' => 'edit reservations',
+    //     'delete' => 'delete reservations',
+    //     'checkin' => 'checkin reservations',
+    //     'checkout' => 'checkout reservations',
+    // ];
 
-    public function __construct()
-    {
-        $this->middleware('permission:' . self::PERMISSIONS['view'])->only(['index', 'show']);
-        $this->middleware('permission:' . self::PERMISSIONS['create'])->only(['create', 'store']);
-        $this->middleware('permission:' . self::PERMISSIONS['edit'])->only(['edit', 'update']);
-        $this->middleware('permission:' . self::PERMISSIONS['delete'])->only(['destroy']);
-        $this->middleware('permission:' . self::PERMISSIONS['checkin'])->only(['checkIn']);
-        $this->middleware('permission:' . self::PERMISSIONS['checkout'])->only(['checkOut']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('permission:' . self::PERMISSIONS['view'])->only(['index', 'show']);
+    //     $this->middleware('permission:' . self::PERMISSIONS['create'])->only(['create', 'store']);
+    //     $this->middleware('permission:' . self::PERMISSIONS['edit'])->only(['edit', 'update']);
+    //     $this->middleware('permission:' . self::PERMISSIONS['delete'])->only(['destroy']);
+    //     $this->middleware('permission:' . self::PERMISSIONS['checkin'])->only(['checkIn']);
+    //     $this->middleware('permission:' . self::PERMISSIONS['checkout'])->only(['checkOut']);
+    // }
     /**
      * Display a listing of the resource.
      */

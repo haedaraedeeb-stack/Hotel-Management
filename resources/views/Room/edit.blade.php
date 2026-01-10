@@ -13,9 +13,11 @@
                 <a href="{{ route('rooms.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition flex items-center">
                     &larr; Back to Rooms
                 </a>
+                @can('room-show')
                 <a href="{{ route('rooms.show', $room->id) }}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
                     View Details
                 </a>
+                @endcan
             </div>
         </div>
 
@@ -32,7 +34,7 @@
                         </ul>
                     </div>
                 @endif
-
+                    @can('room-edit')
                 <form action="{{ route('rooms.update', $room->id) }}" method="POST" enctype="multipart/form-data" id="roomForm" class="space-y-8">
                     @csrf
                     @method('PUT')
@@ -78,7 +80,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span class="text-gray-500 sm:text-sm">$</span>
                                     </div>
-                                    <input type="number" name="price" value="{{ old('price', $room->price_per_night) }}" required step="0.01"
+                                    <input type="number" name="price_per_night" value="{{ old('price_per_night', $room->price_per_night) }}" required step="0.01"
                                         class="pl-7 w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition">
                                 </div>
                             </div>
@@ -153,6 +155,7 @@
                     </div>
 
                 </form>
+                @endcan
             </div>
         </div>
 
