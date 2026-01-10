@@ -39,6 +39,8 @@ class AvailableRoomsRequest extends FormRequest
                 'after:start_date',
 
             ],
+
+            'reservation_id' => 'nullable|exists:reservations,id',
         ];
     }
 

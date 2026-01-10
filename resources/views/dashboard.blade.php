@@ -1,102 +1,169 @@
 @extends('layouts.admin')
+
 @section('title', 'Dashboard')
 @section('content')
+
     <div class="py-6">
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
             {{-- Card 1: Total Bookings --}}
-            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <div class="flex items-center">
-                    <div
-                        class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-blue-600 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['reservations_count'] }}</h3>
-                        <p class="text-sm font-medium text-gray-500">Reservations</p>
+            @hasanyrole('admin|manager')
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center">
+                        <div
+                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-blue-600 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['reservations_count'] }}</h3>
+                            <p class="text-sm font-medium text-gray-500">Reservations</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endhasanyrole
+
 
             {{-- Card 2: Total Revenue --}}
-            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <div class="flex items-center">
-                    <div
-                        class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-green-500 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }}</h3>
-                        <p class="text-sm font-medium text-gray-500">Revenue</p>
+            @hasanyrole('admin|manager')
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center">
+                        <div
+                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-green-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }}</h3>
+                            <p class="text-sm font-medium text-gray-500">Revenue</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endhasanyrole
 
             {{-- Card 3: Guests --}}
-            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <div class="flex items-center">
-                    <div
-                        class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-purple-500 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['guests_count'] }}</h3>
-                        <p class="text-sm font-medium text-gray-500">Active Guests</p>
+            @hasanyrole('admin|manager')
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center">
+                        <div
+                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-purple-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['guests_count'] }}</h3>
+                            <p class="text-sm font-medium text-gray-500">Active Guests</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endhasanyrole
 
             {{-- Card 4: Rooms --}}
-            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                <div class="flex items-center">
-                    <div
-                        class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-orange-500 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['occupancy'] }}%</h3>
-                        <p class="text-sm font-medium text-gray-500">Occupancy Rate</p>
+            @hasanyrole('admin|manager|receptionist')
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center">
+                        <div
+                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-orange-500 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['occupancy'] }}%</h3>
+                            <p class="text-sm font-medium text-gray-500">Occupancy Rate</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endhasanyrole
+
 
         {{-- 2. Charts Section (Charts Grid) --}}
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
+        @hasanyrole('admin|manager')
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
 
-            {{-- Chart 1: Revenue Chart (Area) --}}
-            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-900">Monthly Revenue</h3>
+                {{-- Chart 1: Revenue Chart (Area) --}}
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">Monthly Revenue</h3>
+                    </div>
+                    <div id="revenue-chart"></div>
                 </div>
-                <div id="revenue-chart"></div>
-            </div>
+            @endhasanyrole
 
             {{-- Chart 2: Room Types (Pie/Donut) --}}
-            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-900">Room Preferences</h3>
+            @hasanyrole('admin|manager|receptionist')
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="flex justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">Room Preferences</h3>
+                    </div>
+                    <div id="room-pie-chart"></div>
                 </div>
-                <div id="room-pie-chart"></div>
             </div>
+        @endhasanyrole
+        <script>
+            const monthlyReservations = @json($monthlyReservations);
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <div
+            style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 15px; color: #333;">Monthly Reservations Overview</h3>
+            <canvas id="reservationsChart" style="max-height: 400px;"></canvas>
         </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+
+                const canvas = document.getElementById('reservationsChart');
+
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+
+                const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                ];
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Monthly Reservations ({{ now()->year }})',
+                            data: monthlyReservations,
+                            backgroundColor: 'rgba(10, 40, 205, 0.7)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
 
         <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
             <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Reservations</h3>
@@ -176,7 +243,8 @@
                     series: [{
                         name: "Revenue ($)",
                         data: revenueValues.length > 0 ? revenueValues : [
-                        0],
+                            0
+                        ],
                         color: "#1A56DB",
                     }, ],
                     xaxis: {

@@ -50,40 +50,44 @@
                                     {{ $service->deleted_at->format('M d, Y h:i A') }}
                                 </td>
 
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <form action="{{ route('serv.restore', $service->id) }}" method="POST" class="inline-block mr-2">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="text-green-600 hover:text-green-900 transition flex items-center gap-1 float-right">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                                            Restore
-                                        </button>
-                                    </form>
+                              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    @can('restore services')
+        <form action="{{ route('serv.restore', $service->id) }}" method="POST" class="inline-block mr-2">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="text-green-600 hover:text-green-900 transition flex items-center gap-1 float-right">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Restore
+            </button>
+        </form>
+    @endcan
 
-                                    <form action="{{ route('serv.forceDelete', $service->id) }}" method="POST" class="inline-block" onsubmit="return confirm('WARNING: This action cannot be undone!');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 transition flex items-center gap-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-6 py-10 text-center text-gray-500">
-                                    <div class="flex flex-col items-center">
-                                        <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        <p>Trash is empty.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+    @can('force delete services')
+        <form action="{{ route('serv.forceDelete', $service->id) }}" method="POST" class="inline-block" onsubmit="return confirm('WARNING: This action cannot be undone!');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="text-red-600 hover:text-red-900 transition flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Delete
+            </button>
+        </form>
+    @endcan
+</td>
+</tr>
+@empty
+<tr>
+    <td colspan="4" class="px-6 py-10 text-center text-gray-500">
+        <div class="flex flex-col items-center">
+            <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <p>Trash is empty.</p>
         </div>
-    </div>
+    </td>
+</tr>
+@endforelse
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 @endsection

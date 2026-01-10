@@ -17,7 +17,7 @@
         {{-- Form Card --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-8">
-
+                @can('edit_user')
                 <form action="{{ route('users.update', $user->id) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
@@ -72,6 +72,7 @@
                     </div>
 
                 </form>
+                @endcan
             </div>
         </div>
     </div>
