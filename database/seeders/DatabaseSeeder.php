@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             DevUsersSeeder::class,
             RoomSeeder::class,
             ReservationSeeder::class,
+            ServiceSeeder::class,
+            RatingSeeder::class,
         ]);
 
         User::factory()->create([
