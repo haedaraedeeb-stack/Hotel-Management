@@ -11,6 +11,9 @@ use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 
 /**
  * Class ReservationController
@@ -30,6 +33,7 @@ use Illuminate\Support\Facades\DB;
  */
 class ReservationController extends Controller
 {
+
     public const PERMISSIONS = [
         'view'  => 'view reservations',
         'create' => 'create reservations',
@@ -48,6 +52,7 @@ class ReservationController extends Controller
         $this->middleware('permission:' . self::PERMISSIONS['checkin'])->only(['checkIn']);
         $this->middleware('permission:' . self::PERMISSIONS['checkout'])->only(['checkOut']);
     }
+
     /**
      * Display a listing of the resource.
      */

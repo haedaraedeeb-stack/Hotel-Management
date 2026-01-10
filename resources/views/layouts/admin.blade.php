@@ -58,8 +58,9 @@
                 <x-slot name="trigger">
                     <button
                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                        <div >{{ Auth::user()->name }}</div>
-
+                        @if (auth()->check())
+                            <div>{{ auth()->user()->name }}</div>
+                        @endif
                         <div class="ms-1">
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -96,111 +97,130 @@
         <ul class="p-3 space-y-1 font-medium">
 
             {{-- Dashboard --}}
-            <li>
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m4 0h5a1 1 0 001-1V10" />
-                    </svg>
-                    <span class="nav-text">Dashboard</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager|receptionist')
+                <li>
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m4 0h5a1 1 0 001-1V10" />
+                        </svg>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Reservations --}}
-            <li>
-                <a href="{{ route('reservations.index') }}"
-                    class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span class="nav-text">Reservations</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager|receptionist')
+                <li>
+                    <a href="{{ route('reservations.index') }}"
+                        class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="nav-text">Reservations</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Users --}}
-            <li>
-                <a href="{{ route('users.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <span class="nav-text">Users</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('users.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span class="nav-text">Users</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Rooms --}}
-            <li>
-                <a href="{{ route('rooms.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 21V7a2 2 0 012-2h14a2 2 0 012 2v14M3 10h18" />
-                    </svg>
-                    <span class="nav-text">Rooms</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('rooms.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 21V7a2 2 0 012-2h14a2 2 0 012 2v14M3 10h18" />
+                        </svg>
+                        <span class="nav-text">Rooms</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Room Types --}}
-            <li>
-                <a href="{{ route('room_types.index') }}"
-                    class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M4 6h6v6H4zM14 6h6v6h-6zM4 16h6v6H4zM14 16h6v6h-6z" />
-                    </svg>
-                    <span class="nav-text">Room Types</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('room_types.index') }}"
+                        class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 6h6v6H4zM14 6h6v6h-6zM4 16h6v6H4zM14 16h6v6h-6z" />
+                        </svg>
+                        <span class="nav-text">Room Types</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Services --}}
-            <li>
-                <a href="{{ route('serv.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" />
-                    </svg>
-                    <span class="nav-text">Services</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('serv.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" />
+                        </svg>
+                        <span class="nav-text">Services</span>
+                    </a>
+                </li>
+            @endhasanyrole
             {{-- Invoices --}}
-            <li>
-                <a href="{{ route('invoices.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="nav-text">Invoices</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('invoices.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="nav-text">Invoices</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Roles --}}
-            <li>
-                <a href="{{ route('roles.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
-                    </svg>
-                    <span class="nav-text">Roles</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('roles.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
+                        </svg>
+                        <span class="nav-text">Roles</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
             {{-- Ratings --}}
-            <li>
-                <a href="{{ route('ratings.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.01 6.18h6.49l-5.25 3.81 2.01 6.18L12 15.27l-5.21 3.83 2.01-6.18-5.25-3.81h6.49z" />
-                    </svg>
-                    <span class="nav-text">Ratings</span>
-                </a>
-            </li>
+            @hasanyrole('admin|manager')
+                <li>
+                    <a href="{{ route('ratings.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.01 6.18h6.49l-5.25 3.81 2.01 6.18L12 15.27l-5.21 3.83 2.01-6.18-5.25-3.81h6.49z" />
+                        </svg>
+                        <span class="nav-text">Ratings</span>
+                    </a>
+                </li>
+            @endhasanyrole
 
         </ul>
     </aside>

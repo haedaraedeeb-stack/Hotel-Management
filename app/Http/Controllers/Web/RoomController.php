@@ -9,6 +9,8 @@ use App\Models\Room;
 use App\Models\RoomType;
 use App\Services\Room\RoomService;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoomController extends Controller
 {
@@ -17,6 +19,11 @@ class RoomController extends Controller
     public function __construct(RoomService $roomService)
     {
         $this->roomService = $roomService;
+        $this->middleware('permission:room-list' , ['only' =>['index']]);
+        $this->middleware('permission:room-create' , ['only' =>['create' , 'store']]);
+        $this->middleware('permission:room-show' , ['only' =>['show']]);
+        $this->middleware('permission:room-edit' , ['only' =>['edit' , 'update']]);
+        $this->middleware('permission:room-delete' , ['only' =>['destroy']]);
     }
 
     /**
