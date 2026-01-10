@@ -15,9 +15,11 @@
                 </h2>
                 <p class="text-sm text-gray-500 mt-1">Manage deleted accounts. Restore them or delete permanently.</p>
             </div>
+            @can('view_user')
             <a href="{{ route('users.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition">
                 &larr; Back to Active Users
             </a>
+            @endcan
         </div>
 
         {{-- Flash Message --}}
@@ -66,6 +68,7 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     {{-- Restore --}}
+                                    @can('edit_user')
                                     <form action="{{ route('users.restore', $user->id) }}" method="POST" class="inline-block mr-2">
                                         @csrf
                                         <button type="submit" class="text-green-600 hover:text-green-900 transition flex items-center gap-1 float-right">
@@ -73,8 +76,9 @@
                                             Restore
                                         </button>
                                     </form>
-
+                                    @endcan
                                     {{-- Force Delete --}}
+                                    @can('delete_user')
                                     <form action="{{ route('users.forceDelete', $user->id) }}" method="POST" class="inline-block" onsubmit="return confirm('WARNING: This action is permanent and cannot be undone!');">
                                         @csrf
                                         @method('DELETE')
@@ -83,6 +87,7 @@
                                             Permanently Delete
                                         </button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

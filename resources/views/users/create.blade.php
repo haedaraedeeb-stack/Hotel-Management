@@ -29,7 +29,7 @@
                         </ul>
                     </div>
                 @endif
-
+                @can('create_user')
                 <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
                     @csrf
 
@@ -80,6 +80,7 @@
                     </div>
 
                 </form>
+                @endcan
             </div>
         </div>
     </div>
