@@ -72,7 +72,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Price Per Night</label>
-                                    <input type="number" name="price" value="{{ old('price') }}" required
+                                    <input type="number" name="price" value="{{ old('price_per_night') }}" required
                                         step="0.01"
                                         class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 </div>

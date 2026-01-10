@@ -12,108 +12,57 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    // public function index()
-    // {
-    //     $user = auth()->user();
+    public function index()
+    {
+        $user = auth()->user();
 
-    //     $stats = [
-    //         'occupancy' => $this->calculateOccupancy(),
-    //         'reservations_count' => Reservation::count(),
-    //     ];
+        // بيانات مشتركة للجميع
+        $recentBookings = Reservation::with(['user', 'room'])
+            ->latest()
+            ->take(10)
+            ->get();
 
-    //     $roomTypeStats = $this->getRoomTypeStats();
-    //     $monthlyReservations = $this->getMonthlyReservations();
+        $roomTypeStats = $this->getRoomTypeStats();
+        $monthlyReservations = $this->getMonthlyReservations();
 
-    //     if ($user->hasAnyRole(['admin', 'manager'])) {
-
-    //         $stats['revenue'] = Invoice::where('payment_status', 'paid')->sum('total_amount');
-    //         $stats['guests_count'] = User::whereDoesntHave('roles', fn ($q) => $q->whereIn('name', ['admin', 'manager', 'receptionist'])
-    //         )->count();
-
-    //         $recentBookings = Reservation::with(['user', 'room'])
-    //             ->latest()
-    //             ->take(5)
-    //             ->get();
-
-    //         $chartData = $this->getMonthlyRevenue();
-
-    //         return view('dashboard', compact(
-    //             'stats',
-    //             'roomTypeStats',
-    //             'monthlyReservations',
-    //             'recentBookings',
-    //             'chartData'
-    //         ));
-    //     }
-
-    //     if ($user->hasRole('receptionist')) {
-
-    //         $recentBookings = Reservation::with(['user', 'room'])
-    //             ->latest()
-    //             ->take(10)
-    //             ->get();
-
-    //         return view('dashboard', compact(
-    //             'stats',
-    //             'roomTypeStats',
-    //             'monthlyReservations',
-    //             'recentBookings'
-    //         ));
-    //     }
-
-    //     abort(403);
-    // }
-public function index()
-{
-    $user = auth()->user();
-
-    // بيانات مشتركة للجميع
-    $recentBookings = Reservation::with(['user', 'room'])
-        ->latest()
-        ->take(10)
-        ->get();
-
-    $roomTypeStats = $this->getRoomTypeStats();
-    $monthlyReservations = $this->getMonthlyReservations();
-
-    // قيم افتراضية
-    $stats = [];
-    $chartData = [
-        'labels' => [],
-        'values' => [],
-    ];
-
-    // admin & manager
-    if ($user->hasAnyRole(['admin', 'manager'])) {
-
-        $stats = [
-            'reservations_count' => Reservation::count(),
-            'revenue' => Invoice::where('payment_status', 'paid')->sum('total_amount'),
-            'guests_count' => User::whereDoesntHave(
-                'roles',
-                fn ($q) => $q->whereIn('name', ['admin', 'manager', 'receptionist'])
-            )->count(),
-            'occupancy' => $this->calculateOccupancy(),
+        // قيم افتراضية
+        $stats = [];
+        $chartData = [
+            'labels' => [],
+            'values' => [],
         ];
 
-        $chartData = $this->getMonthlyRevenue();
-    }
+        // admin & manager
+        if ($user->hasAnyRole(['admin', 'manager'])) {
 
-    // receptionist (يشوف فقط الغرف + الحجوزات)
-    if ($user->hasRole('receptionist')) {
-        $stats = [
-            'occupancy' => $this->calculateOccupancy(),
-        ];
-    }
+            $stats = [
+                'reservations_count' => Reservation::count(),
+                'revenue' => Invoice::where('payment_status', 'paid')->sum('total_amount'),
+                'guests_count' => User::whereDoesntHave(
+                    'roles',
+                    fn ($q) => $q->whereIn('name', ['admin', 'manager', 'receptionist'])
+                )->count(),
+                'occupancy' => $this->calculateOccupancy(),
+            ];
 
-    return view('dashboard', compact(
-        'stats',
-        'recentBookings',
-        'roomTypeStats',
-        'monthlyReservations',
-        'chartData'
-    ));
-}
+            $chartData = $this->getMonthlyRevenue();
+        }
+
+        // receptionist (يشوف فقط الغرف + الحجوزات)
+        if ($user->hasRole('receptionist')) {
+            $stats = [
+                'occupancy' => $this->calculateOccupancy(),
+            ];
+        }
+
+        return view('dashboard', compact(
+            'stats',
+            'recentBookings',
+            'roomTypeStats',
+            'monthlyReservations',
+            'chartData'
+        ));
+    }
 
     private function calculateOccupancy()
     {
