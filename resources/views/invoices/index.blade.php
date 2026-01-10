@@ -12,11 +12,13 @@
                 <h2 class="text-2xl font-bold text-gray-800">Invoices Management</h2>
                 <p class="text-sm text-gray-500 mt-1">Track and manage all customer invoices.</p>
             </div>
+            @can('delete invoice')
             <a href="{{ route('invoices.trashed') }}"
                class="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition shadow-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 Trash
             </a>
+            @endcan
         </div>
 
         {{-- Flash Message --}}
@@ -82,13 +84,18 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ route('invoices.show', $invoice->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3 transition">View</a>
-                                    <a href="{{ route('invoices.edit', $invoice->id) }}" class="text-yellow-600 hover:text-yellow-900 mr-3 transition">Edit</a>
 
-                                    <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Move invoice to trash?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 transition">Delete</button>
-                                    </form>
+                                    @can('edit invoice')
+                                        <a href="{{ route('invoices.edit', $invoice->id) }}" class="text-yellow-600 hover:text-yellow-900 mr-3 transition">Edit</a>
+                                    @endcan
+
+                                    @can('delete invoice')
+                                        <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Move invoice to trash?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900 transition">Delete</button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

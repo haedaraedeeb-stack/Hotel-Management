@@ -46,9 +46,6 @@ class ReservationController extends Controller
     public function show(Reservation $api_reservation)
     {
         $reservation = $this->reservationService->getReservationById($api_reservation);
-        if ($reservation == 'unauthorized') {
-            return $this->error('unauthorized', 403);
-        }
         return $this->success('Reservation fetched successfully', $reservation);
     }
 
@@ -58,9 +55,6 @@ class ReservationController extends Controller
     public function update(UpdateReservationRequest $request, Reservation $api_reservation)
     {
         $reservation = $this->reservationService->updateReservation($request->validated(), $api_reservation);
-        if ($reservation == 'unauthorized') {
-            return $this->error('unauthorized', 403);
-        }
         return $this->success('Reservation updated successfully', $reservation);
     }
 
@@ -88,9 +82,6 @@ class ReservationController extends Controller
     public function cancelReservation(Reservation $reservation)
     {
         $reservation = $this->reservationService->cancelReservation($reservation);
-        if ($reservation === 'unauthorized') {
-            return $this->error('unauthorized', 403);
-        }
         return $this->success('Reservation cancelled successfully', $reservation);
     }
 }

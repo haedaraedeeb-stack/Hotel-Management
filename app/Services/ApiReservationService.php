@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class ApiReservationService
 {
@@ -55,10 +56,10 @@ class ApiReservationService
                             }
                         );
                     }
-                )->get();
+                );
+                
 
-
-            return $rooms->load(['roomType.services', 'images']);
+            return $rooms->get();
         } catch (\Exception $e) {
             Log::error('Error fetching available rooms: ' . $e->getMessage());
             throw new HttpResponseException(response()->json([
@@ -120,10 +121,13 @@ class ApiReservationService
      */
     public function cancelReservation(Reservation $reservation)
     {
+        if ($reservation->user_id !== auth('sanctum')->id()) {
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'unauthorized',
+            ], 403));
+        }
         try {
-            if ($reservation->user_id !== auth('sanctum')->id()) {
-                return 'unauthorized';
-            }
             $reservation->status = 'cancelled';
             $reservation->save();
             return $reservation->load([
@@ -148,11 +152,13 @@ class ApiReservationService
      */
     public function getReservationById(Reservation $api_reservation)
     {
+        if ($api_reservation->user_id !== auth('sanctum')->id()) {
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'unauthorized',
+            ], 403));
+        }
         try {
-
-            if ($api_reservation->user_id !== auth('sanctum')->id()) {
-                return 'unauthorized';
-            }
 
             return $api_reservation->load([
                 'room' => function ($query) {
@@ -177,10 +183,13 @@ class ApiReservationService
      */
     public function updateReservation(array $data, Reservation $api_reservation)
     {
+        if ($api_reservation->user_id !== auth('sanctum')->id()) {
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'unauthorized',
+            ], 403));
+        }
         try {
-            if ($api_reservation->user_id !== auth('sanctum')->id()) {
-                return 'unauthorized';
-            }
 
             DB::beginTransaction();
 

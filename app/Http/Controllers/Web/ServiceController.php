@@ -10,6 +10,27 @@ use App\Models\RoomType;
 
 class ServiceController extends Controller
 {
+    public const PERMISSIONS = [
+        'view'=> 'view services',
+        'create'=> 'create services',
+        'edit'=> 'edit services',
+        'delete'=>'delete services',
+        'trash'=> 'view services trash',
+        'restore'=> 'restore services',
+        'forceDelete' => 'force delete services',
+    ];
+
+    public function __construct()
+    {
+        $this->middleware('permission:' . self::PERMISSIONS['view'])->only(['index']);
+        $this->middleware('permission:' . self::PERMISSIONS['create'])->only(['create', 'store']);
+        $this->middleware('permission:' . self::PERMISSIONS['edit']) ->only(['edit', 'update']);
+        $this->middleware('permission:' . self::PERMISSIONS['delete'])->only(['destroy']);
+        $this->middleware('permission:' . self::PERMISSIONS['trash'])->only(['trash']);
+        $this->middleware('permission:' . self::PERMISSIONS['restore'])->only(['restore']);
+        $this->middleware('permission:' . self::PERMISSIONS['forceDelete'])->only(['forceDelete']);
+    }
+
     public function index()
     {
         $services = Service::with('roomTypes')->latest()->get();
@@ -24,17 +45,14 @@ class ServiceController extends Controller
 
     public function store(StoreServiceRequest $request)
     {
-        $service = Service::create($request->only([
-            'name',
-            'description'
-        ]));
+        $service = Service::create($request->only(['name', 'description']));
 
         if ($request->filled('room_types')) {
             $service->roomTypes()->sync($request->room_types);
         }
 
         return redirect()->route('serv.index')
-            ->with('success', ' The service has been created successfully  ');
+            ->with('success', 'The service has been created successfully');
     }
 
     public function edit(Service $service)
@@ -47,10 +65,7 @@ class ServiceController extends Controller
 
     public function update(UpdateServiceRequest $request, Service $service)
     {
-        $service->update($request->only([
-            'name',
-            'description'
-        ]));
+        $service->update($request->only(['name', 'description']));
 
         if ($request->has('room_types')) {
             $service->roomTypes()->sync($request->room_types);
@@ -59,7 +74,7 @@ class ServiceController extends Controller
         }
 
         return redirect()->route('serv.index')
-            ->with('success', 'The service has been edited successfully   ');
+            ->with('success', 'The service has been edited successfully');
     }
 
     public function destroy(Service $service)
@@ -81,7 +96,7 @@ class ServiceController extends Controller
         Service::onlyTrashed()->findOrFail($id)->restore();
 
         return redirect()->route('serv.trash')
-            ->with('success', 'service has been restored');
+            ->with('success', 'The service has been restored');
     }
 
     public function forceDelete($id)
@@ -89,6 +104,6 @@ class ServiceController extends Controller
         Service::onlyTrashed()->findOrFail($id)->forceDelete();
 
         return redirect()->route('serv.trash')
-            ->with('success', 'The service has been permanently deleted ');
+            ->with('success', 'The service has been permanently deleted');
     }
 }

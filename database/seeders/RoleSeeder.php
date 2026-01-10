@@ -19,15 +19,42 @@ class RoleSeeder extends Seeder
         Role::firstOrCreate(['name' => 'client']);
 
         $prmissions = [
+
+            'reservation-list',
+            'reservation-create',
+            'reservation-show',
+            'reservation-edit',
+            'reservation-delete',
+            'reservation-checkin-checkout',
+
+            'room-list',
+            'room-create',
+            'room-show',
+            'room-edit',
+            'room-delete',
+
+            'role-list',
+            'role-create',
+            'role-show',
+            'role-edit',
+            'role-delete',
+            'view invoices',
+            'create invoice',
+            'edit invoice',
+            'delete invoice',
+     
+
             'create_user', 'edit_user', 'delete_user', 'view_user',
-            'create_role', 'edit_role', 'delete_role', 'view_role',
             'create_permission', 'edit_permission', 'delete_permission', 'view_permission',
             'create room_types', 'edit room_types', 'delete room_types', 'view room_types',
-            'room-list', 'room-create', 'room-show', 'room-edit', 'room-delete',
+
+
         ];
         foreach ($prmissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
+
+
         $adminRole = Role::where('name', 'admin')->first();
         $adminRole->givePermissionTo($prmissions);
         $managerRole = Role::where('name', 'manager')->first();
