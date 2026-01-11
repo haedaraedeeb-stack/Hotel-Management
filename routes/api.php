@@ -57,7 +57,7 @@ Route::prefix('ratings')->group(function () {
     
     Route::get('/{id}', [RatingController::class, 'show']);
     
-    Route::middleware(['auth:sanctum', 'role:admin,manager'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/stats', [RatingController::class, 'stats']);
     });
 });

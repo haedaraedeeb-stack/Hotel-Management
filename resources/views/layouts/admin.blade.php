@@ -47,8 +47,7 @@
     <nav class="fixed top-0 z-50 w-full bg-white border-b shadow-sm h-14 flex items-center px-4">
         <button id="toggleSidebar" class="p-2 rounded hover:bg-gray-100">
             <!-- menu icon -->
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
@@ -58,6 +57,7 @@
                 <x-slot name="trigger">
                     <button
                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+
                         @if (auth()->check())
                             <div>{{ auth()->user()->name }}</div>
                         @endif
@@ -80,14 +80,64 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
 
-                        <x-dropdown-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                             {{ __('Log Out') }}
                         </x-dropdown-link>
                     </form>
                 </x-slot>
             </x-dropdown>
+        </div>
+
+        <button id="dropdownNotificationButton" data-dropdown-toggle="dropdownNotification"
+            class="relative inline-flex items-center text-sm font-medium text-center text-body hover:text-heading focus:outline-none"
+            type="button">
+            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z" />
+            </svg>
+            <div class="absolute block w-3 h-3 bg-danger border-2 border-buffer rounded-full top-0 start-3"></div>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div id="dropdownNotification"
+            class="z-20 hidden w-full max-w-sm bg-white divide-y divide-gray-200 rounded-lg shadow-lg"
+            aria-labelledby="dropdownNotificationButton">
+            <div class="block px-4 py-2 font-medium text-center text-gray-700 bg-gray-100 rounded-t-lg">
+                Notifications
+            </div>
+            <div class="divide-y divide-gray-200">
+            @php
+                $user = Auth::user();
+            @endphp
+            @foreach ($user->unreadNotifications as $notification)
+                
+                <a href="{{ Route('readnotification',$notification) }}" 
+                class="flex px-4 py-3 hover:bg-gray-50" >
+                
+                    <div class="w-full ps-3">
+                        <div class="text-gray-600 text-sm mb-1.5">{{ $notification->data['message'] }} </div>
+                        <div class="text-xs text-blue-600">{{ $notification->created_at->diffForHumans() }} </div>
+                    </div>
+                </a>
+            @endforeach
+ 
+            <a href="{{ Route('readallnotification') }}"
+                class="block py-2 font-medium text-center text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-b-lg"
+                
+                refreash
+                >
+                <div class="inline-flex items-center">
+                    <svg class="w-5 h-5 me-1.5 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-width="2"
+                            d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
+                        <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    Read all
+                </div>
+            </a>
         </div>
     </nav>
 
@@ -154,22 +204,16 @@
             @endhasanyrole
 
             {{-- Room Types --}}
-            @hasanyrole('admin|manager')
-                <li>
-                    <a href="{{ route('room_types.index') }}"
-                        class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4 6h6v6H4zM14 6h6v6h-6zM4 16h6v6H4zM14 16h6v6h-6z" />
-                        </svg>
-                        <span class="nav-text">Room Types</span>
-                    </a>
-                </li>
-            @endhasanyrole
-
-            {{-- Services --}}
-            @hasanyrole('admin|manager')
+            <li>
+                <a href="{{ route('room_types.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M4 6h6v6H4zM14 6h6v6h-6zM4 16h6v6H4zM14 16h6v6h-6z" />
+                    </svg>
+                    <span class="nav-text">Room Types</span>
+                </a>
+            </li>
                 <li>
                     <a href="{{ route('serv.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
                         <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
@@ -179,20 +223,17 @@
                         <span class="nav-text">Services</span>
                     </a>
                 </li>
-            @endhasanyrole
             {{-- Invoices --}}
-            @hasanyrole('admin|manager')
-                <li>
-                    <a href="{{ route('invoices.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
-                        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span class="nav-text">Invoices</span>
-                    </a>
-                </li>
-            @endhasanyrole
+            <li>
+                <a href="{{ route('invoices.index') }}" class="flex items-center gap-3 p-2 rounded hover:bg-gray-100">
+                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="nav-text">Invoices</span>
+                </a>
+            </li>
 
             {{-- Roles --}}
             @hasanyrole('admin|manager')

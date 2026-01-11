@@ -7,12 +7,14 @@
     <div class="max-w-4xl mx-auto">
 
         {{-- Header & Back --}}
+        @can('role-create')
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-800">Create New Role</h2>
             <a href="{{ route('roles.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium transition">
                 &larr; Back to Roles
             </a>
         </div>
+        @endcan
 
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-8">

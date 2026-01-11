@@ -26,6 +26,7 @@ class RoleSeeder extends Seeder
             'reservation-edit',
             'reservation-delete',
             'reservation-checkin-checkout',
+            'reservation-confirm-reject',
 
             'room-list',
             'room-create',

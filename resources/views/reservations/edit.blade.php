@@ -15,7 +15,7 @@
                         <!-- User Selection -->
                         <div>
                             <label for="user_id" class="block text-sm font-medium text-gray-700">Guest</label>
-                            <select name="user_id" id="user_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <select name="user_id" id="user_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" >
                                 <option value="">Select Guest</option>
                                 @foreach($users as $user)
                                     <option value="{{ $user->id }}" {{ old('user_id', $reservation->user_id) == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
@@ -29,20 +29,13 @@
                         <!-- Room Selection (will be dynamically loaded) -->
                         <div>
                             <label for="room_id" class="block text-sm font-medium text-gray-700">Room</label>
-                            <select name="room_id" id="room_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                                <!-- سيتم ملؤه تلقائياً بالجافاسكريبت -->
+                            <select name="room_id" id="room_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required disabled>
                                 <option value="">Loading available rooms...</option>
                             </select>
-                            <div id="room-loading" class="mt-2">
-                                <div class="flex items-center">
-                                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-                                    <span class="ml-2 text-sm text-gray-600">Loading available rooms...</span>
-                                </div>
+                            <div id="room-loading" class="mt-2 hidden">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
+                                <span class="ml-2 text-sm text-gray-600">Updating available rooms...</span>
                             </div>
-                            <input type="hidden" id="current_room_id" value="{{ $reservation->room_id }}">
-                            <input type="hidden" id="reservation_id" value="{{ $reservation->id }}">
-                            <input type="hidden" id="initial_start_date" value="{{ $reservation->start_date }}">
-                            <input type="hidden" id="initial_end_date" value="{{ $reservation->end_date }}">
                             @error('room_id')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -51,10 +44,7 @@
                         <!-- Start Date -->
                         <div>
                             <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
-                            <input type="date" name="start_date" id="start_date" 
-                                   value="{{ old('start_date', $reservation->start_date) }}" 
-                                   min="{{ date('Y-m-d') }}"
-                                   class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            <input type="date" name="start_date" id="start_date" value="{{ old('start_date', $reservation->start_date) }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" >
                             @error('start_date')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -63,10 +53,7 @@
                         <!-- End Date -->
                         <div>
                             <label for="end_date" class="block text-sm font-medium text-gray-700">End Date</label>
-                            <input type="date" name="end_date" id="end_date" 
-                                   value="{{ old('end_date', $reservation->end_date) }}"
-                                   min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                   class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            <input type="date" name="end_date" id="end_date" value="{{ old('end_date', $reservation->end_date) }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" >
                             @error('end_date')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -75,12 +62,14 @@
                         <!-- Status -->
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                            <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <input type="text"  id="status" value="{{ old('status', $reservation->status) }}" readonly class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {{-- <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" >
                                 <option value="pending" {{ old('status', $reservation->status) == 'pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="confirmed" {{ old('status', $reservation->status) == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
                                 <option value="rejected" {{ old('status', $reservation->status) == 'rejected' ? 'selected' : '' }}>Rejected</option>
                                 <option value="cancelled" {{ old('status', $reservation->status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                            </select>
+                                <option value="completed" {{ old('status', $reservation->status) == 'completed' ? 'selected' : '' }}>Completed</option>
+                            </select> --}}
                             @error('status')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -92,17 +81,6 @@
                         <div class="bg-blue-50 p-4 rounded-md">
                             <h4 class="font-medium text-blue-800">Available Rooms Information</h4>
                             <div id="room-count" class="text-sm text-blue-700 mt-1"></div>
-                            <div id="room-note" class="text-xs text-blue-600 mt-2">
-                                <i class="fas fa-info-circle"></i> The current room is always available for this reservation
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Error Display -->
-                    <div id="date-error" class="mt-4 hidden">
-                        <div class="bg-red-50 p-4 rounded-md">
-                            <h4 class="font-medium text-red-800">Date Error</h4>
-                            <div id="error-message" class="text-sm text-red-700 mt-1"></div>
                         </div>
                     </div>
 
@@ -128,221 +106,113 @@ document.addEventListener('DOMContentLoaded', function() {
     const roomLoading = document.getElementById('room-loading');
     const roomInfo = document.getElementById('room-info');
     const roomCount = document.getElementById('room-count');
-    const dateError = document.getElementById('date-error');
-    const errorMessage = document.getElementById('error-message');
-    const currentRoomId = document.getElementById('current_room_id').value;
-    const reservationId = document.getElementById('reservation_id').value;
-    const initialStartDate = document.getElementById('initial_start_date').value;
-    const initialEndDate = document.getElementById('initial_end_date').value;
+    const reservationId = {{ $reservation->id }};
+    const currentRoomId = {{ $reservation->room_id }};
     
     let debounceTimer;
 
-    // Set minimum dates dynamically
-    function updateMinDates() {
-        const today = new Date().toISOString().split('T')[0];
-        startDateInput.min = today;
-        
-        if (startDateInput.value) {
-            const nextDay = new Date(startDateInput.value);
-            nextDay.setDate(nextDay.getDate() + 1);
-            endDateInput.min = nextDay.toISOString().split('T')[0];
-            
-            if (endDateInput.value && new Date(endDateInput.value) <= new Date(startDateInput.value)) {
-                endDateInput.value = '';
-            }
-        }
-    }
-
-    // Initialize min dates
-    updateMinDates();
+    // Initialize with current dates
+    fetchAvailableRooms();
 
     function fetchAvailableRooms() {
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
         
-        // Hide previous messages
-        roomInfo.classList.add('hidden');
-        dateError.classList.add('hidden');
-        
         if (!startDate || !endDate) {
-            resetRoomSelect();
+            roomSelect.innerHTML = '<option value="">First select dates</option>';
+            roomSelect.disabled = true;
+            roomInfo.classList.add('hidden');
             return;
         }
         
         // Validate dates
-        const today = new Date().toISOString().split('T')[0];
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const todayDate = new Date(today);
-        
-        if (start < todayDate) {
-            showDateError('Check-in date must be today or later.');
-            resetRoomSelect();
-            return;
-        }
-        
-        if (end <= start) {
-            showDateError('Check-out date must be after check-in date.');
-            resetRoomSelect();
+        if (new Date(startDate) >= new Date(endDate)) {
+            roomSelect.innerHTML = '<option value="">End date must be after start date</option>';
+            roomSelect.disabled = true;
+            roomInfo.classList.add('hidden');
             return;
         }
         
         // Show loading
-        roomLoading.classList.remove('hidden');
         roomSelect.disabled = true;
+        roomLoading.classList.remove('hidden');
+        roomInfo.classList.add('hidden');
         
-        // Make AJAX request
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        // Make AJAX request with reservation_id
         fetch('{{ route("reservations.getAvailableRooms") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
                 start_date: startDate,
                 end_date: endDate,
-                reservation_id: reservationId
+                reservation_id: reservationId // إرسال ID الحجز الحالي
             })
         })
         .then(response => {
             if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || 'Network response was not ok');
-                });
+                throw new Error('Network response was not ok');
             }
             return response.json();
         })
         .then(data => {
-            updateRoomSelect(data.rooms);
+            // Update room select options
+            roomSelect.innerHTML = '<option value="">Select Room</option>';
+            
+            if (data.rooms && data.rooms.length > 0) {
+                data.rooms.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room.id;
+                    option.textContent = `Room ${room.room_number} (${room.room_type}) - $${room.current_price}/night`;
+                    
+                    // Select current room if available
+                    if (room.id == currentRoomId) {
+                        option.selected = true;
+                    }
+                    
+                    roomSelect.appendChild(option);
+                });
+                roomSelect.disabled = false;
+                
+                // Show room info
+                roomCount.textContent = `Found ${data.rooms.length} available room(s) for the selected dates`;
+                roomInfo.classList.remove('hidden');
+            } else {
+                roomSelect.innerHTML = '<option value="">No rooms available for these dates</option>';
+                roomSelect.disabled = true;
+                roomInfo.classList.add('hidden');
+            }
         })
         .catch(error => {
             console.error('Error fetching rooms:', error);
-            showDateError(error.message || 'Error loading rooms. Please try again.');
-            resetRoomSelect();
+            roomSelect.innerHTML = '<option value="">Error loading rooms. Please try again.</option>';
+            roomSelect.disabled = true;
+            roomInfo.classList.add('hidden');
         })
         .finally(() => {
             roomLoading.classList.add('hidden');
-            roomSelect.disabled = false;
         });
-    }
-    
-    function updateRoomSelect(rooms) {
-        // Start building options
-        let optionsHtml = '<option value="">Select Room</option>';
-        let availableCount = 0;
-        let currentRoomFound = false;
-        
-        // Add current room first if exists
-        if (currentRoomId) {
-            currentRoomFound = true;
-            optionsHtml += `<option value="${currentRoomId}" selected>
-                Room {{ $reservation->room->room_number }} 
-                ({{ $reservation->room->roomType->type ?? 'N/A' }}) 
-                - ${{ number_format($reservation->room->current_price, 2) }}/night (Current)
-            </option>`;
-            availableCount++;
-        }
-        
-        // Add other available rooms
-        if (rooms && rooms.length > 0) {
-            rooms.forEach(room => {
-                // Skip if it's the current room (already added)
-                if (room.id == currentRoomId) return;
-                
-                const roomType = room.room_type || (room.roomType ? room.roomType.type : 'N/A');
-                const price = room.current_price ? parseFloat(room.current_price).toFixed(2) : '0.00';
-                
-                optionsHtml += `<option value="${room.id}">
-                    Room ${room.room_number} (${roomType}) - $${price}/night
-                </option>`;
-                availableCount++;
-            });
-        }
-        
-        // Update select
-        roomSelect.innerHTML = optionsHtml;
-        
-        // Show/hide info
-        if (availableCount > 0) {
-            roomCount.textContent = `Found ${availableCount} available room(s) for the selected dates`;
-            roomInfo.classList.remove('hidden');
-        } else {
-            roomCount.textContent = 'No rooms available for these dates';
-            roomInfo.classList.remove('hidden');
-        }
-    }
-    
-    function resetRoomSelect() {
-        roomSelect.innerHTML = '<option value="">Select Room</option>';
-        roomSelect.disabled = false;
-    }
-    
-    function showDateError(message) {
-        errorMessage.textContent = message;
-        dateError.classList.remove('hidden');
     }
     
     // Debounce function to prevent too many requests
     function debounceFetch() {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(fetchAvailableRooms, 500);
+        debounceTimer = setTimeout(fetchAvailableRooms, 300);
     }
     
-    // Event listeners
-    startDateInput.addEventListener('change', function() {
-        updateMinDates();
-        debounceFetch();
-    });
+    // Event listeners for date changes
+    startDateInput.addEventListener('change', debounceFetch);
+    endDateInput.addEventListener('change', debounceFetch);
     
-    endDateInput.addEventListener('change', function() {
-        updateMinDates();
-        debounceFetch();
-    });
-    
+    // Also trigger on input for better UX
     startDateInput.addEventListener('input', debounceFetch);
     endDateInput.addEventListener('input', debounceFetch);
-    
-    // Load available rooms immediately on page load
-    function loadInitialRooms() {
-        // Set a small timeout to ensure DOM is fully loaded
-        setTimeout(() => {
-            if (initialStartDate && initialEndDate) {
-                // Set the dates if they're not already set
-                if (!startDateInput.value) startDateInput.value = initialStartDate;
-                if (!endDateInput.value) endDateInput.value = initialEndDate;
-                
-                updateMinDates();
-                
-                // Validate dates before fetching
-                const start = new Date(initialStartDate);
-                const end = new Date(initialEndDate);
-                const today = new Date();
-                
-                if (start >= today && end > start) {
-                    fetchAvailableRooms();
-                } else {
-                    // If dates are in the past, still try to fetch but show warning
-                    showDateError('The reservation dates are in the past. You can still update the reservation with these dates.');
-                    fetchAvailableRooms();
-                }
-            }
-        }, 100);
-    }
-    
-    // Initialize
-    loadInitialRooms();
 });
 </script>
-
-<style>
-#room-loading .animate-spin {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-</style>
 @endsection
