@@ -14,14 +14,11 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        // السماح فقط للـ client باستخدام هذه الدوال
         $this->middleware('role:client')->only(['logout']);
-        // register و login مفتوحين للجميع، لذلك لم نقيّدهم
     }
-    
 
 
-    // POST /api/client/register
+
     public function register(RegisterRequest $request)
     {
         try {
@@ -30,7 +27,7 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => bcrypt($data['password']),
+                'password' => Hash::make($data['password']),
             ]);
 
             // منح دور "client" عبر Spatie
@@ -61,17 +58,14 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            // التحقق ومحاولة تسجيل الدخول (مع RateLimiter)
             $request->authenticate();
 
             $user = User::where('email', $request->input('email'))->first();
 
-            // تحقق إضافي اختياري
             if (! $user || ! Hash::check($request->input('password'), $user->password)) {
                 return response()->json(['error' => 'Invalid credentials'], 401);
             }
 
-            // إنشاء توكن جديد
             $token = $user->createToken('api_token')->plainTextToken;
 
             return response()->json([
@@ -85,7 +79,6 @@ class AuthController extends Controller
                 'token' => $token,
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $ve) {
-            // أخطاء من authenticate() مثل throttle
             return response()->json([
                 'error' => 'Login validation failed',
                 'messages' => $ve->errors(),
@@ -107,7 +100,6 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
 
-            // حذف التوكن الحالي فقط
             $user->currentAccessToken()->delete();
 
             return response()->json(['message' => 'Logout successful'], 200);
