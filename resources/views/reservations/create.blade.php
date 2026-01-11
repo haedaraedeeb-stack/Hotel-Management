@@ -30,7 +30,7 @@
                             <label for="room_id" class="block text-sm font-medium text-gray-700">Room</label>
                             <select name="room_id" id="room_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required disabled>
                                 <option value="">First select dates</option>
-                                @if(old('room_id'))
+                                {{-- @if(old('room_id'))
                                     @foreach($rooms as $room)
                                         @if(old('room_id') == $room->id)
                                             <option value="{{ $room->id }}" selected>
@@ -38,7 +38,7 @@
                                             </option>
                                         @endif
                                     @endforeach
-                                @endif
+                                @endif --}}
                             </select>
                             <div id="room-loading" class="mt-2 hidden">
                                 <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>

@@ -42,7 +42,7 @@ class UpdateReservationRequest extends FormRequest
                                             ->where('end_date', '>=', $this->end_date);
                                     });
                             })
-                            ->whereNotIn('status', ['cancelled', 'rejected'])
+                            ->where('status', [ 'confirmed'])
                             ->where('id', '!=', $this->route('api_reservation')->id)
                             ->exists();
 

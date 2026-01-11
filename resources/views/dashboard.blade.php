@@ -1,6 +1,10 @@
 @extends('layouts.admin')
+<<<<<<< Updated upstream
 
 @section('title', 'Dashboard')
+=======
+@section('title', 'Home')
+>>>>>>> Stashed changes
 @section('content')
 
     <div class="py-6">

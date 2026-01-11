@@ -29,7 +29,7 @@ class AvailableRoomsRequest extends FormRequest
             'start_date' => [
                 'required',
                 'date',
-                'after_or_equal:today',
+                // 'after_or_equal:today',
 
             ],
 

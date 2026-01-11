@@ -7,6 +7,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-2xl font-bold">Reservations</h2>
+                       
                         <a href="{{ route('reservations.create') }}"
                             class="bg-blue-500 hover:bg-blue-700 text-blue font-bold py-2 px-4 rounded">
                             New Reservation
@@ -101,6 +102,11 @@
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                     Confirmed
                                                 </span>
+                                            @elseif($reservation->status == 'completed')
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-yellow-800">
+                                                    completed
+                                                </span>
                                             @elseif($reservation->status == 'pending')
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
@@ -191,17 +197,34 @@
 
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('reservations.show', $reservation) }}"
-                                                class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                            <a href="{{ route('reservations.edit', $reservation) }}"
-                                                class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
-                                            <form action="{{ route('reservations.destroy', $reservation) }}" method="POST"
-                                                class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900"
-                                                    onclick="return confirm('Are you sure?')">Delete</button>
-                                            </form>
+                                            @can('reservation-show')
+                                                <a href="{{ route('reservations.show', $reservation) }}"
+                                                    class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            @endcan
+                                            @can('reservation-edit')
+                                                <a href="{{ route('reservations.edit', $reservation) }}"
+                                                    class="text-yellow-600 hover:text-yellow-900 mr-3">Edit</a>
+                                            @endcan
+                                            @can('reservation-delete')
+                                                <form action="{{ route('reservations.destroy', $reservation) }}" method="POST"
+                                                    class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900"
+                                                        onclick="return confirm('Are you sure?')">Delete</button>
+                                                </form>
+                                            @endcan
+                                            @can('reservation-confirm-reject')
+                                                @if ($reservation->status == 'pending')
+                                                    <br>
+                                                    <a href="{{ route('comfirme_Reservation', $reservation) }}"
+                                                        class="text-green-600 hover:text-indigo-900 mr-3">Confirme</a>
+                                                @endif
+                                                    <br>
+                                                    <a href="{{ route('rejected_Reservation', $reservation) }}"
+                                                        class="text-red-600 hover:text-indigo-900 mr-3">Rejected</a>
+                                            @endcan
+
                                         </td>
                                     </tr>
                                 @endforeach
