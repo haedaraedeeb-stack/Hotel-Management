@@ -13,7 +13,7 @@ class RatingService
     public function listAll()
     {
         return Rating::with(['reservation.user', 'reservation.room'])
-            ->orderBy('created_at', 'desc')->get();
+            ->latest()->get();
     }
 
 // show a rating by his id (from main page -> it takes the user for this page)
@@ -36,13 +36,14 @@ class RatingService
         $user = Auth::user();
         return Rating::whereRelation('reservation', 'user_id', $user->id)
             ->with('reservation.room')
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->paginate(5);
     }
 
 // create and store rating with conditions (when and where can the user make rating)
     public function store($rate)
     {
+
         $user = Auth::user();
 
         $reservation = Reservation::find($rate['reservation_id']);
