@@ -32,8 +32,8 @@ Route::get('rooms', [RoomController::class, 'index']);
 Route::get('rooms/{room}', [RoomController::class, 'show']);
 
 // --- Customer/Guest Auth Routes ---
-Route::post('/register', [AuthController::class, 'register']); // يُرجع توكن
-Route::post('/login', [AuthController::class, 'login']);       // يُرجع توكن
+Route::post('/register', [AuthController::class, 'register']); 
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // 5. Reservation api
@@ -47,6 +47,10 @@ Route::prefix('ratings')->group(function () {
 
     Route::get('/', [RatingController::class, 'index']);
     Route::get('/reservation/{reservationId}', [RatingController::class, 'getByReservation']);
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/stats', [RatingController::class, 'stats']);
+    });
     
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('my-ratings',[RatingController::class, 'myRatings']);
@@ -56,10 +60,6 @@ Route::prefix('ratings')->group(function () {
     });
     
     Route::get('/{id}', [RatingController::class, 'show']);
-    
-    Route::middleware(['auth:sanctum', 'role:admin,manager'])->group(function () {
-        Route::get('/stats', [RatingController::class, 'stats']);
-    });
 });
 // 7. invoices
 
