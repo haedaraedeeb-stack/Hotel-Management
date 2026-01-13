@@ -2,30 +2,33 @@
 
 namespace App\Services;
 
+use App\Mail\ReservationConfirme;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class WebReservationService
 {
-    /*
-     * get all reservations
-     * @return \Illuminate\Database\Eloquent\Collection
+    /**
+     * Summary of getAllReservations
+     * @param mixed $data
+     * @return \Illuminate\Database\Eloquent\Collection<int, Reservation>
      */
-    public function getAllReservations()
+    public function getAllReservations($data)
     {
-        return Reservation::with('room', 'user')->latest()->get();
+        $reservations = Reservation::with('room', 'user');
+        
+        return $reservations->get();
     }
 
-    /*
-     * store a new reservation
+    /**
+     * Summary of storeReservation
      * @param array $data
-     * @return mixed
-     * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     * @return float|int
      */
     public function storeReservation(array $data)
     {
@@ -58,13 +61,11 @@ class WebReservationService
         }
     }
 
-    /*
-     * update a reservation
+    /**
+     * Summary of updateReservation
      * @param Reservation $reservation
      * @param array $data
-     * @return mixed
-     * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     * @return Reservation
      */
     public function updateReservation(Reservation $reservation, array $data)
     {
@@ -97,12 +98,10 @@ class WebReservationService
         }
     }
 
-    /*
-     * check in a reservation
+    /**
+     * Summary of checkIn
      * @param Reservation $reservation
-     * @return mixed
-     * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     * @return Reservation
      */
     public function checkIn(Reservation $reservation)
     {
@@ -112,7 +111,7 @@ class WebReservationService
                 'check_in' => now(),
                 'status' => 'confirmed',
             ]);
-            $reservation->room->update(['status' => 'occupied']);
+
             if ($reservation->invoice && $reservation->invoice->payment_status == 'unpaid') {
                 $reservation->invoice->update([
                     'payment_status' => 'paid',
@@ -128,12 +127,10 @@ class WebReservationService
         }
     }
 
-    /*
-     * check out a reservation
+    /**
+     * Summary of checkOut
      * @param Reservation $reservation
-     * @return mixed
-     * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     * @return Reservation
      */
     public function checkOut(Reservation $reservation)
     {
@@ -143,7 +140,6 @@ class WebReservationService
                 'check_out' => now(),
                 'status' => 'completed',
             ]);
-            $reservation->room->update(['status' => 'available']);
             DB::commit();
 
             return $reservation;
@@ -165,21 +161,23 @@ class WebReservationService
     {
         try {
             $rooms = Room::with('images', 'roomType.services')
-                ->whereDoesntHave(
-                    'reservations',
+            ->whereDoesntHave(
+                'reservations',
                     function ($query) use ($criteria) {
-                        $query->where('status', '!=', 'cancelled')->where(
-                            function ($q) use ($criteria) {
-                                $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
-                                    ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
-                                    ->orWhere(
-                                        function ($subQ) use ($criteria) {
-                                            $subQ->where('start_date', '<=', $criteria['start_date'])
-                                                ->where('end_date', '>=', $criteria['end_date']);
-                                        }
-                                    );
-                            }
-                        );
+                        $query->where('status', '=', 'confirmed')
+                            ->where('id', '!=', $criteria['reservation_id'] ?? null)
+                                 ->where(
+                                    function ($q) use ($criteria) {
+                                        $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
+                                            ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
+                                            ->orWhere(
+                                            function ($subQ) use ($criteria) {
+                                                $subQ->where('start_date', '<=', $criteria['start_date'])
+                                                    ->where('end_date', '>=', $criteria['end_date']);
+                                            }
+                                        );
+                                }
+                            );
                     }
                 );
 
@@ -189,6 +187,7 @@ class WebReservationService
                 });
             }
 
+
             return $rooms->get();
         } catch (\Exception $e) {
             Log::error('Error fetching available rooms: '.$e->getMessage());
@@ -196,8 +195,50 @@ class WebReservationService
         }
     }
 
-    /*
-     * get total price
+    /**
+     * Summary of confirme
+     * @param Reservation $reservation
+     * @return Reservation
+     */
+    public function confirme(Reservation $reservation)
+    {
+        try {
+            $reservation->update([
+                'status' => 'confirmed'
+            ]);
+
+            
+            return $reservation;
+        } catch (\Exception $e) {
+            Log::error('Error confirming reservation: ' . $e->getMessage());
+            abort(500);
+        }
+    }
+
+    /**
+     * Summary of rejected
+     * @param Reservation $reservation
+     * @return Reservation
+     */
+    public function rejected(Reservation $reservation)
+    {
+        try {
+            $reservation->update([
+                'status' => 'rejected'
+            ]);
+            return $reservation;
+        } catch (\Exception $e) {
+            Log::error('Error rejecting reservation: ' . $e->getMessage());
+            abort(500);
+        }
+    }
+
+    /**
+     * Summary of totalPrice
+     * @param mixed $roomId
+     * @param mixed $startDate
+     * @param mixed $endDate
+     * @return float|int
      */
     public function totalPrice($roomId, $startDate, $endDate)
     {

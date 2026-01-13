@@ -28,7 +28,7 @@ class UpdateReservationRequest extends FormRequest
         return [
             'user_id' => 'nullable|integer|exists:users,id',
             'room_id' => [
-                'nullable',
+                'required',
                 'integer',
                 'exists:rooms,id',
                 // Check if room is already booked for these dates
@@ -43,7 +43,7 @@ class UpdateReservationRequest extends FormRequest
                                             ->where('end_date', '>=', $this->end_date);
                                     });
                             })
-                            ->whereNotIn('status', ['cancelled', 'rejected'])
+                            ->where('status', [ 'confirmed'])
                             ->where('id', '!=', $this->route('reservation')->id)
                             ->exists();
 
@@ -67,7 +67,7 @@ class UpdateReservationRequest extends FormRequest
 
             'status' => [
                 'nullable',
-                Rule::in(['pending', 'confirmed', 'rejected', 'cancelled']),
+                Rule::in(['pending','completed']),
             ],
 
             'check_in' => [
@@ -104,7 +104,7 @@ class UpdateReservationRequest extends FormRequest
             'end_date.date' => 'Invalid end_date date',
             'end_date.after' => 'end_date date must be after check-in date',
 
-            'status.in' => 'Invalid status value.',
+            // 'status.in' => 'Invalid status value.',
 
             'check_in.date' => 'Invalid check-in date',
             'check_out.date' => 'Invalid check-out date',

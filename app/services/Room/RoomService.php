@@ -4,10 +4,14 @@ namespace App\Services\Room;
 
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Models\User;
+use App\Notifications\RoomNotifiation;
 use App\Services\ImageService;
 use App\Services\Service;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class RoomService
 {
@@ -58,6 +62,16 @@ class RoomService
 
             DB::commit();
 
+            Notification::send(
+                User::permission(['room-show'])->get(),
+                new RoomNotifiation(
+                    $room->room_number,
+                    Auth::user()->name,
+                    $room->id
+                )
+            );
+
+
             // Load relationships
             $room->load(['roomType', 'images']);
 
@@ -73,7 +87,7 @@ class RoomService
 
             return [
                 'success' => false,
-                'message' => 'Failed to create room: ' 
+                'message' => 'Failed to create room: '
             ];
         }
     }
@@ -178,7 +192,4 @@ class RoomService
             return null;
         }
     }
-
-
-
 }
