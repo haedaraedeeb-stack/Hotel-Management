@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\RoomType;
 use Illuminate\Database\Eloquent\Collection;
 
-class RoomTypeService
+class ApiRoomTypeService
 {
     /**
      * Summary of getAll
