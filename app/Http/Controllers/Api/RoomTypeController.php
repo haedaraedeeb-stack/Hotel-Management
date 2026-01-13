@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoomTypeFilterRequest;
-use App\Services\RoomTypeService;
+use App\Services\ApiRoomTypeService;
 
 class RoomTypeController extends Controller
 {
-    protected RoomTypeService $roomTypeService;
+    protected  $roomTypeService;
 
-    public function __construct(RoomTypeService $roomTypeService)
+    public function __construct(ApiRoomTypeService $roomTypeService)
     {
         $this->roomTypeService = $roomTypeService;
     }
