@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Web;
+
+use App\Exports\InvoicesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Services\InvoiceService;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceController extends Controller
 {
@@ -100,5 +103,10 @@ class InvoiceController extends Controller
         $this->invoiceService->restoreInvoice($invoice);
         return redirect()->route('invoices.index')
             ->with('success', 'Invoice successfully restored.');
+    }
+
+    public function export() 
+    {
+        return Excel::download(new InvoicesExport, 'Invoices.xlsx');
     }
 }

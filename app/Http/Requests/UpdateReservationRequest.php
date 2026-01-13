@@ -65,22 +65,22 @@ class UpdateReservationRequest extends FormRequest
                 'after:start_date',
             ],
 
-            'status' => [
-                'nullable',
-                Rule::in(['pending','completed']),
-            ],
+            // 'status' => [
+            //     'nullable',
+            //     Rule::in(['pending','completed']),
+            // ],
 
-            'check_in' => [
-                'nullable',
-                'date',
-                'after_or_equal:start_date',
-            ],
+            // 'check_in' => [
+            //     'nullable',
+            //     'date',
+            //     'after_or_equal:start_date',
+            // ],
 
-            'check_out' => [
-                'nullable',
-                'date',
-                'after:check_in',
-            ],
+            // 'check_out' => [
+            //     'nullable',
+            //     'date',
+            //     'after:check_in',
+            // ],
 
         ];
     }
@@ -106,9 +106,9 @@ class UpdateReservationRequest extends FormRequest
 
             // 'status.in' => 'Invalid status value.',
 
-            'check_in.date' => 'Invalid check-in date',
-            'check_out.date' => 'Invalid check-out date',
-            'check_out.after' => 'Check-out date must be after check-in date',
+            // 'check_in.date' => 'Invalid check-in date',
+            // 'check_out.date' => 'Invalid check-out date',
+            // 'check_out.after' => 'Check-out date must be after check-in date',
 
         ];
     }

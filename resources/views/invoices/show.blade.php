@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-4xl mx-auto">
+    <div class=" mx-auto">
 
         {{-- Actions Bar --}}
         <div class="flex justify-between items-center mb-6 print:hidden">

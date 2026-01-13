@@ -39,10 +39,12 @@ class RoleSeeder extends Seeder
             'role-show',
             'role-edit',
             'role-delete',
+
             'view invoices',
             'create invoice',
             'edit invoice',
             'delete invoice',
+
             'create services',
             'edit services',
             'view services',
@@ -51,9 +53,14 @@ class RoleSeeder extends Seeder
             'restore services',
             'force delete services',
 
-            'create_user', 'edit_user', 'delete_user', 'view_user',
-            'create_permission', 'edit_permission', 'delete_permission', 'view_permission',
-            'create room_types', 'edit room_types', 'delete room_types', 'view room_types',
+            'rating-list',
+            'rating-show',
+            'rating-delete',
+
+            'view room_types',
+            'create room_types',
+            'edit room_types',
+            'delete room_types',
 
         ];
         foreach ($prmissions as $permission) {
@@ -73,6 +80,5 @@ class RoleSeeder extends Seeder
             'reservation-delete',
             'reservation-checkin-checkout',
         ]);
-
     }
 }
