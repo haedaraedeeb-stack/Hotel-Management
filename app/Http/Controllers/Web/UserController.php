@@ -4,113 +4,125 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
-use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\Permission\Models\Role;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
-    public function __construct() {
-        // السماح فقط للـ admin بالوصول لهذه الدوال
+    protected $service;
+
+    public function __construct(UserService $service)
+    {
         $this->middleware('role:admin|manager');
+        $this->service = $service;
     }
+
+    /**
+     * Display all users.
+     */
     public function index()
     {
         try {
-            $users = User::with('roles')->get();
+            $users = $this->service->getAllUsers();
             return view('users.index', compact('users'));
         } catch (\Exception $e) {
-            return back()->withErrors('فشل في جلب المستخدمين');
+            return back()->withErrors($e->getMessage());
         }
     }
 
+    /**
+     * Show create user page.
+     */
     public function create()
     {
-        $roles = Role::all();
+        $roles = $this->service->getAllRoles();
         return view('users.create', compact('roles'));
     }
 
+    /**
+     * Store a new user.
+     */
     public function store(UserRequest $request)
     {
         try {
-            $data = $request->validated();
-            $data['password'] = bcrypt($data['password']);
-            $user = User::create($data);
-            $user->assignRole($data['role']);
-            return redirect()->route('users.index')->with('success','تم إنشاء المستخدم');
+            $this->service->createUser($request->validated());
+            return redirect()->route('users.index')->with('success', 'User created successfully');
         } catch (\Exception $e) {
-            return back()->withErrors('فشل في إنشاء المستخدم');
+            return back()->withErrors($e->getMessage());
         }
     }
 
+    /**
+     * Show edit user page.
+     */
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        $roles = Role::all();
-        return view('users.edit', compact('user','roles'));
+        try {
+            $user = $this->service->getUserById($id);
+            $roles = $this->service->getAllRoles();
+            return view('users.edit', compact('user', 'roles'));
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
+    /**
+     * Update user data.
+     */
     public function update(UserRequest $request, $id)
     {
         try {
-            $user = User::findOrFail($id);
-            $data = $request->validated();
-            if (!empty($data['password'])) {
-                $data['password'] = bcrypt($data['password']);
-            } else {
-                unset($data['password']);
-            }
-            $user->update($data);
-            $user->syncRoles([$data['role']]);
-            return redirect()->route('users.index')->with('success','تم تعديل المستخدم');
-        } catch (ModelNotFoundException $e) {
-            return back()->withErrors('المستخدم غير موجود');
+            $this->service->updateUser($id, $request->validated());
+            return redirect()->route('users.index')->with('success', 'User updated successfully');
         } catch (\Exception $e) {
-            return back()->withErrors('فشل في تعديل المستخدم');
+            return back()->withErrors($e->getMessage());
         }
     }
-    public function show()
-    {
 
-    }
-
+    /**
+     * Delete user.
+     */
     public function destroy($id)
     {
         try {
-            $user = User::findOrFail($id);
-            $user->delete(); // SoftDelete
-            return redirect()->route('users.index')->with('success','تم حذف المستخدم');
+            $this->service->deleteUser($id);
+            return redirect()->route('users.index')->with('success', 'User deleted successfully');
         } catch (\Exception $e) {
-            return back()->withErrors('فشل في حذف المستخدم');
+            return back()->withErrors($e->getMessage());
         }
     }
 
-    // صفحة المهملات
+    /**
+     * Show trash page.
+     */
     public function trash()
     {
-        $users = User::onlyTrashed()->get();
+        $users = $this->service->getTrashedUsers();
         return view('users.trash', compact('users'));
     }
 
+    /**
+     * Restore user.
+     */
     public function restore($id)
     {
         try {
-            $user = User::withTrashed()->findOrFail($id);
-            $user->restore();
-            return redirect()->route('users.trash')->with('success','تم استرجاع المستخدم');
+            $this->service->restoreUser($id);
+            return redirect()->route('users.trash')->with('success', 'User restored successfully');
         } catch (\Exception $e) {
-            return back()->withErrors('فشل في الاسترجاع');
+            return back()->withErrors($e->getMessage());
         }
     }
 
+    /**
+     * Permanently delete user.
+     */
     public function forceDelete($id)
     {
         try {
-            $user = User::withTrashed()->findOrFail($id);
-            $user->forceDelete();
-            return redirect()->route('users.trash')->with('success','تم حذف المستخدم نهائياً');
+            $this->service->forceDeleteUser($id);
+            return redirect()->route('users.trash')->with('success', 'User permanently deleted');
         } catch (\Exception $e) {
-            return back()->withErrors('فشل في الحذف النهائي');
+            return back()->withErrors($e->getMessage());
         }
     }
 }
