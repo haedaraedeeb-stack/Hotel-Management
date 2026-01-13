@@ -26,6 +26,12 @@ class StoreReservationRequest extends FormRequest
                 'required',
                 'integer',
                 'exists:rooms,id',
+                Rule::unique('reservations')->where(function ($query) {
+                    return $query->where('room_id', $this->room_id)
+                        ->where('start_date', $this->start_date)
+                        ->where('end_date', $this->end_date)
+                        ->where('user_id', auth('sanctum')->id());
+                }),
                 // Check if room is already booked for these dates
                 function ($attribute, $value, $fail) {
                     if ($this->start_date && $this->end_date) {
@@ -38,7 +44,7 @@ class StoreReservationRequest extends FormRequest
                                             ->where('end_date', '>=', $this->end_date);
                                     });
                             })
-                            ->whereNotIn('status', ['cancelled', 'rejected'])
+                            ->where('status', [ 'confirmed'])
                             ->exists();
 
                         if ($conflicting) {
@@ -72,6 +78,7 @@ class StoreReservationRequest extends FormRequest
         return [
             'room_id.required' => 'Please select a room.',
             'room_id.exists' => 'Selected room does not exist.',
+            'room_id.unique' => 'You have already submitted a booking request..',
 
             'start_date.required' => 'Check-in date is required.',
             'start_date.date' => 'Invalid check-in date.',

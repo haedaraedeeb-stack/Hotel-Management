@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Invoice;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\User;
+use App\Notifications\ReservationStore;
 use Carbon\Carbon;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +27,7 @@ class ApiReservationService
                 $query->with(['images', 'roomType.services']);
             },
             'invoice'
-        ])->where('user_id', auth('sanctum')->id())->get();
+        ])->where('user_id', auth('api')->id())->get();
         return $reservations;
     }
 
@@ -43,29 +45,26 @@ class ApiReservationService
                 ->whereDoesntHave(
                     'reservations',
                     function ($query) use ($criteria) {
-                        $query->where('status', '!=', 'cancelled')->where(
-                            function ($q) use ($criteria) {
-                                $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
-                                    ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
-                                    ->orWhere(
-                                        function ($subQ) use ($criteria) {
-                                            $subQ->where('start_date', '<=', $criteria['start_date'])
-                                                ->where('end_date', '>=', $criteria['end_date']);
-                                        }
-                                    );
-                            }
-                        );
+                        $query->where('status', '=', 'confirmed')
+                            ->where('id', '!=', $criteria['reservation_id'] ?? null)
+                            ->where(
+                                function ($q) use ($criteria) {
+                                    $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
+                                        ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
+                                        ->orWhere(
+                                            function ($subQ) use ($criteria) {
+                                                $subQ->where('start_date', '<=', $criteria['start_date'])
+                                                    ->where('end_date', '>=', $criteria['end_date']);
+                                            }
+                                        );
+                                }
+                            );
                     }
                 );
-                
-
             return $rooms->get();
         } catch (\Exception $e) {
             Log::error('Error fetching available rooms: ' . $e->getMessage());
-            throw new HttpResponseException(response()->json([
-                'success' => false,
-                'message' => 'Error',
-            ], 500));
+            abort(500);
         }
     }
 
@@ -83,7 +82,7 @@ class ApiReservationService
             DB::beginTransaction();
 
             $reservation = Reservation::create([
-                'user_id' => auth('sanctum')->id(),
+                'user_id' => Auth::id(),
                 'room_id' => $data['room_id'],
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
@@ -97,6 +96,13 @@ class ApiReservationService
             ]);
 
             DB::commit();
+
+            Notification::send(
+                User::permission(['reservation-confirm-reject'])->get(),
+                new ReservationStore($reservation->id,
+                 auth('api')->user()->name,
+                  $reservation->room->room_number)
+            );
 
             return $reservation->load([
                 'room' => function ($query) {
@@ -121,7 +127,7 @@ class ApiReservationService
      */
     public function cancelReservation(Reservation $reservation)
     {
-        if ($reservation->user_id !== auth('sanctum')->id()) {
+        if ($reservation->user_id !== auth('api')->id()) {
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => 'unauthorized',
@@ -152,7 +158,7 @@ class ApiReservationService
      */
     public function getReservationById(Reservation $api_reservation)
     {
-        if ($api_reservation->user_id !== auth('sanctum')->id()) {
+        if ($api_reservation->user_id !== auth('api')->id()) {
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => 'unauthorized',
@@ -183,7 +189,7 @@ class ApiReservationService
      */
     public function updateReservation(array $data, Reservation $api_reservation)
     {
-        if ($api_reservation->user_id !== auth('sanctum')->id()) {
+        if ($api_reservation->user_id !== auth('api')->id()) {
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => 'unauthorized',

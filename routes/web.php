@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotifiactionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\RatingController;
@@ -63,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.checkIn');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.checkOut');
     Route::post('reservations/available_rooms', [ReservationController::class, 'getAvailableRooms'])->name('reservations.getAvailableRooms');
+    Route::get('reservations/comfirme/{reservation}', [ReservationController::class, 'confirmeReservation'])->name('comfirme_Reservation');
+    Route::get('reservations/rejected/{reservation}', [ReservationController::class, 'rejectedReservation'])->name('rejected_Reservation');
     Route::resource('reservations', ReservationController::class);
 
     // 8. Invoice Management
@@ -77,6 +80,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 9. Ratings (Read Only for Admin)
     Route::resource('ratings', RatingController::class)->except(['edit', 'update', 'create', 'store']);
+
+    // 10. Notifications
+    Route::get('readnotification/{notification}', [NotifiactionController::class, 'readNotification'])->name('readnotification');
+    Route::get('readallnotification', [NotifiactionController::class, 'readAllNotification'])->name('readallnotification');
+
 
 });
 

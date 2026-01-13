@@ -8,22 +8,14 @@ class WebRatingService
 {
     public function getAllRatings($data)
     {
-        $ratings = Rating::select('id', 'reservation_id', 'score', 'description','created_at', 'updated_at');
-
-        if (isset($data->score)) {
-            $ratings->where('score', $data->score);
-        }
-
-        if (isset($data->date_From)) {
-            $ratings->whereDate('created_at','>=' ,$data->date_From);
-        }
-
-        if (isset($data->date_To)) {
-            $ratings->whereDate('created_at','<=' ,$data->date_To);
-        }
-
+        $ratings = Rating::select('id', 'reservation_id', 'score', 'description', 'created_at', 'updated_at')
+            ->when(isset($data->score), fn($query) => $query->where('score', $data->score))
+            ->when(isset($data->date_From), fn($query) => $query->whereDate('created_at', '>=', $data->date_From))
+            ->when(isset($data->date_To), fn($query) => $query->whereDate('created_at', '<=', $data->date_To));
+;
         return $ratings->get();
     }
+
 
     public function getRatingById($id)
     {
