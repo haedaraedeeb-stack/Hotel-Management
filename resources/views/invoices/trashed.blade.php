@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-7xl mx-auto">
+    <div class=" mx-auto">
 
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">

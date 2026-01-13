@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-7xl mx-auto">
+    <div class="mx-auto">
 
         {{-- Header & Filter --}}
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
@@ -23,7 +23,10 @@
                     <option value="2" {{ request('score') == 2 ? 'selected' : '' }}>2 Stars</option>
                     <option value="1" {{ request('score') == 1 ? 'selected' : '' }}>1 Star</option>
                 </select>
+                <input type="date" value="{{ request('date_From') }}" name="date_From" id="" class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
+                <input type="date" value="{{ request('date_To') }}" name="date_To" id="" class="rounded-lg border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white">
                 <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700 transition">Filter</button>
+                <a href="{{ route('ratings.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm hover:bg-gray-700 transition">Reset</a>
             </form>
         </div>
 

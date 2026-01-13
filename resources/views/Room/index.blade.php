@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-7xl mx-auto">
+    <div class=" mx-auto">
 
         {{-- Header & Actions --}}
         @can('room-create')

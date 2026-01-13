@@ -16,6 +16,9 @@ class RatingController extends Controller
     public function __construct(WebRatingService $ratingService)
     {
         $this->ratingService = $ratingService;
+        $this->middleware('permission:rating-list')->only(['index']);
+        $this->middleware('permission:rating-show')->only(['show']);
+        $this->middleware('permission:rating-delete')->only(['destroy']);
     }
     public function index(Request $request)
     {

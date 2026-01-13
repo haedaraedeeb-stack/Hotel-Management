@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NotifiactionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\RatingController;
 use App\Http\Controllers\Web\ReservationController;
@@ -12,15 +13,16 @@ use App\Http\Controllers\Web\ServiceController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
-
+use Laravel\Socialite\Socialite;
 
 /*
 |--------------------------------------------------------------------------
 | Public Routes (Accessible by everyone)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 /*
@@ -31,7 +33,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // 1. Dashboard
-    Route::get('/dashboard' , [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // 2. Profile Management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -69,13 +71,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('reservations', ReservationController::class);
 
     // 8. Invoice Management
+    Route::get('invoices/export/', [InvoiceController::class, 'export'])->name('invoices_export');
     Route::get('invoices/trashed', [InvoiceController::class, 'trashed'])->name('invoices.trashed');
     Route::patch('invoices/{id}/restore', [InvoiceController::class, 'restore'])->name('invoices.restore');
     Route::delete('invoices/{id}/force', [InvoiceController::class, 'forceDelete'])->name('invoices.forceDelete');
     // Invoice Creation linked to Reservation
     Route::get('reservations/{reservationId}/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
     Route::post('reservations/{reservationId}/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
-    
+
     Route::resource('invoices', InvoiceController::class)->except(['store', 'create']);
 
     // 9. Ratings (Read Only for Admin)
@@ -84,7 +87,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 10. Notifications
     Route::get('readnotification/{notification}', [NotifiactionController::class, 'readNotification'])->name('readnotification');
     Route::get('readallnotification', [NotifiactionController::class, 'readAllNotification'])->name('readallnotification');
-
 
 });
 
@@ -109,5 +111,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('services/{id}/force-delete', [ServiceController::class, 'forceDelete'])
         ->name('services.forceDelete');
 });
+// login with google
+Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirectToProvider'])->name('login.provider');
+Route::get('auth/callback/{provider}', [SocialiteController::class, 'handleProviderCallback']);
 
-require __DIR__.'/auth.php';
+
