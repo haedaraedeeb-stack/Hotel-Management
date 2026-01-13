@@ -351,7 +351,7 @@
             </svg>
             Mark all as read
         </a>
-        <form id="markAllReadForm" action="{{ route('readallnotification') }}" method="POST" class="hidden">
+        <form id="markAllReadForm" action="{{ route('readallnotification') }}" method="Get" class="hidden">
             @csrf
         </form>
         @endif
