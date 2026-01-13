@@ -16,13 +16,21 @@ class WebReservationService
     /**
      * Summary of getAllReservations
      * @param mixed $data
-     * @return \Illuminate\Database\Eloquent\Collection<int, Reservation>
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getAllReservations($data)
     {
-        $reservations = Reservation::with('room', 'user');
+        $reservations = Reservation::with('room', 'user')
+        ->when($data['start_date'] , function ($query, $start_date) {
+            $query->where('start_date', '>=', $start_date);
+        })->when($data['end_date'] , function ($query, $end_date) {
+            $query->where('end_date', '<=', $end_date);
+        })->when($data['status'] , function ($query, $status) {
+            $query->where('status', $status);
+        })
+        ->paginate($data['limit'] ?? 10);
         
-        return $reservations->get();
+        return $reservations;
     }
 
     /**
@@ -76,9 +84,9 @@ class WebReservationService
                 'room_id' => $data['room_id'] ?? $reservation->room_id,
                 'start_date' => $data['start_date'] ?? $reservation->start_date,
                 'end_date' => $data['end_date'] ?? $reservation->end_date,
-                'status' => $data['status'] ?? $reservation->status,
-                'check_in' => $data['check_in'] ?? $reservation->check_in,
-                'check_out' => $data['check_out'] ?? $reservation->check_out,
+                // 'status' => $data['status'] ?? $reservation->status,
+                // 'check_in' => $data['check_in'] ?? $reservation->check_in,
+                // 'check_out' => $data['check_out'] ?? $reservation->check_out,
             ]);
 
             $reservation->invoice->update([

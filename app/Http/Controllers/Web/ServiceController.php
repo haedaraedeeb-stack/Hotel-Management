@@ -7,9 +7,12 @@ use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Service;
 use App\Models\RoomType;
+use App\Services\ServicelayerServices;
 
 class ServiceController extends Controller
 {
+    protected $serviceLayer;
+
     public const PERMISSIONS = [
         'view'=> 'view services',
         'create'=> 'create services',
@@ -20,11 +23,13 @@ class ServiceController extends Controller
         'forceDelete' => 'force delete services',
     ];
 
-    public function __construct()
+    public function __construct(ServicelayerServices $serviceLayer)
     {
+        $this->serviceLayer = $serviceLayer;
+
         $this->middleware('permission:' . self::PERMISSIONS['view'])->only(['index']);
         $this->middleware('permission:' . self::PERMISSIONS['create'])->only(['create', 'store']);
-        $this->middleware('permission:' . self::PERMISSIONS['edit']) ->only(['edit', 'update']);
+        $this->middleware('permission:' . self::PERMISSIONS['edit'])->only(['edit', 'update']);
         $this->middleware('permission:' . self::PERMISSIONS['delete'])->only(['destroy']);
         $this->middleware('permission:' . self::PERMISSIONS['trash'])->only(['trash']);
         $this->middleware('permission:' . self::PERMISSIONS['restore'])->only(['restore']);
@@ -33,7 +38,7 @@ class ServiceController extends Controller
 
     public function index()
     {
-        $services = Service::with('roomTypes')->latest()->get();
+        $services = $this->serviceLayer->getAll();
         return view('serv.index', compact('services'));
     }
 
@@ -45,11 +50,7 @@ class ServiceController extends Controller
 
     public function store(StoreServiceRequest $request)
     {
-        $service = Service::create($request->only(['name', 'description']));
-
-        if ($request->filled('room_types')) {
-            $service->roomTypes()->sync($request->room_types);
-        }
+        $this->serviceLayer->create($request->only(['name', 'description', 'room_types']));
 
         return redirect()->route('serv.index')
             ->with('success', 'The service has been created successfully');
@@ -65,13 +66,7 @@ class ServiceController extends Controller
 
     public function update(UpdateServiceRequest $request, Service $service)
     {
-        $service->update($request->only(['name', 'description']));
-
-        if ($request->has('room_types')) {
-            $service->roomTypes()->sync($request->room_types);
-        } else {
-            $service->roomTypes()->detach();
-        }
+        $this->serviceLayer->update($service, $request->only(['name', 'description', 'room_types']));
 
         return redirect()->route('serv.index')
             ->with('success', 'The service has been edited successfully');
@@ -79,7 +74,7 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
-        $service->delete();
+        $this->serviceLayer->delete($service);
 
         return redirect()->route('serv.index')
             ->with('success', 'The service has been moved to the trash');
@@ -87,13 +82,13 @@ class ServiceController extends Controller
 
     public function trash()
     {
-        $services = Service::onlyTrashed()->get();
+        $services = $this->serviceLayer->getTrashed();
         return view('serv.trash', compact('services'));
     }
 
     public function restore($id)
     {
-        Service::onlyTrashed()->findOrFail($id)->restore();
+        $this->serviceLayer->restore($id);
 
         return redirect()->route('serv.trash')
             ->with('success', 'The service has been restored');
@@ -101,7 +96,7 @@ class ServiceController extends Controller
 
     public function forceDelete($id)
     {
-        Service::onlyTrashed()->findOrFail($id)->forceDelete();
+        $this->serviceLayer->forceDelete($id);
 
         return redirect()->route('serv.trash')
             ->with('success', 'The service has been permanently deleted');
