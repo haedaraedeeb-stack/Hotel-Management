@@ -35,10 +35,10 @@ class CustomerInvoiceController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    
+
     public function show($id)
     {
-       $invoice = $this->service->getInvoiceById($id);
+    $invoice = $this->service->getInvoiceById($id);
 
         if (!$invoice) {
             return response()->json(['message' => 'Invoice not found or access denied'], 404);

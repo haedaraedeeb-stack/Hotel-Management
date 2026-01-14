@@ -124,7 +124,7 @@ class ReservationController extends Controller
         $reservation->delete();
         return redirect()->back()->with('success', 'Deleted..');
     }
-   
+
     /**
      * Summary of checkIn
      * @param Reservation $reservation

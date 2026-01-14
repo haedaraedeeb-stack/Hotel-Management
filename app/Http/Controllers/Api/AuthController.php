@@ -54,7 +54,6 @@ class AuthController extends Controller
         }
     }
 
-    // POST /api/client/login
     public function login(LoginRequest $request)
     {
         try {
@@ -91,7 +90,6 @@ class AuthController extends Controller
         }
     }
 
-    // POST /api/client/logout
     public function logout(Request $request)
     {
         try {
