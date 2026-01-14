@@ -36,7 +36,7 @@ class WebReservationService
             $query->where('status', $status);
         })
         ->paginate($data['limit'] ?? 10);
-        
+
         return $reservations;
     }
 
@@ -180,13 +180,13 @@ class WebReservationService
     public function availableRooms(array $criteria)
     {
         try {
-            $rooms = Room::with('images', 'roomType.services')
+            $rooms = Room::with('images', 'roomType.services')->whereIn('status', ['available' , 'occupied'])
             ->whereDoesntHave(
                 'reservations',
                     function ($query) use ($criteria) {
                         $query->where('status', '=', 'confirmed')
                             ->where('id', '!=', $criteria['reservation_id'] ?? null)
-                                 ->where(
+                                ->where(
                                     function ($q) use ($criteria) {
                                         $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
                                             ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
@@ -228,7 +228,7 @@ class WebReservationService
                 'status' => 'confirmed'
             ]);
 
-            
+
             return $reservation;
         } catch (\Exception $e) {
             Log::error('Error confirming reservation: ' . $e->getMessage());

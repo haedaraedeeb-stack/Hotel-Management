@@ -68,6 +68,7 @@ class AuthController extends Controller
         }
     }
 
+
     // POST /api/client/login
     /**
      * Login a client.

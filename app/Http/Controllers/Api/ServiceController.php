@@ -22,7 +22,7 @@ class ServiceController extends Controller
      */
     public function __construct(ApiServicesService $services) {
         $this->services = $services;
-        $this->middleware('role:client'); 
+        $this->middleware('role:client');
     }
 
     /**
