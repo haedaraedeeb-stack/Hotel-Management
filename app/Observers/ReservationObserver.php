@@ -11,7 +11,7 @@ class ReservationObserver
     /**
      * Handle the Reservation "updated" event.
      */
-    public function updated(Reservation $reservation): void 
+    public function updated(Reservation $reservation): void
     {
         if ($reservation->isDirty('status') && $reservation->status === "confirmed" && $reservation->getOriginal('status') != 'confirmed') {
             if ($reservation->user && $reservation->user->email) {
@@ -22,13 +22,17 @@ class ReservationObserver
         if ($reservation->isDirty('check_in') && !is_null($reservation->check_in)) {
             $reservation->room->update(['status' => 'occupied']);
         }
-        
+
         if ($reservation->isDirty('status') && $reservation->status === 'completed') {
             $reservation->room->update(['status' => 'available']);
         }
-        
+
         if ($reservation->isDirty('status') && in_array($reservation->status, ['cancelled', 'rejected'])) {
             $reservation->room->update(['status' => 'available']);
         }
+        if( $reservation->isDirty('check_out') && !is_null($reservation->check_out)) {
+            $reservation->room->update(['status' => 'available']);
+        }
+        
     }
 }
