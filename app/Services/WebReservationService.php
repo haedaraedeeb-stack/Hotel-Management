@@ -60,10 +60,11 @@ class WebReservationService
             ]);
 
             DB::commit();
+
             return $totalAmount;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error creating reservation: ' . $e->getMessage());
+            Log::error('Error creating reservation: '.$e->getMessage());
             abort(500);
         }
     }
@@ -96,10 +97,11 @@ class WebReservationService
                 ),
             ]);
             DB::commit();
+
             return $reservation;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error updating reservation: ' . $e->getMessage());
+            Log::error('Error updating reservation: '.$e->getMessage());
             abort(500);
         }
     }
@@ -115,19 +117,20 @@ class WebReservationService
             DB::beginTransaction();
             $reservation->update([
                 'check_in' => now(),
-                'status' => 'confirmed'
+                'status' => 'confirmed',
             ]);
-            $reservation->room->update(['status' => 'occupied']);
+
             if ($reservation->invoice && $reservation->invoice->payment_status == 'unpaid') {
                 $reservation->invoice->update([
                     'payment_status' => 'paid',
                 ]);
             }
             DB::commit();
+
             return $reservation;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error checking in reservation: ' . $e->getMessage());
+            Log::error('Error checking in reservation: '.$e->getMessage());
             abort(500);
         }
     }
@@ -143,18 +146,17 @@ class WebReservationService
             DB::beginTransaction();
             $reservation->update([
                 'check_out' => now(),
-                'status' => 'completed'
+                'status' => 'completed',
             ]);
-            $reservation->room->update(['status' => 'available']);
             DB::commit();
+
             return $reservation;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error checking out reservation: ' . $e->getMessage());
+            Log::error('Error checking out reservation: '.$e->getMessage());
             abort(500);
         }
     }
-
 
     /*
      * get available rooms
@@ -167,16 +169,16 @@ class WebReservationService
     {
         try {
             $rooms = Room::with('images', 'roomType.services')
-                ->whereDoesntHave(
-                    'reservations',
+            ->whereDoesntHave(
+                'reservations',
                     function ($query) use ($criteria) {
                         $query->where('status', '=', 'confirmed')
                             ->where('id', '!=', $criteria['reservation_id'] ?? null)
-                            ->where(
-                                function ($q) use ($criteria) {
-                                    $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
-                                        ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
-                                        ->orWhere(
+                                 ->where(
+                                    function ($q) use ($criteria) {
+                                        $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
+                                            ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
+                                            ->orWhere(
                                             function ($subQ) use ($criteria) {
                                                 $subQ->where('start_date', '<=', $criteria['start_date'])
                                                     ->where('end_date', '>=', $criteria['end_date']);
@@ -186,9 +188,17 @@ class WebReservationService
                             );
                     }
                 );
+
+            if (isset($criteria['reservation_id'])) {
+                $rooms->whereDoesntHave('reservations', function ($query) use ($criteria) {
+                    $query->where('id', $criteria['reservation_id']);
+                });
+            }
+
+
             return $rooms->get();
         } catch (\Exception $e) {
-            Log::error('Error fetching available rooms: ' . $e->getMessage());
+            Log::error('Error fetching available rooms: '.$e->getMessage());
             abort(500);
         }
     }
@@ -205,7 +215,6 @@ class WebReservationService
                 'status' => 'confirmed'
             ]);
 
-            Mail::to($reservation->user->email)->send(new ReservationConfirme($reservation));
             
             return $reservation;
         } catch (\Exception $e) {
@@ -246,9 +255,10 @@ class WebReservationService
             $start = Carbon::parse($startDate);
             $end = Carbon::parse($endDate);
             $nights = $start->diffInDays($end) ?: 1;
+
             return $room->current_price * $nights;
         } catch (\Exception $e) {
-            Log::error('Error fetching total price: ' . $e->getMessage());
+            Log::error('Error fetching total price: '.$e->getMessage());
             abort(500);
         }
     }

@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Request;
 
+
 /**
  * Class ReservationController
  * @package App\Http\Controllers\Web
@@ -44,9 +45,14 @@ class ReservationController extends Controller
      */
     public function index(Request $request)
     {
+// <<<<<<< HEAD
+//         $reservations = $this->reservationService->getAllReservations($request);
+//         return view('reservations.index', compact('reservations'));
+// =======
         // return $request;
         $reservations = $this->reservationService->getallReservations($request);
         return view('reservations.index', compact('reservations', 'request'));
+// >>>>>>> af6562d6cd0fd2f7c954af9e3a7de69d323c2cbe
     }
 
     /**
@@ -199,9 +205,9 @@ class ReservationController extends Controller
         ];
         $rooms = $this->reservationService->availableRooms($data)->pluck('id')->toArray();
 
-        if (!in_array($data['room_id'], $rooms)) {
-            return back()->with('error', 'Room is already booked');
-        }
+        // if (!in_array($data['room_id'], $rooms)) {
+        //     return back()->with('error', 'Room is already booked');
+        // }
 
         $confirmedReservations = $this->reservationService->confirme($reservation);
         return redirect()->back()->with('success', 'Confirmed Reservations Fetched successufly!');
