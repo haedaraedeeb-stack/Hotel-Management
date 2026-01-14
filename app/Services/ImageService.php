@@ -8,10 +8,21 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 
+/**
+ * This service handles operations related to image management,
+ * including uploading, deleting, and retrieving images.
+ * Summary of ImageService
+ * @package App\Services
+ */
 class ImageService
 {
     /**
      * Upload image and create Image model record
+     * Summary of uploadImage
+     * @param UploadedFile $imageFile
+     * @param mixed $model
+     * @param mixed $folder
+     * @return Image
      */
     public function uploadImage(UploadedFile $imageFile, $model, $folder = 'uploads')
     {
@@ -42,6 +53,11 @@ class ImageService
 
     /**
      * Upload multiple images
+     * Summary of uploadMultipleImages
+     * @param array $imageFiles
+     * @param mixed $model
+     * @param mixed $folder
+     * @return Image[]
      */
     public function uploadMultipleImages(array $imageFiles, $model, $folder = 'uploads')
     {
@@ -61,6 +77,9 @@ class ImageService
 
     /**
      * Delete image file and record
+     * Summary of deleteImage
+     * @param Image $image
+     * @return bool
      */
     public function deleteImage(Image $image)
     {
@@ -81,6 +100,9 @@ class ImageService
 
     /**
      * Delete multiple images
+     * Summary of deleteMultipleImages
+     * @param mixed $imageIds
+     * @return int
      */
     public function deleteMultipleImages($imageIds)
     {
@@ -104,6 +126,9 @@ class ImageService
 
     /**
      * Delete all images for a model
+     * Summary of deleteModelImages
+     * @param mixed $model
+     * @return int
      */
     public function deleteModelImages($model)
     {
@@ -124,10 +149,10 @@ class ImageService
             return 0;
         }
     }
+     /**
+      * Get image URL
+      */
 
-    /**
-     * Get image URL
-     */
     // public function getImageUrl($path)
     // {
     //     if (!$path) {
@@ -140,6 +165,13 @@ class ImageService
     /**
      * Generate unique filename
      */
+
+    /**
+     * Get image URL
+     * Summary of generateUniqueFilename
+     * @param UploadedFile $file
+     * @return string
+     */
     private function generateUniqueFilename(UploadedFile $file)
     {
         $extension = $file->getClientOriginalExtension();
@@ -151,6 +183,9 @@ class ImageService
 
     /**
      * Delete file from storage
+     * Summary of deleteFile
+     * @param mixed $path
+     * @return bool
      */
     private function deleteFile($path)
     {

@@ -5,9 +5,15 @@ namespace App\Services;
 use App\Models\RoomType;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * This service handles API operations related to room types, including retrieval and formatting for API responses.
+ * Summary of ApiRoomTypeService
+ * @package App\Services
+ */
 class ApiRoomTypeService
 {
     /**
+     * Retrieve all room types with optional filtering, sorting, and searching
      * Summary of getAll
      * @param array $filters
      * @return Collection<int, RoomType>
@@ -34,6 +40,7 @@ class ApiRoomTypeService
     }
 
     /**
+     * Find a specific room type by ID and format it for API response
      * Summary of findById
      * @param int $id
      * @return array|null
@@ -50,6 +57,7 @@ class ApiRoomTypeService
     }
 
     /**
+     * Format a RoomType model for API response
      * Summary of formatRoomType
      * @param RoomType $roomType
      * @return array{base_price: mixed, description: mixed, id: mixed, images: mixed, services: mixed, type: mixed}
@@ -77,6 +85,7 @@ class ApiRoomTypeService
     }
 
     /**
+     * Retrieve all room types formatted for API response
      * Summary of getRoomTypesForApi
      * @param array $filters
      * @return array
@@ -100,6 +109,7 @@ class ApiRoomTypeService
     }
 
     /**
+     * Retrieve a single room type by ID formatted for API response
      * Summary of getRoomTypeForApi
      * @param int $id
      * @return array|array{base_price: mixed, description: mixed, id: mixed, images: mixed, services: mixed, type: mixed}

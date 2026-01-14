@@ -5,9 +5,18 @@ namespace App\Services;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * This service handles API operations related to services.
+ * Summary of ApiServicesService
+ * @package App\Services
+ */
 class ApiServicesService
 {
-
+    /**
+     * Retrieve all services
+     * Summary of showAllServices
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function showAllServices()
     {
         try {
@@ -18,6 +27,12 @@ class ApiServicesService
         }
     }
 
+    /**
+     * Retrieve a single service by ID
+     * Summary of showSingleService
+     * @param mixed $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function showSingleService($id)
     {
         try {
