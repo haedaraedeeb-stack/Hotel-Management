@@ -10,12 +10,20 @@ use App\Models\Reservation;
 use App\Services\ApiReservationService;
 use Illuminate\Http\Request;
 
+/**
+ * Class ReservationController
+ * Added and deleted and updated and show and listing of reservations in API for clients
+ * Summary of ReservationController
+ * @package App\Http\Controllers\Api
+ */
 class ReservationController extends Controller
 {
     protected $reservationService;
 
     /**
      * Constructor to initialize the reservation service.
+     * Summary of __construct
+     * @param ApiReservationService $reservationService
      */
     public function __construct(ApiReservationService $reservationService)
     {
@@ -23,7 +31,9 @@ class ReservationController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the reservations.
+     * Summary of index
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -32,7 +42,10 @@ class ReservationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created reservation in storage.
+     * Summary of store
+     * @param StoreReservationRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreReservationRequest $request)
     {
@@ -41,7 +54,10 @@ class ReservationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified reservation.
+     * Summary of show
+     * @param Reservation $api_reservation
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Reservation $api_reservation)
     {
@@ -50,7 +66,11 @@ class ReservationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified reservation in storage.
+     * Summary of update
+     * @param UpdateReservationRequest $request
+     * @param Reservation $api_reservation
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateReservationRequest $request, Reservation $api_reservation)
     {
@@ -59,7 +79,10 @@ class ReservationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified reservation from storage.
+     * Summary of destroy
+     * @param string $id
+     * @return void
      */
     public function destroy(string $id)
     {
@@ -68,6 +91,9 @@ class ReservationController extends Controller
 
     /**
      * Get available rooms based on criteria.
+     * Summary of getAvailableRooms
+     * @param AvailableRoomsRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getAvailableRooms(AvailableRoomsRequest $request)
     {
@@ -77,8 +103,10 @@ class ReservationController extends Controller
 
     /**
      * Cancel a reservation.
+     * Summary of cancelReservation
+     * @param Reservation $reservation
+     * @return \Illuminate\Http\JsonResponse
      */
-
     public function cancelReservation(Reservation $reservation)
     {
         $reservation = $this->reservationService->cancelReservation($reservation);

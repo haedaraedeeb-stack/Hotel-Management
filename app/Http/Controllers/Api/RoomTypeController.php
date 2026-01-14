@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RoomTypeFilterRequest;
 use App\Services\ApiRoomTypeService;
 
+/**
+ * This controller manages API requests related to room types, including
+ * listing all room types and viewing specific room type details.
+ * Summary of RoomTypeController
+ * @package App\Http\Controllers\Api
+ */
 class RoomTypeController extends Controller
 {
     protected  $roomTypeService;
@@ -16,6 +22,7 @@ class RoomTypeController extends Controller
     }
 
     /**
+     * Display a listing of the room types for API with optional filters.
      * Summary of index
      * @param RoomTypeFilterRequest $request
      * @return \Illuminate\Http\JsonResponse
@@ -28,6 +35,7 @@ class RoomTypeController extends Controller
     }
 
     /**
+     * Display the specified room type.
      * Summary of show
      * @param mixed $id
      * @return \Illuminate\Http\JsonResponse

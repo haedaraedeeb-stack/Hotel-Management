@@ -11,9 +11,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * This service handles operations related to web reservations, including creating, updating, checking in/out, confirming,
+ * rejecting, calculating total price, and fetching available rooms.
+ * Summary of WebReservationService
+ * @package App\Services
+ */
 class WebReservationService
 {
     /**
+     * Get all reservations with optional filters
      * Summary of getAllReservations
      * @param mixed $data
      * @return \Illuminate\Pagination\LengthAwarePaginator
@@ -29,11 +36,12 @@ class WebReservationService
             $query->where('status', $status);
         })
         ->paginate($data['limit'] ?? 10);
-        
+
         return $reservations;
     }
 
     /**
+     * Store a new reservation along with its invoice
      * Summary of storeReservation
      * @param array $data
      * @return float|int
@@ -70,6 +78,7 @@ class WebReservationService
     }
 
     /**
+     * Update an existing reservation and its invoice
      * Summary of updateReservation
      * @param Reservation $reservation
      * @param array $data
@@ -107,6 +116,7 @@ class WebReservationService
     }
 
     /**
+     * Check in a reservation
      * Summary of checkIn
      * @param Reservation $reservation
      * @return Reservation
@@ -136,6 +146,7 @@ class WebReservationService
     }
 
     /**
+     * Check out a reservation
      * Summary of checkOut
      * @param Reservation $reservation
      * @return Reservation
@@ -158,8 +169,9 @@ class WebReservationService
         }
     }
 
-    /*
-     * get available rooms
+    /**
+     * Get available rooms based on criteria
+     * Summary of availableRooms
      * @param array $criteria
      * @return mixed
      * @return \Illuminate\Database\Eloquent\Collection
@@ -168,13 +180,13 @@ class WebReservationService
     public function availableRooms(array $criteria)
     {
         try {
-            $rooms = Room::with('images', 'roomType.services')
+            $rooms = Room::with('images', 'roomType.services')->whereIn('status', ['available' , 'occupied'])
             ->whereDoesntHave(
                 'reservations',
                     function ($query) use ($criteria) {
                         $query->where('status', '=', 'confirmed')
                             ->where('id', '!=', $criteria['reservation_id'] ?? null)
-                                 ->where(
+                                ->where(
                                     function ($q) use ($criteria) {
                                         $q->whereBetween('start_date', [$criteria['start_date'], $criteria['end_date']])
                                             ->orWhereBetween('end_date', [$criteria['start_date'], $criteria['end_date']])
@@ -204,6 +216,7 @@ class WebReservationService
     }
 
     /**
+     * Confirm a reservation
      * Summary of confirme
      * @param Reservation $reservation
      * @return Reservation
@@ -215,7 +228,7 @@ class WebReservationService
                 'status' => 'confirmed'
             ]);
 
-            
+
             return $reservation;
         } catch (\Exception $e) {
             Log::error('Error confirming reservation: ' . $e->getMessage());
@@ -224,6 +237,7 @@ class WebReservationService
     }
 
     /**
+     * Reject a reservation
      * Summary of rejected
      * @param Reservation $reservation
      * @return Reservation
@@ -242,6 +256,7 @@ class WebReservationService
     }
 
     /**
+     * Calculate total price for a reservation
      * Summary of totalPrice
      * @param mixed $roomId
      * @param mixed $startDate

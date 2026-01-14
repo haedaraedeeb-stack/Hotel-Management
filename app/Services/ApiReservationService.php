@@ -14,11 +14,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
+/**
+ * This service handles API operations related to reservations,including creation, retrieval, updating,
+ * and cancelling reservations, checking room availability and calculating total prices.
+ * Summary of ApiReservationService
+ * @package App\Services
+ */
 class ApiReservationService
 {
-    /*
-     * get all reservations
-     * @return \Illuminate\Database\Eloquent\Collection
+    /**
+     * get all reservations for the authenticated API user
+     * Summary of getallReservations
+     * @return \Illuminate\Database\Eloquent\Collection<int, Reservation>
      */
     public function getallReservations()
     {
@@ -33,10 +40,11 @@ class ApiReservationService
 
 
 
-    /*
-     * get available rooms
+    /**
+     * get available rooms based on criteria
+     * Summary of availableRooms
      * @param array $criteria
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection<int, Room>
      */
     public function availableRooms(array $criteria)
     {
@@ -68,10 +76,12 @@ class ApiReservationService
         }
     }
 
-    /*
-     * create reservation
+    /**
+     * create a new reservation for the authenticated user and generate its invoice
+     * Summary of createReservation
      * @param array $data
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws HttpResponseException
+     * @return Reservation
      */
     public function createReservation(array $data)
     {
@@ -120,10 +130,12 @@ class ApiReservationService
         }
     }
 
-    /*
-     * cancel reservation
-     * @param \App\Models\Reservation $reservation
-     * @return \Illuminate\Database\Eloquent\Collection
+    /**
+     * Cancel a reservation for the authenticated user
+     * Summary of cancelReservation
+     * @param Reservation $reservation
+     * @throws HttpResponseException
+     * @return Reservation
      */
     public function cancelReservation(Reservation $reservation)
     {
@@ -151,10 +163,12 @@ class ApiReservationService
         }
     }
 
-    /*
-     * get reservation by id
-     * @param \App\Models\Reservation $reservation
-     * @return \Illuminate\Database\Eloquent\Collection
+    /**
+     * Get a reservation by ID for the authenticated user
+     * Summary of getReservationById
+     * @param Reservation $api_reservation
+     * @throws HttpResponseException
+     * @return Reservation
      */
     public function getReservationById(Reservation $api_reservation)
     {
@@ -181,11 +195,13 @@ class ApiReservationService
         }
     }
 
-    /*
-     * update reservation
+    /**
+     * Update an existing reservation for the authenticated user
+     * Summary of updateReservation
      * @param array $data
-     * @param \App\Models\Reservation $reservation
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param Reservation $api_reservation
+     * @throws HttpResponseException
+     * @return Reservation
      */
     public function updateReservation(array $data, Reservation $api_reservation)
     {
@@ -232,8 +248,14 @@ class ApiReservationService
     }
 
 
-    /*
-     * get total price
+    /**
+     * Get total price for a reservation based on room and dates
+     * Summary of totalPrice
+     * @param mixed $roomId
+     * @param mixed $startDate
+     * @param mixed $endDate
+     * @throws HttpResponseException
+     * @return float|int
      */
     public function totalPrice($roomId, $startDate, $endDate)
     {
