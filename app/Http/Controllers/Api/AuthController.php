@@ -9,16 +9,30 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
+/**
+ * This controller handles user authentication for API clients,
+ * including registration, login, and logout functionalities.
+ * Summary of AuthController
+ * @package App\Http\Controllers\Api
+ */
 class AuthController extends Controller
 {
-
+    /**
+     * Constructor to initialize the authentication controller.
+     * Summary of __construct
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('role:client')->only(['logout']);
     }
 
-
-
+    /**
+     * Register a new client.
+     * Summary of register
+     * @param RegisterRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(RegisterRequest $request)
     {
         try {
@@ -30,10 +44,10 @@ class AuthController extends Controller
                 'password' => Hash::make($data['password']),
             ]);
 
-            // منح دور "client" عبر Spatie
+            // Granting "client" role via spatie
             $user->assignRole('client');
 
-            // إنشاء توكن عبر Sanctum
+            // Create a Token via sanctum
             $token = $user->createToken('api_token')->plainTextToken;
 
             return response()->json([
@@ -54,6 +68,14 @@ class AuthController extends Controller
         }
     }
 
+
+    // POST /api/client/login
+    /**
+     * Login a client.
+     * Summary of login
+     * @param LoginRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(LoginRequest $request)
     {
         try {
@@ -90,6 +112,13 @@ class AuthController extends Controller
         }
     }
 
+    // POST /api/client/logout
+    /**
+     * Logout the authenticated client.
+     * Summary of logout
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout(Request $request)
     {
         try {

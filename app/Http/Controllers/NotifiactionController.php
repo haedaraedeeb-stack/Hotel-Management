@@ -9,8 +9,19 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Matcher\Not;
 
+/**
+ * This controller handles notification-related operations, including marking notifications as read.
+ * Summary of NotifiactionController
+ * @package App\Http\Controllers
+ */
 class NotifiactionController extends Controller
 {
+    /**
+     * Mark a specific notification as read.
+     * Summary of readNotification
+     * @param mixed $notification
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function readNotification( $notification)
     {
         $user = Auth::user();
@@ -25,6 +36,11 @@ class NotifiactionController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Mark all notifications as read.
+     * Summary of readAllNotification
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function readAllNotification()
     {
         $user = Auth::user();

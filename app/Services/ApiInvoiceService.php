@@ -5,9 +5,16 @@ namespace App\Services;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * This service handles API operations related to invoices,
+ * including retrieval of all invoices and specific invoices by ID for the authenticated user.
+ * Summary of ApiInvoiceService
+ * @package App\Services
+ */
 class ApiInvoiceService
 {
     /**
+     * Get all invoices for the authenticated API user
      * Summary of getAllInvoice
      * @return \Illuminate\Database\Eloquent\Collection<int, Invoice>
      */
@@ -30,6 +37,7 @@ class ApiInvoiceService
     }
 
     /**
+     * Get a specific invoice by ID for the authenticated API user
      * Summary of getInvoiceById
      * @param mixed $invoiceId
      * @return Invoice|\Illuminate\Database\Eloquent\Collection<int, Invoice>|null

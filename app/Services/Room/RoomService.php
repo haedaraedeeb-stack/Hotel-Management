@@ -13,10 +13,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
+/**
+ * This service handles operations related to rooms,
+ * including creating, updating, retrieval, and deletion rooms.
+ * Summary of RoomService
+ * @package App\Services\Room
+ */
 class RoomService
 {
     protected $imageService;
 
+    /**
+     * Create a new room service instance.
+     * Summary of __construct
+     * @param ImageService $imageService
+     */
     public function __construct(ImageService $imageService)
     {
         $this->imageService = $imageService;
@@ -24,6 +35,8 @@ class RoomService
 
     /**
      * Get all rooms with their room types and images
+     * Summary of getAllRooms
+     * @return \Illuminate\Database\Eloquent\Collection<int, Room>
      */
     public function getAllRooms()
     {
@@ -38,6 +51,9 @@ class RoomService
 
     /**
      * Create a new room with images
+     * Summary of storeRoom
+     * @param mixed $data
+     * @return array{message: string, room: Room, success: bool|array{message: string, success: bool}}
      */
     public function storeRoom($data)
     {
@@ -94,6 +110,10 @@ class RoomService
 
     /**
      * Update an existing room with images
+     * Summary of updateRoom
+     * @param mixed $data
+     * @param mixed $roomId
+     * @return array{message: string, room: Room|\Illuminate\Database\Eloquent\Collection<int, Room>, success: bool|array{message: string, success: bool}}
      */
     public function updateRoom($data, $roomId)
     {
@@ -147,6 +167,9 @@ class RoomService
 
     /**
      * Delete a room with its images
+     * Summary of deleteRoom
+     * @param mixed $roomId
+     * @return array{message: string, success: bool}
      */
     public function deleteRoom($roomId)
     {
@@ -180,6 +203,9 @@ class RoomService
 
     /**
      * Get room by ID with room types and images
+     * Summary of getRoomById
+     * @param mixed $roomId
+     * @return Room|\Illuminate\Database\Eloquent\Collection<int, Room>|null
      */
     public function getRoomById($roomId)
     {
