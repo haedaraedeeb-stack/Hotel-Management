@@ -7,8 +7,8 @@ use App\Services\ApiServicesService;
 
 class ServiceController extends Controller
 {
-    public function __construct() {
-    protected $services;
+    protected ApiServicesService $services ;
+
     public function __construct(ApiServicesService $services) {
         $this->services = $services;
         $this->middleware('role:client'); 
