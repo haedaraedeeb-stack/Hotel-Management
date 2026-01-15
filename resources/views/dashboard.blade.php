@@ -1,8 +1,5 @@
 @extends('layouts.admin')
-<<<<<<< Updated upstream
 
-@section('title', 'Dashboard')
-=======
 @section('title', 'Home')
 @section('content')
 
@@ -11,7 +8,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
             {{-- Card 1: Total Bookings --}}
-            @hasanyrole('admin|manager')
+            @can('General Reports')
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                     <div class="flex items-center">
                         <div
@@ -28,11 +25,9 @@
                         </div>
                     </div>
                 </div>
-            @endhasanyrole
 
 
             {{-- Card 2: Total Revenue --}}
-            @hasanyrole('admin|manager')
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                     <div class="flex items-center">
                         <div
@@ -49,10 +44,8 @@
                         </div>
                     </div>
                 </div>
-            @endhasanyrole
 
             {{-- Card 3: Guests --}}
-            @hasanyrole('admin|manager')
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                     <div class="flex items-center">
                         <div
@@ -69,10 +62,10 @@
                         </div>
                     </div>
                 </div>
-            @endhasanyrole
+            
 
             {{-- Card 4: Rooms --}}
-            @hasanyrole('admin|manager|receptionist')
+        
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                     <div class="flex items-center">
                         <div
@@ -90,11 +83,12 @@
                     </div>
                 </div>
             </div>
-        @endhasanyrole
+            @endcan
+        
 
 
         {{-- 2. Charts Section (Charts Grid) --}}
-        @hasanyrole('admin|manager')
+        @can('Room and profit reports')
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
 
                 {{-- Chart 1: Revenue Chart (Area) --}}
@@ -104,10 +98,10 @@
                     </div>
                     <div id="revenue-chart"></div>
                 </div>
-            @endhasanyrole
+         
 
             {{-- Chart 2: Room Types (Pie/Donut) --}}
-            @hasanyrole('admin|manager|receptionist')
+        
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="flex justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-900">Room Preferences</h3>
@@ -115,19 +109,19 @@
                     <div id="room-pie-chart"></div>
                 </div>
             </div>
-        @endhasanyrole
+        @endcan
         <script>
             const monthlyReservations = @json($monthlyReservations);
         </script>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+        @can('Monthly Booking Report')
         <div
             style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <h3 style="margin-bottom: 15px; color: #333;">Monthly Reservations Overview</h3>
             <canvas id="reservationsChart" style="max-height: 400px;"></canvas>
         </div>
-
+        @endcan
         <script>
             document.addEventListener("DOMContentLoaded", function() {
 

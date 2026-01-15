@@ -38,7 +38,7 @@ class ReservationController extends Controller
     public function index()
     {
         $reservations = $this->reservationService->getallReservations();
-        return $this->success('Reservations fetched successfully', $reservations);
+        return $this->success('Reservations fetched successfully', $reservations,200);
     }
 
     /**
@@ -50,7 +50,7 @@ class ReservationController extends Controller
     public function store(StoreReservationRequest $request)
     {
         $reservation = $this->reservationService->createReservation($request->validated());
-        return $this->success('Reservation created successfully', $reservation);
+        return $this->success('Reservation created successfully', $reservation , 201);
     }
 
     /**
@@ -62,7 +62,7 @@ class ReservationController extends Controller
     public function show(Reservation $api_reservation)
     {
         $reservation = $this->reservationService->getReservationById($api_reservation);
-        return $this->success('Reservation fetched successfully', $reservation);
+        return $this->success('Reservation fetched successfully', $reservation,200);
     }
 
     /**
@@ -75,7 +75,7 @@ class ReservationController extends Controller
     public function update(UpdateReservationRequest $request, Reservation $api_reservation)
     {
         $reservation = $this->reservationService->updateReservation($request->validated(), $api_reservation);
-        return $this->success('Reservation updated successfully', $reservation);
+        return $this->success('Reservation updated successfully', $reservation,200);
     }
 
     /**
@@ -98,7 +98,7 @@ class ReservationController extends Controller
     public function getAvailableRooms(AvailableRoomsRequest $request)
     {
         $rooms = $this->reservationService->availableRooms($request->validated());
-        return $this->success('Available rooms fetched successfully', ['rooms' => $rooms, 'date' => $request->validated()]);
+        return $this->success('Available rooms fetched successfully', ['rooms' => $rooms, 'date' => $request->validated()],200);
     }
 
     /**
@@ -110,6 +110,6 @@ class ReservationController extends Controller
     public function cancelReservation(Reservation $reservation)
     {
         $reservation = $this->reservationService->cancelReservation($reservation);
-        return $this->success('Reservation cancelled successfully', $reservation);
+        return $this->success('Reservation cancelled successfully', $reservation,200);
     }
 }
