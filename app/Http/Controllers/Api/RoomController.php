@@ -33,7 +33,10 @@ class RoomController extends Controller
      */
     public function index()
     {
-        return response()->json($this->roomService->showAllRooms());
+        return response()->json([
+            'success'=> true,
+            'data'=> $this->roomService->showAllRooms(),
+        ]);
     }
 
     /**
@@ -44,6 +47,10 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        return response()->json($this->roomService->roomDetails($room));
-    }
-}
+        return response()->json([
+
+        'success'=>true,
+        'data'=>$this->roomService->roomDetails($room),
+        ]);
+    }}
+
