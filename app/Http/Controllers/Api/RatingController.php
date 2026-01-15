@@ -7,13 +7,8 @@ use App\Http\Requests\StoreRatingRequest;
 use App\Http\Requests\UpdateRatingRequest;
 use App\Services\RatingService;
 use App\Models\Rating;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
-/**
- * This controller manages API requests related to ratings, including
- * listing, viewing, creating, updating, and deleting ratings, fetching rating statistics.
- * Summary of RatingController
- * @package App\Http\Controllers\Api
- */
 class RatingController extends Controller
 {
     public const PERMISSIONS = [
@@ -22,11 +17,6 @@ class RatingController extends Controller
 
     protected RatingService $ratingService;
 
-    /**
-     * Constructor to initialize the rating service.
-     * Summary of __construct
-     * @param RatingService $ratingService
-     */
     public function __construct(RatingService $ratingService)
     {
         $this->ratingService = $ratingService;
@@ -35,156 +25,105 @@ class RatingController extends Controller
             ->only(['destroy']);
     }
 
-    /**
-     * Normal user (not registered or logged in)
-     * List all ratings
-     * Summary of index
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // Normal user (not registered or logged in)
     public function index()
     {
-        return response()->json([
-            'success' => true,
-            'data' => $this->ratingService->listAll()
-        ]);
+        try {
+            $ratings = $this->ratingService->listAll();
+            return $this->success('', $ratings, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
 
-    /**
-     * Normal user (not registered or logged in, can see a specific rating)
-     * Show a specific rating by ID
-     * Summary of show
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // Normal user (not registered or logged in, can see a specific rating)
     public function show($id)
     {
-        $rating = $this->ratingService->findById($id);
-
-        if (!$rating) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Rating not found.'
-            ], 404);
+        try {
+            $rating = $this->ratingService->findById($id);
+            return $this->success('', $rating, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $rating
-        ]);
     }
 
-    /**
-     * Normal user (not registered or logged in, can see rating for a specific reservation)
-     * Show rating by reservation ID
-     * Summary of getByReservation
-     * @param mixed $reservationId
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // Normal user (not registered or logged in, can see rating for a specific reservation)
     public function getByReservation($reservationId)
     {
-        $rating = $this->ratingService->findByReservation($reservationId);
-
-        if (!$rating) {
-            return response()->json([
-                'success' => false,
-                'message' => 'There is no rating for this reservation.'
-            ], 404);
+        try {
+            $rating = $this->ratingService->findByReservation($reservationId);
+            if (!$rating) {
+                return $this->error('There is no rating for this reservation', 404);
+            }
+            return $this->success('', $rating, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $rating
-        ]);
     }
 
-    /**
-     * signed in user: can see his own ratings:
-     * Get ratings of the authenticated user
-     * Summary of myRatings
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // signed in user: can see his own ratings:
     public function myRatings()
     {
-        return response()->json([
-            'success' => true,
-            'data' => $this->ratingService->myRatings()
-        ]);
+        try {
+            $ratings = $this->ratingService->myRatings();
+            return $this->success('', $ratings, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
 
-    /**
-     * signed in user: can add a rating:
-     * Store a new rating
-     * Summary of store
-     * @param StoreRatingRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // signed in user: can add a rating:
     public function store(StoreRatingRequest $request)
     {
-        $result = $this->ratingService->store($request->validated());
-
-        return response()->json(
-            [
-                'success' => $result['success'],
-                'message' => $result['message'] ?? 'Rating has been added successfully.',
-                'data' => $result['data'] ?? null
-            ],
-            $result['status']
-        );
+        try {
+            $rating = $this->ratingService->store($request->validated());
+            return $this->success('Rating has been added successfully', $rating, 201);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
 
-    /**
-     * signed in user: can edit a rating (of his own):
-     * Update an existing rating
-     * Summary of update
-     * @param UpdateRatingRequest $request
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // signed in user: can edit a rating (of his own):
     public function update(UpdateRatingRequest $request, $id)
     {
-        $result = $this->ratingService->update($id, $request->validated());
-
-        return response()->json(
-            [
-                'success' => $result['success'],
-                'message' => $result['message'] ?? 'Rating has been updated successfully.',
-                'data' => $result['data'] ?? null
-            ],
-            $result['status']
-        );
+        try {
+            $rating = $this->ratingService->update($id, $request->validated());
+            return $this->success('Rating has been updated successfully', $rating, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
 
-    /**
-     * signed in user: can delete a rating (of his own):
-     * Delete a rating
-     * Summary of destroy
-     * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // signed in user: can delete a rating (of his own):
     public function destroy($id)
     {
-        $result = $this->ratingService->delete($id);
-
-        return response()->json(
-            [
-                'success' => $result['success'],
-                'message' => $result['message']
-            ],
-            $result['status']
-        );
+        try {
+            $rating = $this->ratingService->delete($id);
+            return $this->success('Rating has been deleted successfully', null, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
 
-    /**
-     * Rating stats for specific roles (admin, manager...)
-     * Get rating statistics
-     * Summary of stats
-     * @return \Illuminate\Http\JsonResponse
-     */
+    // Rating stats for specific roles (admin, manager...)
     public function stats()
     {
-        return response()->json([
-            'success' => true,
-            'data' => [
+        try {
+            $stats = [
                 'total_ratings' => Rating::count(),
                 'average_score' => Rating::avg('score'),
                 'ratings_by_score' => [
@@ -194,7 +133,10 @@ class RatingController extends Controller
                     '4_stars' => Rating::where('score', 4)->count(),
                     '5_stars' => Rating::where('score', 5)->count(),
                 ]
-            ]
-        ]);
+            ];
+            return $this->success('', $stats, 200);
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred while fetching stats', 500);
+        }
     }
 }
