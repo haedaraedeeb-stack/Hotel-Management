@@ -13,7 +13,9 @@ use App\Services\ApiServicesService;
  */
 class ServiceController extends Controller
 {
-    protected ApiServicesService $services ;
+ 
+        protected ApiServicesService $services ;
+     
 
     /**
      * Constructor to initialize the services service.
@@ -45,6 +47,5 @@ class ServiceController extends Controller
     {
         return $this->services->showSingleService($id);
     }
-
 
 }
