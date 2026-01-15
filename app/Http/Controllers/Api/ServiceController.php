@@ -60,4 +60,5 @@ class ServiceController extends Controller
             return $this->error('An unexpected error occurred', 500);
         }
     }
+
 }
