@@ -12,7 +12,7 @@ class UserController extends Controller
 
     public function __construct(UserService $service)
     {
-        $this->middleware('role:admin|manager');
+        $this->middleware('role:admin|manager|receptionist');
         $this->service = $service;
     }
 

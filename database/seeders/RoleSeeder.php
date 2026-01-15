@@ -62,6 +62,11 @@ class RoleSeeder extends Seeder
             'edit room_types',
             'delete room_types',
 
+            'view_user',
+            'create_user',
+            'edit_user',
+            'delete_user',
+
         ];
         foreach ($prmissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -79,6 +84,7 @@ class RoleSeeder extends Seeder
             'reservation-edit',
             'reservation-delete',
             'reservation-checkin-checkout',
+            'view_user',
         ]);
     }
 }

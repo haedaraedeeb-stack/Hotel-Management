@@ -1,8 +1,4 @@
 @extends('layouts.admin')
-<<<<<<< Updated upstream
-
-@section('title', 'Dashboard')
-=======
 @section('title', 'Home')
 @section('content')
 
