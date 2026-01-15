@@ -38,10 +38,7 @@ class CustomerInvoiceController extends Controller
     public function index()
     {
         $invoices = $this->service->getAllInvoice();
-        return response()->json([
-            'status' => 'success',
-            'data' => $invoices
-        ]);
+        return $this->success('git invoices successfully',$invoices,200);
     }
 
     /**
@@ -56,12 +53,10 @@ class CustomerInvoiceController extends Controller
     $invoice = $this->service->getInvoiceById($id);
 
         if (!$invoice) {
-            return response()->json(['message' => 'Invoice not found or access denied'], 404);
+            return $this->error('Invoice not found or access denied',404);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $invoice
-        ]);
+        return $this->success('git invoice successfully',$invoice,200);
+        
     }
 }

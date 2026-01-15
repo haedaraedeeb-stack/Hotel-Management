@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Invoice;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -31,8 +32,11 @@ class ApiInvoiceService
 
             return $invoices;
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            abort(500);
+            Log::error( $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error',
+            ], 500));
         }
     }
 
@@ -55,8 +59,11 @@ class ApiInvoiceService
 
             return $invoice;
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            abort(500);
+            Log::error( $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error',
+            ], 500));
         }
     }
 }

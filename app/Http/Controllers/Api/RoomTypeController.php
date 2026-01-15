@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoomTypeFilterRequest;
+use App\Models\RoomType;
 use App\Services\ApiRoomTypeService;
 
 /**
@@ -29,9 +30,8 @@ class RoomTypeController extends Controller
      */
     public function index(RoomTypeFilterRequest $request)
     {
-        $roomTypes = $this->roomTypeService->getRoomTypesForApi($request->validated());
-        
-        return response()->json($roomTypes);
+        $roomTypes = $this->roomTypeService->getAll($request->validated());
+        return $this->success('Roomtypes fetched successfully',$roomTypes,200);
     }
 
     /**
@@ -40,10 +40,9 @@ class RoomTypeController extends Controller
      * @param mixed $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(RoomType $id)
     {
         $roomType = $this->roomTypeService->getRoomTypeForApi($id);
-        
-        return response()->json($roomType);
+        return $this->success('RoomType fetched successfully',$roomType,200);
     }
 }

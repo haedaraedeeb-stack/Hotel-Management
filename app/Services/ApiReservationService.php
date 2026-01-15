@@ -72,7 +72,10 @@ class ApiReservationService
             return $rooms->get();
         } catch (\Exception $e) {
             Log::error('Error fetching available rooms: ' . $e->getMessage());
-            abort(500);
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error',
+            ], 500));
         }
     }
 
