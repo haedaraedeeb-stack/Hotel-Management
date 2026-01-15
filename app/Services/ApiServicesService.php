@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Service;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -17,29 +19,45 @@ class ApiServicesService
      * Summary of showAllServices
      * @return \Illuminate\Http\JsonResponse
      */
-    public function showAllServices()
-    {
-        try {
-            $services = Service::all();
-            return response()->json($services, 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch services'], 500);
-        }
+public function showAllServices()
+{
+    try {
+        $services = Service::select('id','name','description')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $services
+        ],200);
+    } catch (\Exception $e) {
+        Log::error('Error fetching services: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error fetching services',
+        ], 500);
     }
+}
 
     /**
      * Retrieve a single service by ID
      * Summary of showSingleService
      * @param mixed $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function showSingleService($id)
     {
         try {
-            $service = Service::findOrFail($id);
-            return response()->json($service, 200);
+            return Service::findOrFail($id); // Returns model
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Service not found'], 404);
+            Log::error('Service not found: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Service not found',
+            ], 404));
+        } catch (\Exception $e) {
+            Log::error('Error fetching service: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching service',
+            ], 500));
         }
     }
 }

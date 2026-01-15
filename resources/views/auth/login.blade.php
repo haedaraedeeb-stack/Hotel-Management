@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-        <div class="max-w-3xl w-full">
+        <div class="max-w-xl w-full">
             <!-- Card Container -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
                 <!-- Decorative Header -->
