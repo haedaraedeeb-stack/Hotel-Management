@@ -11,17 +11,18 @@ Develop 4 : Mais Ahmad
 *واجهة تسجيل الدخول الآمنة مع تحقق متعدد الطبقات*
 <img width="1893" height="972" alt="Screenshot 2026-01-14 225615" src="https://github.com/user-attachments/assets/2e7fbecf-4651-427a-bd2a-56f1eb194bd2" />
 
-DashBoard [FlowBite] :  Cards , Charts  
-*رسوم بيانية وتحليلات مفصلة للإيرادات والإشغال*
-
+2. لوحة التحكم (Dashboard)
+رسوم بيانية وتحليلات مفصلة للإيرادات والإشغال
 <img width="1919" height="971" alt="Screenshot 2026-01-14 225744" src="https://github.com/user-attachments/assets/6dbd9e7b-53bc-4d9a-b64c-4ece0b96e561" />
 
 <img width="1901" height="974" alt="Screenshot 2026-01-14 225846" src="https://github.com/user-attachments/assets/f867a559-836d-4f95-a05e-a9900a2aae97" />
 
-Reservations Management
+3 . Reservations Management
 
 <img width="1898" height="964" alt="Screenshot 2026-01-14 225916" src="https://github.com/user-attachments/assets/930e51ae-9add-4bf7-8cac-2cf541e3aff1" />
 
+
+📖 وصف المشروع
 
 ### **Description**
 **Vistana Hotel Management System** is a comprehensive, modern hotel management solution built with Laravel 12. The system provides end-to-end management capabilities for hotel operations including reservations, room management, billing, customer relationships, and staff management. With a sleek, responsive dashboard built using Flowbite and Tailwind CSS, the system offers real-time insights and streamlined operations for hotel administrators.
@@ -51,7 +52,26 @@ Reservations Management
 - **Invoices**: نظام الفواتير والدفعات
 - **Ratings**: تقييمات العملاء
 - **Images** : الصور للغرف وأنواع الغرف و الخدمات
+- **notifications** :  الإشعارات
 
+  🔌 واجهة برمجة التطبيقات (API Documentation)
+
+مقدمة عن API
+نظام API مصمم باستخدام Laravel Sanctum للمصادقة، يدعم جميع عمليات CRUD الأساسية مع نظام تحكم كامل في الصلاحيات عبر Laravel Spatie. جميع الطلبات تتطلب توثيق باستخدام Bearer Token ما لم يُذكر غير ذلك.
+
+نظام التوثيق (Authentication)
+Authorization: Bearer {sanctum_token}
+Content-Type: application/json
+1. 🔐 وحدات المصادقة (Auth Endpoints)
+2. 2. 🏨 أنواع الغرف (RoomType Endpoints)
+3. 🛏️ الغرف (Rooms Endpoints)
+4. ⭐ التقييمات (Ratings Endpoints)
+5. 📅 الحجوزات (Reservation Endpoints)
+6. 🛎️ الخدمات (Services Endpoints)
+7. 🧾 الفواتير (Invoices Endpoints)
+
+🔗 Postman Collection
+Hotel Management API.postman_collection.json
 ✨ المميزات الرئيسية
 🎯 لإدارة الفندق
 نظام حجوزات متكامل مع تقويم تفاعلي
@@ -81,6 +101,7 @@ CSRF Protection
 
 تسجيل دخول آمن 
 
+📱 للضيوف والعملاء
 
 نظام تقييم 
 
@@ -95,9 +116,19 @@ Laravel Breeze - نظام المصادقة
 
 Laravel Sanctum - API Authentication
 
+Laravel Spatie - نظام الصلاحيات
+
 Laravel Eloquent - ORM
 
 MySQL 8.0 - قاعدة البيانات
+
+Laravel Notifications - نظام الإشعارات
+
+Laravel Observers - مراقبة التغييرات
+
+Laravel Mail - نظام البريد الإلكتروني
+
+
 
 
 Frontend
@@ -147,14 +178,21 @@ DB_DATABASE=hotelmanagement
 DB_USERNAME=root
 DB_PASSWORD=
 
-# 7. تهيئة قاعدة البيانات
-php artisan migrate --seed
+# 7. إنشاء جميع جداول التطبيق ووحداته 
+php artisan migrate 
 
-# 8. بناء الأصول
+# 8. ملء قاعدة البيانات 
+php artisan db:seed
+
+# 9. بناء الأصول
 npm run build
 
-# 9. تشغيل الخادم
+# 10. تشغيل الخادم
 php artisan serve
 
+مطور بـ ❤️ باستخدام Laravel 12, Flowbite, Sanctum, Spatie, Breeze
+نظام متكامل لإدارة الفنادق مع لوحة تحكم حديثة وواجهة برمجة تطبيقات قوية
+
+📄 الترخيص
 هذا المشروع مرخص تحت MIT License.
 
