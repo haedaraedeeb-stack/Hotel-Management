@@ -4,119 +4,67 @@ namespace App\Services;
 
 use App\Models\RoomType;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * This service handles API operations related to room types, including retrieval and formatting for API responses.
+ * Summary of ApiRoomTypeService
+ * @package App\Services
+ */
 class ApiRoomTypeService
 {
     /**
      * Summary of getAll
      * @param array $filters
+     * @throws HttpResponseException
      * @return Collection<int, RoomType>
      */
-    public function getAll(array $filters = []): Collection
-    {
-        $query = RoomType::with(['services', 'images']);
-
-        if (!empty($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('type', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('description', 'like', '%' . $filters['search'] . '%');
-            });
-        }
-
-        $orderBy = $filters['order_by'] ?? 'id';
-        $direction = $filters['direction'] ?? 'asc';
-        
-        if (in_array($orderBy, ['type', 'base_price', 'id'])) {
-            $query->orderBy($orderBy, $direction);
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * Summary of findById
-     * @param int $id
-     * @return array|null
-     */
-    public function findById(int $id): ?array
-    {
-        $roomType = RoomType::with(['services', 'images'])->find($id);
-        
-        if (!$roomType) {
-            return null;
-        }
-
-        return $this->formatRoomType($roomType);
-    }
-
-    /**
-     * Summary of formatRoomType
-     * @param RoomType $roomType
-     * @return array{base_price: mixed, description: mixed, id: mixed, images: mixed, services: mixed, type: mixed}
-     */
-    private function formatRoomType(RoomType $roomType): array
-    {
-        return [
-            'id' => $roomType->id,
-            'type' => $roomType->type,
-            'description' => $roomType->description,
-            'base_price' => $roomType->base_price,
-            'services' => $roomType->services->map(function($service) {
-                return [
-                    'id' => $service->id,
-                    'name' => $service->name
-                ];
-            }),
-            'images' => $roomType->images->map(function($image) {
-                return [
-                    'id' => $image->id,
-                    'path' => $image->path
-                ];
-            })
-        ];
-    }
-
-    /**
-     * Summary of getRoomTypesForApi
-     * @param array $filters
-     * @return array
-     */
-    public function getRoomTypesForApi(array $filters = []): array
+    public function getAll(array $filters = [])
     {
         try {
-            $roomTypes = $this->getAll($filters);
+            $query = RoomType::with(['services', 'images']);
 
-            if ($roomTypes->isEmpty()) {
-                return [];
+            if (!empty($filters['search'])) {
+                $query->where(function ($q) use ($filters) {
+                    $q->where('type', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+                });
             }
 
-            return $roomTypes->map(function ($roomType) {
-                return $this->formatRoomType($roomType);
-            })->toArray();
+            $orderBy = $filters['order_by'] ?? 'id';
+            $direction = $filters['direction'] ?? 'asc';
 
+            if (in_array($orderBy, ['type', 'base_price', 'id'])) {
+                $query->orderBy($orderBy, $direction);
+            }
+
+            return $query->get();
         } catch (\Exception $e) {
-            return [];
+            Log::error('Error fetching room types: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error',
+            ], 500));
         }
     }
 
     /**
      * Summary of getRoomTypeForApi
-     * @param int $id
-     * @return array|array{base_price: mixed, description: mixed, id: mixed, images: mixed, services: mixed, type: mixed}
+     * @param RoomType $roomType
+     * @throws HttpResponseException
+     * @return array
      */
-    public function getRoomTypeForApi(int $id): array
+    public function getRoomTypeForApi(RoomType $roomType): array
     {
         try {
-            $roomType = RoomType::with(['services', 'images'])->find($id);
-
-            if (!$roomType) {
-                return [];
-            }
-
-            return $this->formatRoomType($roomType);
-
+            return $roomType->load(['services', 'images'])->toArray();
         } catch (\Exception $e) {
-            return [];
+            Log::error('Error fetching room type: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error',
+            ], 500));
         }
     }
 }

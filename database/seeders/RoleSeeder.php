@@ -62,10 +62,17 @@ class RoleSeeder extends Seeder
             'edit room_types',
             'delete room_types',
 
+
+            'Room and profit reports',
+            'General Reports',
+            'Monthly Booking Report',
+
+            'list_user',
             'view_user',
             'create_user',
-            'edit_user',
             'delete_user',
+            'edit_user',
+            'soft_delete'
 
         ];
         foreach ($prmissions as $permission) {

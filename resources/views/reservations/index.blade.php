@@ -323,6 +323,9 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex flex-col gap-2">
+                                            @if ($reservation->status != 'rejected')
+                                            
+                                            
                                                 @if ($reservation->status == 'pending' && is_null($reservation->check_in))
                                                     <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded">
                                                         waiting for confirmation
@@ -381,6 +384,7 @@
                                                 @else
                                                     <span class="text-gray-400 text-sm italic">-</span>
                                                 @endif
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
@@ -421,11 +425,11 @@
                                                                 Confirm
                                                             </a>
                                                         @endif
-                                                        @if ($reservation->status != 'completed')
-                                                            <a href="{{ route('rejected_Reservation', $reservation) }}"
-                                                                class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition w-full justify-center">
-                                                                Reject
-                                                            </a>
+                                                        @if ($reservation->status != 'completed' && $reservation->status != 'rejected') 
+                                                        <a href="{{ route('rejected_Reservation', $reservation) }}"
+                                                           class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition w-full justify-center">
+                                                            Reject
+                                                        </a>
                                                         @endif
                                                     @endcan
                                                 </div>

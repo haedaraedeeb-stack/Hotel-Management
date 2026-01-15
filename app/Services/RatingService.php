@@ -5,138 +5,232 @@ namespace App\Services;
 use App\Models\Rating;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class RatingService
 {
-
-// show all ratings, for example: good for main page rating 
+    // show all ratings, for example: good for main page rating 
     public function listAll()
     {
-        return Rating::with(['reservation.user', 'reservation.room'])
-            ->latest()->get();
+        try {
+            return Rating::with(['reservation.user', 'reservation.room'])
+                ->latest()->get();
+        } catch (\Exception $e) {
+            Log::error('Error fetching all ratings: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching ratings',
+            ], 500));
+        }
     }
 
-// show a rating by his id (from main page -> it takes the user for this page)
+    // show a rating by his id (from main page -> it takes the user for this page)
     public function findById($id)
     {
-        return Rating::with(['reservation.user', 'reservation.room'])->find($id);
+        try {
+            $rating = Rating::with(['reservation.user', 'reservation.room'])->find($id);
+            if (!$rating) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'Rating not found',
+                ], 404));
+            }
+            return $rating;
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('Error fetching rating by ID: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching rating',
+            ], 500));
+        }
     }
 
-// show rating for a specific reservation (while browser the rooms for example.)
+    // show rating for a specific reservation (while browser the rooms for example.)
     public function findByReservation($reservationId)
     {
-        return Rating::where('reservation_id', $reservationId)
-            ->with(['reservation.user', 'reservation.room'])
-            ->first();
+        try {
+            return Rating::where('reservation_id', $reservationId)
+                ->with(['reservation.user', 'reservation.room'])
+                ->first();
+        } catch (\Exception $e) {
+            Log::error('Error fetching rating by reservation: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching rating for reservation',
+            ], 500));
+        }
     }
 
-// show the user his own ratings 
+    // show the user his own ratings 
     public function myRatings()
     {
-        $user = Auth::user();
-        return Rating::whereRelation('reservation', 'user_id', $user->id)
-            ->with('reservation.room')
-            ->latest()
-            ->paginate(5);
+        try {
+            $user = Auth::user();
+            return Rating::whereRelation('reservation', 'user_id', $user->id)
+                ->with('reservation.room')
+                ->latest()
+                ->paginate(5);
+        } catch (\Exception $e) {
+            Log::error('Error fetching user ratings: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching your ratings',
+            ], 500));
+        }
     }
 
-// create and store rating with conditions (when and where can the user make rating)
+    // create and store rating with conditions (when and where can the user make rating)
     public function store($rate)
     {
+        try {
+            $user = Auth::user();
 
-        $user = Auth::user();
+            $reservation = Reservation::find($rate['reservation_id']);
+            if (!$reservation) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'Reservation does not exist!',
+                ], 404));
+            }
 
-        $reservation = Reservation::find($rate['reservation_id']);
-        if (!$reservation) {
-            return $this->fail('Reservation does not exist!.', 404);
+            if ($reservation->user_id !== $user->id) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'You have no authorization to rate this reservation',
+                ], 403));
+            }
+
+            if (!$reservation->check_out) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'You cannot rate unless you have checked out!',
+                ], 400));
+            }
+
+            if (Rating::where('reservation_id', $reservation->id)->exists()) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'You have rated this reservation already',
+                ], 400));
+            }
+
+            $rating = Rating::create([
+                'reservation_id' => $reservation->id,
+                'score' => $rate['score'],
+                'description' => $rate['description'] ?? null,
+            ]);
+
+            return $rating;
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('Error creating rating: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error creating rating',
+            ], 500));
         }
-
-        if ($reservation->user_id !== $user->id) {
-            return $this->fail('you have no auth to rate this reservation', 403);
-        }
-
-        if (!$reservation->check_out) {
-            return $this->fail('you can not make rating unless you have checked out!', 400);
-        }
-
-        if (Rating::where('reservation_id', $reservation->id)->exists()) {
-            return $this->fail('You have rated this reservation already.', 400);
-        }
-
-        $rating = Rating::create([
-            'reservation_id' => $reservation->id,
-            'score' => $rate['score'],
-            'description' => $rate['description'] ?? null,
-        ]);
-
-        return $this->success($rating, 201);
     }
 
-// user can update his rating:
-    public function update($id, $rate)
+    // user can update his rating:
+    public function update(int $id, array $rate)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $rating = Rating::with('reservation')->find($id);
-        if (!$rating) {
-            return $this->fail('no rating found', 404);
+            $rating = Rating::with('reservation')->find($id);
+            if (!$rating) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'Rating not found',
+                ], 404));
+            }
+
+            if ($rating->reservation->user_id !== $user->id) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'You have no authorization to update this rating',
+                ], 403));
+            }
+
+            $rating->update([
+                'score' => $rate['score'] ?? $rating->score,
+                'description' => $rate['description'] ?? $rating->description,
+            ]);
+
+            return $rating;
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('Error updating rating: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error updating rating',
+            ], 500));
         }
-
-        if ($rating->reservation->user_id !== $user->id) {
-            return $this->fail('you have no auth to rate this reservation', 403);
-        }
-
-        $rating->update([
-            'score' => $rate['score'] ?? $rating->score,
-            'description' => $rate['description'] ?? $rating->description,
-        ]);
-
-        return $this->success($rating);
     }
 
-// user can delete his rating(s):
+    // user can delete his rating(s):
     public function delete($id)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $rating = Rating::with('reservation')->find($id);
-        if (!$rating) {
-            return $this->fail('no rating found', 404);
+            $rating = Rating::with('reservation')->find($id);
+            if (!$rating) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'Rating not found',
+                ], 404));
+            }
+
+            if (
+                $rating->reservation->user_id !== $user->id &&
+                !$user->hasRole('admin')
+            ) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'You have no authorization to delete this rating',
+                ], 403));
+            }
+
+            $rating->delete($id);
+
+            return $rating; // Return deleted rating or just true
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('Error deleting rating: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error deleting rating',
+            ], 500));
         }
-
-        if (
-            $rating->reservation->user_id !== $user->id &&
-            !$user->hasRole('admin')
-        ) {
-            return $this->fail('you have no auth to delete this reservation', 403);
-        }
-
-        $rating->delete();
-
-        return [
-            'success' => true,
-            'status' => 200,
-            'message' => 'Rating has been deleted successfully'
-        ];
     }
 
-
-// help messages:
-    private function success($data, int $status = 200): array
+    public function getStats()
     {
-        return [
-            'success' => true,
-            'status' => $status,
-            'data' => $data
-        ];
-    }
-
-    private function fail(string $message, int $status): array
-    {
-        return [
-            'success' => false,
-            'status' => $status,
-            'message' => $message
-        ];
+        try {
+            return [
+                'total_ratings' => Rating::count(),
+                'average_score' => Rating::avg('score'),
+                'ratings_by_score' => [
+                    '1_star'  => Rating::where('score', 1)->count(),
+                    '2_stars' => Rating::where('score', 2)->count(),
+                    '3_stars' => Rating::where('score', 3)->count(),
+                    '4_stars' => Rating::where('score', 4)->count(),
+                    '5_stars' => Rating::where('score', 5)->count(),
+                ]
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error fetching rating stats: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching rating statistics',
+            ], 500));
+        }
     }
 }

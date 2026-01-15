@@ -6,13 +6,31 @@ use App\Models\RoomType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * This service handles operations related to web room types, including creation, updating, retrieval, and deletion.
+ * Summary of WebRoomTypeService
+ * @package App\Services
+ */
 class WebRoomTypeService
 {
+    /**
+     * Retrieve all room types with their images and services
+     * Summary of getAll
+     * @return \Illuminate\Database\Eloquent\Collection<int, RoomType>
+     */
     public function getAll()
     {
         return RoomType::with(['images', 'services'])->get();
     }
 
+    /**
+     * Update a specific room type with its images and services
+     * Create a new room type with associated services and images
+     * Summary of store
+     * @param array $data
+     * @param mixed $images
+     * @return RoomType
+     */
     public function store(array $data, ?array $images = null): RoomType
     {
         return DB::transaction(function () use ($data, $images) {
@@ -34,6 +52,14 @@ class WebRoomTypeService
         });
     }
 
+    /**
+     * Update a specific room type with its images and services
+     * Summary of update
+     * @param RoomType $roomType
+     * @param array $data
+     * @param mixed $images
+     * @return RoomType
+     */
     public function update(RoomType $roomType, array $data, ?array $images = null): RoomType
     {
         return DB::transaction(function () use ($roomType, $data, $images) {
@@ -60,6 +86,12 @@ class WebRoomTypeService
         });
     }
 
+    /**
+     * Delete a specific room type along with its images and service associations
+     * Summary of destroy
+     * @param RoomType $roomType
+     * @return void
+     */
     public function destroy(RoomType $roomType): void
     {
         DB::transaction(function () use ($roomType) {
