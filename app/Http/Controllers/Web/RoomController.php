@@ -33,13 +33,13 @@ class RoomController extends Controller
     {
         $rooms = $this->roomService->getAllRooms();
 
-        return view('room.index', compact('rooms'));
+        return view('Room.index', compact('rooms'));
     }
 
     public function create()
     {
         $roomtypes = RoomType::select('id', 'type', 'description', 'base_price')->get();
-        return view('room.create', compact('roomtypes'));
+        return view('Room.create', compact('roomtypes'));
     }
 
     /**
@@ -73,7 +73,7 @@ class RoomController extends Controller
                 ->with('error', 'Room not found');
         }
 
-        return view('room.show', compact('room'));
+        return view('Room.show', compact('room'));
     }
 
     public function edit($id)
@@ -86,7 +86,7 @@ class RoomController extends Controller
                 ->with('error', 'Room not found');
         }
 
-        return view('room.edit', compact('room', 'roomtypes'));
+        return view('Room.edit', compact('room', 'roomtypes'));
     }
 
     /**

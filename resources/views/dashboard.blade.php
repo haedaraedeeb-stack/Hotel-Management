@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-
 @section('title', 'Home')
 @section('content')
 
@@ -62,10 +61,10 @@
                         </div>
                     </div>
                 </div>
-            
+
 
             {{-- Card 4: Rooms --}}
-        
+
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                     <div class="flex items-center">
                         <div
@@ -84,7 +83,7 @@
                 </div>
             </div>
             @endcan
-        
+
 
 
         {{-- 2. Charts Section (Charts Grid) --}}
@@ -98,10 +97,10 @@
                     </div>
                     <div id="revenue-chart"></div>
                 </div>
-         
+
 
             {{-- Chart 2: Room Types (Pie/Donut) --}}
-        
+
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="flex justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-900">Room Preferences</h3>

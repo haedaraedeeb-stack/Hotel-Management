@@ -62,6 +62,7 @@ class RoleSeeder extends Seeder
             'edit room_types',
             'delete room_types',
 
+
             'Room and profit reports',
             'General Reports',
             'Monthly Booking Report',
@@ -90,6 +91,7 @@ class RoleSeeder extends Seeder
             'reservation-edit',
             'reservation-delete',
             'reservation-checkin-checkout',
+            'view_user',
         ]);
     }
 }
