@@ -44,8 +44,8 @@ Develop 4 : Mais Ahmad
 ## 🏗️ هيكل قاعدة البيانات (ERD)
 <img width="1060" height="790" alt="Screenshot 2026-01-15 005213" src="https://github.com/user-attachments/assets/dd710e8e-8962-4034-8d21-6f726c5a73d5" />
 
-  ### **  Tables:**
-- **Users & Roles**: إدارة المستخدمين والصلاحيات
+  ### **Main  Tables:**
+- **Users**: إدارة المستخدمين 
 - **Rooms & Room Types**: إدارة الغرف وأنواعها
 - **Reservations**: نظام الحجوزات المتكامل
 - **Services**: الخدمات  للفندق
@@ -71,7 +71,7 @@ Content-Type: application/json
 7. 🧾 الفواتير (Invoices Endpoints)
 
 🔗 Postman Collection
-Hotel Management API.postman_collection.json
+[Hotel Management API.postman_collection.json](https://haedaraedeeb-6578573.postman.co/workspace/Hotel-Management-API~8227258f-a8a5-4697-a554-d8aed38f685b/collection/50368281-ecd8cfd5-5f78-4848-824c-e35c5acbd96a?action=share&source=copy-link&creator=50368281)
 ✨ المميزات الرئيسية
 🎯 لإدارة الفندق
 نظام حجوزات متكامل مع تقويم تفاعلي
