@@ -1,11 +1,11 @@
 # 🏨 Vistana Hotel Management System
 
-Leader : Haedara Deeb 
-Deputy Commander : Mohammad Shaheen 
-Develop 1 : Bedoor Ali Deeb
-Develop 2 : Zaher Sankari
-Develop 3 : Ali Mohammad Abbas
-Develop 4 : Mais Ahmad
+Leader : Haedara Deeb ;
+Deputy Commander : Mohammad Shaheen ;
+Develop 1 : Bedoor Ali Deeb ;
+Develop 2 : Zaher Sankari ;
+Develop 3 : Ali Mohammad Abbas ;
+Develop 4 : Mais Ahmad ;
 
 ### **1. صفحة تسجيل الدخول (Login Page)**
 *واجهة تسجيل الدخول الآمنة مع تحقق متعدد الطبقات*
