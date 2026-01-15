@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\ApiServicesService;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 /**
  * This controller handles API requests related to services, including
@@ -22,7 +23,6 @@ class ServiceController extends Controller
      */
     public function __construct(ApiServicesService $services) {
         $this->services = $services;
-        $this->middleware('role:client');
     }
 
     /**
@@ -32,7 +32,14 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        return $this->services->showAllServices();
+        try {
+            $services = $this->services->showAllServices();
+            return $this->success('', $services, 200);
+        } catch (HttpResponseException $e) {
+            throw $e; // Re-throw the HttpResponseException
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
 
     /**
@@ -43,8 +50,13 @@ class ServiceController extends Controller
      */
     public function show($id)
     {
-        return $this->services->showSingleService($id);
+        try {
+            $service = $this->services->showSingleService($id);
+            return $this->success('', $service, 200);
+        } catch (HttpResponseException $e) {
+            throw $e; // Re-throw the HttpResponseException
+        } catch (\Exception $e) {
+            return $this->error('An unexpected error occurred', 500);
+        }
     }
-
-
 }

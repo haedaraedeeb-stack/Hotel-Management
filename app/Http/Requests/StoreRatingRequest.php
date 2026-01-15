@@ -24,10 +24,10 @@ class StoreRatingRequest extends FormRequest
     {
         return [
             'reservation_id.required' => 'Reservaion is Required to make a Rating',
-            'reservation_id.exists' => 'Reservation does not exist pal',
-            'score.required' => 'Hey, adding score is required',
-            'score.min' => 'Minimun score is 1 star (please dont D:)',
-            'score.max' => 'Maximum score is 5 stars (yes :D)',
+            'reservation_id.exists' => 'Reservation does not exist',
+            'score.required' => 'adding score is required',
+            'score.min' => 'Minimun score is 1 star',
+            'score.max' => 'Maximum score is 5 stars',
         ];
     }
 }

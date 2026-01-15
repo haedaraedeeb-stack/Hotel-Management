@@ -22,9 +22,9 @@ class UpdateRatingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'score.required' => 'Hey, adding score is required',
-            'score.min' => 'Minimun score is 1 star (please dont D:)',
-            'score.max' => 'Maximum score is 5 stars (yes :D)',
+            'score.required' => 'adding score is required',
+            'score.min' => 'Minimun score is 1 star',
+            'score.max' => 'Maximum score is 5 stars',
         ];
     }
 }
