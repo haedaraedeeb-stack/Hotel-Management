@@ -136,7 +136,7 @@ class RatingService
     }
 
     // user can update his rating:
-    public function update($id, $rate)
+    public function update(int $id, array $rate)
     {
         try {
             $user = Auth::user();
@@ -187,18 +187,18 @@ class RatingService
                 ], 404));
             }
 
-            // if (
-            //     $rating->reservation->user_id !== $user->id &&
-            //     !$user->hasRole('admin')
-            // ) {
-            //     throw new HttpResponseException(response()->json([
-            //         'success' => false,
-            //         'message' => 'You have no authorization to delete this rating',
-            //     ], 403));
-            // }
+            if (
+                $rating->reservation->user_id !== $user->id &&
+                !$user->hasRole('admin')
+            ) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'You have no authorization to delete this rating',
+                ], 403));
+            }
 
-            $rating->delete();
-            
+            $rating->delete($id);
+
             return $rating; // Return deleted rating or just true
         } catch (HttpResponseException $e) {
             throw $e;
@@ -207,6 +207,29 @@ class RatingService
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => 'Error deleting rating',
+            ], 500));
+        }
+    }
+
+    public function getStats()
+    {
+        try {
+            return [
+                'total_ratings' => Rating::count(),
+                'average_score' => Rating::avg('score'),
+                'ratings_by_score' => [
+                    '1_star'  => Rating::where('score', 1)->count(),
+                    '2_stars' => Rating::where('score', 2)->count(),
+                    '3_stars' => Rating::where('score', 3)->count(),
+                    '4_stars' => Rating::where('score', 4)->count(),
+                    '5_stars' => Rating::where('score', 5)->count(),
+                ]
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error fetching rating stats: ' . $e->getMessage());
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Error fetching rating statistics',
             ], 500));
         }
     }

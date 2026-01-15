@@ -14,14 +14,15 @@ use Illuminate\Http\Exceptions\HttpResponseException;
  */
 class ServiceController extends Controller
 {
-    protected ApiServicesService $services ;
+    protected ApiServicesService $services;
 
     /**
      * Constructor to initialize the services service.
      * Summary of __construct
      * @param ApiServicesService $services
      */
-    public function __construct(ApiServicesService $services) {
+    public function __construct(ApiServicesService $services)
+    {
         $this->services = $services;
     }
 

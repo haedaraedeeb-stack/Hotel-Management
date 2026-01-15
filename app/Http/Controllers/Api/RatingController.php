@@ -6,23 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRatingRequest;
 use App\Http\Requests\UpdateRatingRequest;
 use App\Services\RatingService;
-use App\Models\Rating;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RatingController extends Controller
 {
-    public const PERMISSIONS = [
-        'delete' => 'delete rating',
-    ];
 
-    protected RatingService $ratingService;
+    protected $ratingService;
 
     public function __construct(RatingService $ratingService)
     {
         $this->ratingService = $ratingService;
 
-        $this->middleware('permission:' . self::PERMISSIONS['delete'])
-            ->only(['destroy']);
+        $this->middleware('role:admin|manager')
+            ->only(['stats']);
     }
 
     // Normal user (not registered or logged in)
@@ -123,18 +119,10 @@ class RatingController extends Controller
     public function stats()
     {
         try {
-            $stats = [
-                'total_ratings' => Rating::count(),
-                'average_score' => Rating::avg('score'),
-                'ratings_by_score' => [
-                    '1_star' => Rating::where('score', 1)->count(),
-                    '2_stars' => Rating::where('score', 2)->count(),
-                    '3_stars' => Rating::where('score', 3)->count(),
-                    '4_stars' => Rating::where('score', 4)->count(),
-                    '5_stars' => Rating::where('score', 5)->count(),
-                ]
-            ];
+            $stats = $this->ratingService->getStats();
             return $this->success('', $stats, 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
         } catch (\Exception $e) {
             return $this->error('An unexpected error occurred while fetching stats', 500);
         }
