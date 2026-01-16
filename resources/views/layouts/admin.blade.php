@@ -229,7 +229,7 @@
             </div>
             <span
                 class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-xl">Vistana</span>
-            <span class="ml-2 text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full font-medium">Admin</span>
+            {{-- <span class="ml-2 text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full font-medium">Admin</span> --}}
         </div>
 
         <div class="ml-auto flex items-center space-x-4">
@@ -425,6 +425,7 @@
 
                 <!-- Users -->
                 <li>
+                @can('list_user')
                     <a href="{{ route('users.index') }}"
                         class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'users.index' || str_starts_with(Route::currentRouteName(), 'users.') ? 'active' : '' }}">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
@@ -438,6 +439,7 @@
                         @endif
                     </a>
                 </li>
+                @endcan
 
 
                 <!-- Rooms -->
@@ -494,6 +496,7 @@
                 @endcan
 
                 <!-- Invoices -->
+                @can('view invoices')
                 <li>
                     <a href="{{ route('invoices.index') }}"
                         class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'invoices.index' || str_starts_with(Route::currentRouteName(), 'invoices.') ? 'active' : '' }}">
@@ -508,6 +511,7 @@
                         @endif
                     </a>
                 </li>
+                @endcan
 
                 <!-- Roles -->
                 @can('role-list')

@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class InvoiceController extends Controller
 {
     public const PERMISSIONS = [
+        'index' => 'view invoices',
         'create' => 'create invoice',
         'edit' => 'edit invoice',
         'delete' => 'delete invoice',
@@ -25,6 +26,8 @@ class InvoiceController extends Controller
         $this->middleware('auth');
         $this->invoiceService = $invoiceService;
 
+        $this->middleware('permission:' . self::PERMISSIONS['index'])
+            ->only(['index','show']);
         $this->middleware('permission:' . self::PERMISSIONS['create'])
             ->only(['create', 'store']);
         $this->middleware('permission:' . self::PERMISSIONS['edit'])
