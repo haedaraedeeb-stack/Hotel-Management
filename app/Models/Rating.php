@@ -12,6 +12,7 @@ class Rating extends Model
         'score',
         'description',
     ];
+    protected $hidden = ['created_at','updated_at'];
 
     public function reservation()
     {

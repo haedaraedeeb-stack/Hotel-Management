@@ -12,7 +12,7 @@ class Image extends Model
         'imageable_type',
 
     ];
-
+    protected $hidden = ['created_at','updated_at'];
     public function imageable()
     {
         return $this->morphTo();
