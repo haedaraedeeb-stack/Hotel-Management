@@ -7,11 +7,19 @@ use App\Models\Rating;
 use App\Services\WebRatingService;
 use Illuminate\Http\Request;
 
+/**
+ * This controller manages rating-related web requests,
+ * including listing, showing, and deleting ratings.
+ * Summary of RatingController
+ * @package App\Http\Controllers\Web
+ */
 class RatingController extends Controller
 {
     protected $ratingService;
     /**
-     * Display a listing of the resource.
+     * RatingController constructor.
+     * Summary of __construct
+     * @param WebRatingService $ratingService
      */
     public function __construct(WebRatingService $ratingService)
     {
@@ -20,6 +28,13 @@ class RatingController extends Controller
         $this->middleware('permission:rating-show')->only(['show']);
         $this->middleware('permission:rating-delete')->only(['destroy']);
     }
+
+    /**
+     * Display a listing of ratings.
+     * Summary of index
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $ratings = $this->ratingService->getAllRatings($request);
@@ -28,7 +43,8 @@ class RatingController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new rating.
+     * Summary of create
      */
     public function create()
     {
@@ -36,7 +52,9 @@ class RatingController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created rating in storage.
+     * Summary of store
+     * @param Request $request
      */
     public function store(Request $request)
     {
@@ -44,7 +62,10 @@ class RatingController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified rating.
+     * Summary of show
+     * @param string $id
+     * @return \Illuminate\View\View
      */
     public function show(string $id)
     {
@@ -56,7 +77,9 @@ class RatingController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified rating.
+     * Summary of edit
+     * @param string $id
      */
     public function edit(string $id)
     {
@@ -64,7 +87,10 @@ class RatingController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified rating in storage.
+     * Summary of update
+     * @param Request $request
+     * @param string $id
      */
     public function update(Request $request, string $id)
     {
@@ -72,7 +98,10 @@ class RatingController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified rating from storage.
+     * Summary of destroy
+     * @param string $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(string $id)
     {

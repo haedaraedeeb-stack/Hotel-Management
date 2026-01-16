@@ -12,10 +12,21 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
+/**
+ * This controller manages room-related web requests,
+ * including listing, creating, updating, showing, and deleting rooms.
+ * Class RoomController
+ * @package App\Http\Controllers\Web
+ */
 class RoomController extends Controller
 {
     protected $roomService;
 
+    /**
+     * RoomController constructor.
+     * Summary of __construct
+     * @param RoomService $roomService
+     */
     public function __construct(RoomService $roomService)
     {
         $this->roomService = $roomService;
@@ -27,7 +38,9 @@ class RoomController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of rooms.
+     * Summary of index
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -36,6 +49,11 @@ class RoomController extends Controller
         return view('Room.index', compact('rooms'));
     }
 
+    /**
+     * Show the form for creating a new room.
+     * Summary of create
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $roomtypes = RoomType::select('id', 'type', 'description', 'base_price')->get();
@@ -43,7 +61,10 @@ class RoomController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created room in storage.
+     * Summary of store
+     * @param StoreRoomRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreRoomRequest $request)
     {
@@ -61,7 +82,10 @@ class RoomController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified room.
+     * Summary of show
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
@@ -76,6 +100,12 @@ class RoomController extends Controller
         return view('Room.show', compact('room'));
     }
 
+    /**
+     * Show the form for editing the specified room.
+     * Summary of edit
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $room = $this->roomService->getRoomById($id);
@@ -90,7 +120,11 @@ class RoomController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified room in storage.
+     * Summary of update
+     * @param UpdateRoomRequest $request
+     * @param Room $room
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateRoomRequest $request, Room $room)
     {
@@ -108,7 +142,10 @@ class RoomController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified room from storage.
+     * Summary of destroy
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {

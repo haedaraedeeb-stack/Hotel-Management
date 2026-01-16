@@ -8,13 +8,15 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
 
 /**
- * This service handles API operations related to room types, including retrieval and formatting for API responses.
+ * This service handles API operations related to room types,
+ * including retrieval and formatting for API responses.
  * Summary of ApiRoomTypeService
  * @package App\Services
  */
 class ApiRoomTypeService
 {
     /**
+     * Retrieve all room types with their associated services and images.
      * Summary of getAll
      * @param array $filters
      * @throws HttpResponseException
@@ -50,6 +52,7 @@ class ApiRoomTypeService
     }
 
     /**
+     * Format a single room type for API response, including its services and images.
      * Summary of getRoomTypeForApi
      * @param RoomType $roomType
      * @throws HttpResponseException
