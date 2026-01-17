@@ -30,15 +30,6 @@
                             <label for="room_id" class="block text-sm font-medium text-gray-700">Room</label>
                             <select name="room_id" id="room_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required disabled>
                                 <option value="">First select dates</option>
-                                {{-- @if(old('room_id'))
-                                    @foreach($rooms as $room)
-                                        @if(old('room_id') == $room->id)
-                                            <option value="{{ $room->id }}" selected>
-                                                Room {{ $room->room_number }} ({{ $room->roomType->type ?? 'N/A' }}) - ${{ $room->current_price }}/night
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                @endif --}}
                             </select>
                             <div id="room-loading" class="mt-2 hidden">
                                 <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
@@ -98,20 +89,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const roomLoading = document.getElementById('room-loading');
     const roomInfo = document.getElementById('room-info');
     const roomCount = document.getElementById('room-count');
-    
+
     let debounceTimer;
 
     function fetchAvailableRooms() {
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
-        
+
         if (!startDate || !endDate) {
             roomSelect.innerHTML = '<option value="">First select dates</option>';
             roomSelect.disabled = true;
             roomInfo.classList.add('hidden');
             return;
         }
-        
+
         // Validate dates
         if (new Date(startDate) >= new Date(endDate)) {
             roomSelect.innerHTML = '<option value="">End date must be after start date</option>';
@@ -119,16 +110,16 @@ document.addEventListener('DOMContentLoaded', function() {
             roomInfo.classList.add('hidden');
             return;
         }
-        
+
         // Show loading
         roomSelect.disabled = true;
         roomLoading.classList.remove('hidden');
         roomSelect.innerHTML = '<option value="">Loading available rooms...</option>';
         roomInfo.classList.add('hidden');
-        
+
         // Get CSRF token
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
+
         // Make AJAX request
         fetch('{{ route("reservations.getAvailableRooms") }}', {
             method: 'POST',
@@ -151,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             // Update room select options
             roomSelect.innerHTML = '<option value="">Select Room</option>';
-            
+
             if (data.rooms && data.rooms.length > 0) {
                 data.rooms.forEach(room => {
                     const option = document.createElement('option');
@@ -160,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     roomSelect.appendChild(option);
                 });
                 roomSelect.disabled = false;
-                
+
                 // Show room info
                 roomCount.textContent = `Found ${data.rooms.length} available room(s) for the selected dates`;
                 roomInfo.classList.remove('hidden');
@@ -180,21 +171,21 @@ document.addEventListener('DOMContentLoaded', function() {
             roomLoading.classList.add('hidden');
         });
     }
-    
+
     // Debounce function to prevent too many requests
     function debounceFetch() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(fetchAvailableRooms, 300);
     }
-    
+
     // Event listeners for date changes
     startDateInput.addEventListener('change', debounceFetch);
     endDateInput.addEventListener('change', debounceFetch);
-    
+
     // Also trigger on input for better UX
     startDateInput.addEventListener('input', debounceFetch);
     endDateInput.addEventListener('input', debounceFetch);
-    
+
     // Initialize if old values exist
     if (startDateInput.value && endDateInput.value) {
         fetchAvailableRooms();

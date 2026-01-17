@@ -45,7 +45,7 @@ class ReservationController extends Controller
      */
     public function index(Request $request)
     {
-        $reservations = $this->reservationService->getallReservations($request);
+        $reservations = $this->reservationService->getallReservations($request)->appends($request->all());
         return view('reservations.index', compact('reservations', 'request'));
     }
 
@@ -89,7 +89,6 @@ class ReservationController extends Controller
      */
     public function edit(Reservation $reservation)
     {
-        // $rooms = Room::all();
         $users = User::all();
 
         return view('reservations.edit', compact('reservation', 'users'));

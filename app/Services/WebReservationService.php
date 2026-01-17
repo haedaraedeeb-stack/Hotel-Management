@@ -93,9 +93,6 @@ class WebReservationService
                 'room_id' => $data['room_id'] ?? $reservation->room_id,
                 'start_date' => $data['start_date'] ?? $reservation->start_date,
                 'end_date' => $data['end_date'] ?? $reservation->end_date,
-                // 'status' => $data['status'] ?? $reservation->status,
-                // 'check_in' => $data['check_in'] ?? $reservation->check_in,
-                // 'check_out' => $data['check_out'] ?? $reservation->check_out,
             ]);
 
             $reservation->invoice->update([

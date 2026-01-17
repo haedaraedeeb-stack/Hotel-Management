@@ -49,7 +49,7 @@ class ApiReservationService
     public function availableRooms(array $criteria)
     {
         try {
-            $rooms = Room::with('images', 'roomType.services')
+            $rooms = Room::with('images', 'roomType.services')->whereIn('status', ['available' , 'occupied'])
                 ->whereDoesntHave(
                     'reservations',
                     function ($query) use ($criteria) {
