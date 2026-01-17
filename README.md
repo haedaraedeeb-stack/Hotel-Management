@@ -57,7 +57,7 @@
   🔌 واجهة برمجة التطبيقات (API Documentation)
 
 مقدمة عن API
-نظام API مصمم باستخدام Laravel Sanctum للمصادقة، يدعم جميع عمليات CRUD الأساسية مع نظام تحكم كامل في الصلاحيات عبر Laravel Spatie. جميع الطلبات تتطلب توثيق باستخدام Bearer Token ما لم يُذكر غير ذلك.
+نظام API مصمم باستخدام Laravel Sanctum للمصادقة، يدعم جميع عمليات CRUD الأساسية مع نظام تحكم كامل في الصلاحيات عبر Laravel Spatie.
 
 نظام التوثيق (Authentication)
 Authorization: Bearer {sanctum_token}
@@ -71,7 +71,8 @@ Content-Type: application/json
 7. 🧾 الفواتير (Invoices Endpoints)
 
 🔗 Postman Collection
-[Hotel Management API.postman_collection.json](https://haedaraedeeb-6578573.postman.co/workspace/Hotel-Management-API~8227258f-a8a5-4697-a554-d8aed38f685b/collection/50368281-ecd8cfd5-5f78-4848-824c-e35c5acbd96a?action=share&source=copy-link&creator=50368281)
+The Collections :   ====>>>>>       https://documenter.getpostman.com/view/50368281/2sBXVifovz
+
 ✨ المميزات الرئيسية
 🎯 لإدارة الفندق
 نظام حجوزات متكامل مع تقويم تفاعلي

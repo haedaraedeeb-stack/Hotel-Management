@@ -52,5 +52,11 @@ class RoomController extends Controller
         'success'=>true,
         'data'=>$this->roomService->roomDetails($room),
         ]);
+        if(!$room){
+            return response()->json([
+                'success'=>false,
+                'message'=>'Room not found',
+            ], 404);
+        }
     }}
 
