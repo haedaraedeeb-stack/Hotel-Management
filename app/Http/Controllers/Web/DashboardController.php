@@ -10,13 +10,24 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * This controller manages the dashboard view for different user roles,
+ * providing relevant statistics and recent activity data.
+ * Summary of DashboardController
+ * @package App\Http\Controllers\Web
+ */
 class DashboardController extends Controller
 {
+    /**
+     * Display the dashboard with statistics based on user roles
+     * Summary of index
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $user = auth()->user();
 
-        // بيانات مشتركة للجميع
+        // Shared Data for everyone
         $recentBookings = Reservation::with(['user', 'room'])
             ->latest()
             ->take(10)
@@ -25,7 +36,7 @@ class DashboardController extends Controller
         $roomTypeStats = $this->getRoomTypeStats();
         $monthlyReservations = $this->getMonthlyReservations();
 
-        // قيم افتراضية
+        // Default Values
         $stats = [];
         $chartData = [
             'labels' => [],
@@ -48,7 +59,7 @@ class DashboardController extends Controller
             $chartData = $this->getMonthlyRevenue();
         }
 
-        // receptionist (يشوف فقط الغرف + الحجوزات)
+        // receptionist (only sees rooms + reservstions)
         if ($user->hasRole('receptionist')) {
             $stats = [
                 'occupancy' => $this->calculateOccupancy(),
@@ -64,6 +75,11 @@ class DashboardController extends Controller
         ));
     }
 
+    /**
+     * Calculate the current occupancy rate of rooms
+     * Summary of calculateOccupancy
+     * @return int
+     */
     private function calculateOccupancy()
     {
         $total = Room::count();
@@ -73,6 +89,11 @@ class DashboardController extends Controller
 
     }
 
+    /**
+     * Retrieve monthly revenue data for the current year
+     * Summary of getMonthlyRevenue
+     * @return array
+     */
     private function getMonthlyRevenue()
     {
         $data = Invoice::select(
@@ -92,6 +113,11 @@ class DashboardController extends Controller
         ];
     }
 
+    /**
+     * Retrieve room type statistics based on reservations
+     * Summary of getRoomTypeStats
+     * @return array
+     */
     private function getRoomTypeStats()
     {
         $data = Reservation::join('rooms', 'reservations.room_id', '=', 'rooms.id')
@@ -106,6 +132,11 @@ class DashboardController extends Controller
         ];
     }
 
+    /**
+     * Retrieve monthly reservation counts for the current year
+     * Summary of getMonthlyReservations
+     * @return \Illuminate\Support\Collection
+     */
     private function getMonthlyReservations()
     {
         $data = Reservation::select(

@@ -6,10 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Services\UserService;
 
+/**
+ * This controller manages user-related web requests,
+ * including listing, creating, updating, showing, deleting, and restoring users.
+ * Class UserController
+ * @package App\Http\Controllers\Web
+ */
 class UserController extends Controller
 {
     protected $service;
 
+    /**
+     * UserController constructor.
+     * Summary of __construct
+     * @param UserService $service
+     */
     public function __construct(UserService $service)
     {
         $this->service = $service;
@@ -22,7 +33,9 @@ class UserController extends Controller
     }
 
     /**
-     * Display all users.
+     * Display a listing of users.
+     * Summary of index
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -35,7 +48,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show create user page.
+     * Show the form for creating a new user.
+     * Summary of create
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -44,7 +59,10 @@ class UserController extends Controller
     }
 
     /**
-     * Store a new user.
+     * Store a newly created user in storage.
+     * Summary of store
+     * @param UserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(UserRequest $request)
     {
@@ -57,7 +75,10 @@ class UserController extends Controller
     }
 
     /**
-     * Show edit user page.
+     * Display the specified user.
+     * Summary of show
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -71,7 +92,11 @@ class UserController extends Controller
     }
 
     /**
-     * Update user data.
+     * Update the specified user in storage.
+     * Summary of update
+     * @param UserRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UserRequest $request, $id)
     {
@@ -84,7 +109,10 @@ class UserController extends Controller
     }
 
     /**
-     * Delete user.
+     * Remove the specified user from storage.
+     * Summary of destroy
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
@@ -97,7 +125,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show trash page.
+     * Display a listing of trashed users.
+     * Summary of trash
+     * @return \Illuminate\View\View
      */
     public function trash()
     {
@@ -106,7 +136,10 @@ class UserController extends Controller
     }
 
     /**
-     * Restore user.
+     * Restore the specified trashed user.
+     * Summary of restore
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)
     {
@@ -119,7 +152,10 @@ class UserController extends Controller
     }
 
     /**
-     * Permanently delete user.
+     * Permanently delete the specified trashed user.
+     * Summary of forceDelete
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function forceDelete($id)
     {
