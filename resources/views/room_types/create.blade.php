@@ -42,7 +42,7 @@
                         </div>
 
                             {{-- Description --}}
-                            <div>
+                            <div class="px-8">
                                 <label for="description"
                                     class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                 <textarea id="description" name="description" rows="4" required
@@ -57,7 +57,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                                 {{-- Base Price --}}
-                                <div>
+                                <div class="px-8 py-4">
                                     <label for="base_price" class="block text-sm font-medium text-gray-700 mb-1">Base Price
                                         ($)</label>
                                     <div class="relative rounded-md shadow-sm">
@@ -74,7 +74,7 @@
                                 </div>
 
                                 {{-- Images Upload --}}
-                                <div>
+                                <div class="px-8 py-4">
                                     <label for="images" class="block text-sm font-medium text-gray-700 mb-1">Upload
                                         Images</label>
                                     <input type="file" name="images[]" id="images" multiple
@@ -86,7 +86,7 @@
                             <div class="border-t border-gray-100 my-6"></div>
 
                             {{-- Services Selection (Checkboxes) --}}
-                            <div>
+                            <div class="px-8">
                                 <h3 class="text-lg font-medium text-gray-900 mb-4">Available Services</h3>
                                 <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
                                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -108,7 +108,7 @@
                             </div>
 
                             {{-- Actions Buttons --}}
-                            <div class="flex items-center justify-end gap-4 pt-4">
+                            <div class="p-8 flex items-center justify-end gap-4 pt-4">
                                 <a href="{{ route('room_types.index') }}"
                                     class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-200 transition">
                                     Cancel

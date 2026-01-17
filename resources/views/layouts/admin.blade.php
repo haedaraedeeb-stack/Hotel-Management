@@ -6,209 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard')</title>
-
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        :root {
-            --primary-color: #4f46e5;
-            --primary-dark: #4338ca;
-            --secondary-color: #f8fafc;
-            --sidebar-width: 16rem;
-            --sidebar-collapsed-width: 4.5rem;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-            min-height: 100vh;
-        }
-
-        /* Navbar enhancements */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        /* Sidebar enhancements */
-        .sidebar {
-            width: var(--sidebar-width);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(180deg, #ffffff 0%, #fcfdff 100%);
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.04);
-            border-right: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .sidebar.collapsed {
-            width: var(--sidebar-collapsed-width);
-        }
-
-        .sidebar ul li a {
-            position: relative;
-            transition: all 0.3s ease;
-            border-radius: 0.75rem;
-            margin: 0.25rem 0.5rem;
-            color: #64748b;
-        }
-
-        .sidebar ul li a:hover {
-            background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
-            color: var(--primary-color);
-            transform: translateX(4px);
-        }
-
-        .sidebar ul li a.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-
-        .sidebar ul li a.active svg {
-            stroke: white;
-        }
-
-        /* Content area */
-        .content {
-            margin-left: var(--sidebar-width);
-            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: transparent;
-        }
-
-        .content.expanded {
-            margin-left: var(--sidebar-collapsed-width);
-        }
-
-        /* Typography enhancements */
-        .nav-text {
-            transition: all 0.3s ease;
-            font-weight: 500;
-            letter-spacing: -0.01em;
-        }
-
-        .sidebar.collapsed .nav-text {
-            opacity: 0;
-            width: 0;
-            margin-left: -0.5rem;
-        }
-
-        /* Notification badge */
-        .notification-badge {
-            position: absolute;
-            top: -0.25rem;
-            right: -0.25rem;
-            width: 1.25rem;
-            height: 1.25rem;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-        }
-
-        /* Dropdown improvements */
-        .dropdown-content {
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 1rem;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-
-        /* Toggle button */
-        #toggleSidebar {
-            transition: all 0.3s ease;
-            border-radius: 0.75rem;
-        }
-
-        #toggleSidebar:hover {
-            background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
-            transform: rotate(90deg);
-        }
-
-        /* Notification dropdown */
-        #dropdownNotification {
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 1rem;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        #dropdownNotification a:hover {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        }
-
-        /* Card-like content wrapper */
-        .content-wrapper {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            padding: 2rem;
-        }
-
-        /* Animation for page content */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .content-area {
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        /* Responsive improvements */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                z-index: 40;
-            }
-
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .content {
-                margin-left: 0 !important;
-            }
-
-            #toggleSidebar {
-                display: block;
-            }
-        }
-
-        /* Loading state */
-        .loading-shimmer {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-
-            100% {
-                background-position: 200% 0;
-            }
-        }
-    </style>
+    
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 
 <body class="h-full">
@@ -229,7 +30,8 @@
             </div>
             <span
                 class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-xl">Vistana</span>
-            {{-- <span class="ml-2 text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full font-medium">Admin</span> --}}
+            {{-- <span class="ml-2 text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full font-medium">Admin</span>
+            --}}
         </div>
 
         <div class="ml-auto flex items-center space-x-4">
@@ -291,8 +93,7 @@
                         {{-- Authentication --}}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
+                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                     this.closest('form').submit();"
                                 class="flex items-center gap-3 py-3 text-red-600 hover:text-red-700">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -310,8 +111,7 @@
 
         <!-- Mobile menu button (hidden on desktop) -->
         <button id="mobileMenuButton" class="md:hidden ml-4 p-2 rounded-lg hover:bg-gray-100">
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
@@ -339,8 +139,8 @@
                         <div class="flex-shrink-0 mt-1">
                             <div
                                 class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor"
-                                    stroke-width="2" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -349,14 +149,15 @@
                         <div class="w-full ps-3">
                             <div class="text-gray-700 text-sm mb-1">{{ $notification->data['message'] }}</div>
                             <div class="text-xs text-blue-500 font-medium">
-                                {{ $notification->created_at->diffForHumans() }}</div>
+                                {{ $notification->created_at->diffForHumans() }}
+                            </div>
                         </div>
                     </a>
                 @endforeach
             @else
                 <div class="px-4 py-8 text-center text-gray-500">
-                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor"
-                        stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                     </svg>
@@ -368,8 +169,8 @@
             <a href="{{ route('readallnotification') }}"
                 class="block py-3 font-medium text-center text-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 border-t border-gray-200 transition-all duration-200 flex items-center justify-center gap-2"
                 onclick="event.preventDefault(); document.getElementById('markAllReadForm').submit();">
-                <svg class="w-5 h-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                    height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-width="2"
                         d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
                     <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -393,8 +194,7 @@
                 <li>
                     <a href="{{ route('dashboard') }}"
                         class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }}">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m4 0h5a1 1 0 001-1V10" />
                         </svg>
@@ -410,8 +210,7 @@
                     <li>
                         <a href="{{ route('reservations.index') }}"
                             class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'reservations.index' || str_starts_with(Route::currentRouteName(), 'reservations.') ? 'active' : '' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
@@ -425,21 +224,20 @@
 
                 <!-- Users -->
                 <li>
-                @can('list_user')
-                    <a href="{{ route('users.index') }}"
-                        class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'users.index' || str_starts_with(Route::currentRouteName(), 'users.') ? 'active' : '' }}">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <span class="nav-text font-medium">Users</span>
-                        @if (Route::currentRouteName() == 'users.index' || str_starts_with(Route::currentRouteName(), 'users.'))
-                            <span class="absolute right-3 w-2 h-2 bg-white rounded-full"></span>
-                        @endif
-                    </a>
-                </li>
-                @endcan
+                    @can('list_user')
+                            <a href="{{ route('users.index') }}"
+                                class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'users.index' || str_starts_with(Route::currentRouteName(), 'users.') ? 'active' : '' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                <span class="nav-text font-medium">Users</span>
+                                @if (Route::currentRouteName() == 'users.index' || str_starts_with(Route::currentRouteName(), 'users.'))
+                                    <span class="absolute right-3 w-2 h-2 bg-white rounded-full"></span>
+                                @endif
+                            </a>
+                        </li>
+                    @endcan
 
 
                 <!-- Rooms -->
@@ -447,8 +245,7 @@
                     <li>
                         <a href="{{ route('rooms.index') }}"
                             class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'rooms.index' || str_starts_with(Route::currentRouteName(), 'rooms.') ? 'active' : '' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M3 21V7a2 2 0 012-2h14a2 2 0 012 2v14M3 10h18" />
                             </svg>
@@ -465,8 +262,7 @@
                     <li>
                         <a href="{{ route('room_types.index') }}"
                             class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'room_types.index' || str_starts_with(Route::currentRouteName(), 'room_types.') ? 'active' : '' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M4 6h6v6H4zM14 6h6v6h-6zM4 16h6v6H4zM14 16h6v6h-6z" />
                             </svg>
@@ -483,8 +279,7 @@
                     <li>
                         <a href="{{ route('serv.index') }}"
                             class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'serv.index' || str_starts_with(Route::currentRouteName(), 'serv.') ? 'active' : '' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" />
                             </svg>
                             <span class="nav-text font-medium">Services</span>
@@ -497,20 +292,19 @@
 
                 <!-- Invoices -->
                 @can('view invoices')
-                <li>
-                    <a href="{{ route('invoices.index') }}"
-                        class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'invoices.index' || str_starts_with(Route::currentRouteName(), 'invoices.') ? 'active' : '' }}">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span class="nav-text font-medium">Invoices</span>
-                        @if (Route::currentRouteName() == 'invoices.index' || str_starts_with(Route::currentRouteName(), 'invoices.'))
-                            <span class="absolute right-3 w-2 h-2 bg-white rounded-full"></span>
-                        @endif
-                    </a>
-                </li>
+                    <li>
+                        <a href="{{ route('invoices.index') }}"
+                            class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'invoices.index' || str_starts_with(Route::currentRouteName(), 'invoices.') ? 'active' : '' }}">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="nav-text font-medium">Invoices</span>
+                            @if (Route::currentRouteName() == 'invoices.index' || str_starts_with(Route::currentRouteName(), 'invoices.'))
+                                <span class="absolute right-3 w-2 h-2 bg-white rounded-full"></span>
+                            @endif
+                        </a>
+                    </li>
                 @endcan
 
                 <!-- Roles -->
@@ -518,8 +312,7 @@
                     <li>
                         <a href="{{ route('roles.index') }}"
                             class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'roles.index' || str_starts_with(Route::currentRouteName(), 'roles.') ? 'active' : '' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z" />
                             </svg>
@@ -536,8 +329,7 @@
                     <li>
                         <a href="{{ route('ratings.index') }}"
                             class="flex items-center gap-3 p-3 {{ Route::currentRouteName() == 'ratings.index' || str_starts_with(Route::currentRouteName(), 'ratings.') ? 'active' : '' }}">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.01 6.18h6.49l-5.25 3.81 2.01 6.18L12 15.27l-5.21 3.83 2.01-6.18-5.25-3.81h6.49z" />
                             </svg>

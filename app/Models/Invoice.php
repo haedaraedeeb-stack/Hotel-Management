@@ -14,6 +14,8 @@ class Invoice extends Model
         'payment_method',
         'payment_status',
     ];
+    protected $hidden = ['created_at','updated_at'];
+
     public function reservation()
     {
         return $this->belongsTo(Reservation::class);

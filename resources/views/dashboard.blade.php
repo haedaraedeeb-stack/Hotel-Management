@@ -38,7 +38,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }}</h3>
+                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }} $</h3>
                             <p class="text-sm font-medium text-gray-500">Revenue</p>
                         </div>
                     </div>
