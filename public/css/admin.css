@@ -48,12 +48,14 @@ body {
     background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
     color: var(--primary-color);
     transform: translateX(4px);
+    width: 100%;
 }
 
 .sidebar ul li a.active {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
     box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    width: 100%;
 }
 
 .sidebar ul li a.active svg {
