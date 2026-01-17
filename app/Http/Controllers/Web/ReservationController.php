@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 
 /**
+ * This controller manages reservation-related web requests,
+ * including listing, creating, updating, deleting, checking in/out, confirming, and rejecting reservations
  * Class ReservationController
  * @package App\Http\Controllers\Web
  * Controller for managing reservations
@@ -27,6 +29,11 @@ class ReservationController extends Controller
 {
     protected $reservationService;
 
+    /**
+     * ReservationController constructor.
+     * Summary of __construct
+     * @param WebReservationService $reservationService
+     */
     public function __construct(WebReservationService $reservationService)
     {
         $this->reservationService = $reservationService;
@@ -39,6 +46,7 @@ class ReservationController extends Controller
         $this->middleware('permission:reservation-confirm-reject', ['only' => ['confirmeReservation', 'rejectedReservation']]);
     }
     /**
+     * Display a listing of reservations.
      * Summary of index
      * @param Request $request
      * @return \Illuminate\Contracts\View\View
@@ -50,6 +58,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Show the form for creating a new reservation.
      * Summary of create
      * @return \Illuminate\Contracts\View\View
      */
@@ -60,6 +69,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Store a newly created reservation in storage.
      * Summary of store
      * @param StoreReservationRequest $request
      * @return \Illuminate\Http\RedirectResponse
@@ -72,6 +82,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Display the specified reservation.
      * Summary of show
      * @param Reservation $reservation
      * @return \Illuminate\Contracts\View\View
@@ -83,6 +94,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Show the form for editing the specified reservation.
      * Summary of edit
      * @param Reservation $reservation
      * @return \Illuminate\Contracts\View\View
@@ -95,6 +107,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Update the specified reservation in storage.
      * Summary of update
      * @param UpdateReservationRequest $request
      * @param Reservation $reservation
@@ -107,6 +120,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Remove the specified reservation from storage.
      * Summary of destroy
      * @param Reservation $reservation
      * @return \Illuminate\Http\RedirectResponse
@@ -118,6 +132,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Check in the specified reservation.
      * Summary of checkIn
      * @param Reservation $reservation
      * @return \Illuminate\Http\RedirectResponse
@@ -147,6 +162,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Check out the specified reservation.
      * Summary of checkOut
      * @param Reservation $reservation
      * @return \Illuminate\Http\RedirectResponse
@@ -166,6 +182,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Get available rooms.
      * Summary of getAvailableRooms
      * @param AvailableRoomsRequest $request
      * @return \Illuminate\Http\JsonResponse
@@ -183,6 +200,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Confirm the specified reservation.
      * Summary of confirmeReservation
      * @param Reservation $reservation
      * @return \Illuminate\Http\RedirectResponse
@@ -206,6 +224,7 @@ class ReservationController extends Controller
     }
 
     /**
+     * Reject the specified reservation.
      * Summary of rejectedReservation
      * @param Reservation $reservation
      * @return \Illuminate\Http\RedirectResponse

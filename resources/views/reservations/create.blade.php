@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.rooms.forEach(room => {
                     const option = document.createElement('option');
                     option.value = room.id;
-                    option.textContent = `Room ${room.room_number} (${room.room_type}) - $${room.current_price}/night`;
+                    option.textContent = `Room ${room.room_number} (${room.room_type.type}) - $${room.current_price}/night`;
                     roomSelect.appendChild(option);
                 });
                 roomSelect.disabled = false;
