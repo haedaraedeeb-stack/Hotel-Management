@@ -88,36 +88,20 @@ class RatingService
         try {
             $user = Auth::user();
 
-            $reservation = Reservation::find($rate['reservation_id']);
+            $reservation = Reservation::where('id', $rate['reservation_id'])
+                ->where('user_id', $user->id)
+                ->whereNotNull('check_out')
+                ->whereDoesntHave('rating')
+                ->first();
+
             if (!$reservation) {
                 throw new HttpResponseException(response()->json([
                     'success' => false,
-                    'message' => 'Reservation does not exist!',
-                ], 404));
-            }
-
-            if ($reservation->user_id !== $user->id) {
-                throw new HttpResponseException(response()->json([
-                    'success' => false,
-                    'message' => 'You have no authorization to rate this reservation',
-                ], 403));
-            }
-
-            if (!$reservation->check_out) {
-                throw new HttpResponseException(response()->json([
-                    'success' => false,
-                    'message' => 'You cannot rate unless you have checked out!',
+                    'message' => 'Reservation cannot be rated',
                 ], 400));
             }
 
-            if (Rating::where('reservation_id', $reservation->id)->exists()) {
-                throw new HttpResponseException(response()->json([
-                    'success' => false,
-                    'message' => 'You have rated this reservation already',
-                ], 400));
-            }
-
-            $rating = Rating::create([
+            $rating =  Rating::create([
                 'reservation_id' => $reservation->id,
                 'score' => $rate['score'],
                 'description' => $rate['description'] ?? null,
@@ -141,31 +125,25 @@ class RatingService
         try {
             $user = Auth::user();
 
-            $rating = Rating::with('reservation')->find($id);
+            $rating = Rating::where('id', $id)
+                ->whereHas('reservation', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })
+                ->first();
             if (!$rating) {
                 throw new HttpResponseException(response()->json([
                     'success' => false,
-                    'message' => 'Rating not found',
+                    'message' => 'Rating not found or not authorized',
                 ], 404));
             }
-
-            if ($rating->reservation->user_id !== $user->id) {
-                throw new HttpResponseException(response()->json([
-                    'success' => false,
-                    'message' => 'You have no authorization to update this rating',
-                ], 403));
-            }
-
-            $rating->update([
-                'score' => $rate['score'] ?? $rating->score,
-                'description' => $rate['description'] ?? $rating->description,
-            ]);
-
+            $rating->update($rate);
             return $rating;
+
         } catch (HttpResponseException $e) {
             throw $e;
         } catch (\Exception $e) {
             Log::error('Error updating rating: ' . $e->getMessage());
+
             throw new HttpResponseException(response()->json([
                 'success' => false,
                 'message' => 'Error updating rating',
@@ -197,7 +175,7 @@ class RatingService
                 ], 403));
             }
 
-            $rating->delete($id);
+            $rating->delete();
 
             return $rating; // Return deleted rating or just true
         } catch (HttpResponseException $e) {
@@ -218,7 +196,7 @@ class RatingService
                 'total_ratings' => Rating::count(),
                 'average_score' => Rating::avg('score'),
                 'ratings_by_score' => [
-                    '1_star'  => Rating::where('score', 1)->count(),
+                    '1_star' => Rating::where('score', 1)->count(),
                     '2_stars' => Rating::where('score', 2)->count(),
                     '3_stars' => Rating::where('score', 3)->count(),
                     '4_stars' => Rating::where('score', 4)->count(),
