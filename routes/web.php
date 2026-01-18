@@ -14,7 +14,6 @@ use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Socialite;
-
 /*
 |--------------------------------------------------------------------------
 | Public Routes (Accessible by everyone)
@@ -87,6 +86,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 10. Notifications
     Route::get('readnotification/{notification}', [NotifiactionController::class, 'readNotification'])->name('readnotification');
     Route::get('readallnotification', [NotifiactionController::class, 'readAllNotification'])->name('readallnotification');
+
+    Route::get('/invoices/{id}/pdf', [InvoiceController::class, 'downloadPdf'])
+    ->name('invoices.pdf');
 
 });
 

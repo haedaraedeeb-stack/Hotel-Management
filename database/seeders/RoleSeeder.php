@@ -93,6 +93,7 @@ class RoleSeeder extends Seeder
             'reservation-delete',
             'reservation-checkin-checkout',
             'view_user',
+
         ]);
     }
 }
