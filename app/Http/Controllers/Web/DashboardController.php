@@ -44,7 +44,6 @@ class DashboardController extends Controller
         ];
 
         // admin & manager
-        if ($user->hasAnyRole(['admin', 'manager'])) {
 
             $stats = [
                 'reservations_count' => Reservation::count(),
@@ -57,14 +56,7 @@ class DashboardController extends Controller
             ];
 
             $chartData = $this->getMonthlyRevenue();
-        }
 
-        // receptionist (only sees rooms + reservstions)
-        if ($user->hasRole('receptionist')) {
-            $stats = [
-                'occupancy' => $this->calculateOccupancy(),
-            ];
-        }
 
         return view('dashboard', compact(
             'stats',

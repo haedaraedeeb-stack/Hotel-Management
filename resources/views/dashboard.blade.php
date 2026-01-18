@@ -7,20 +7,82 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
             {{-- Card 1: Total Bookings --}}
-            @can('General Reports')
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="flex items-center">
-                        <div
-                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-blue-600 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                                </path>
-                            </svg>
+            {{-- @can('General Reports') --}}
+                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center">
+                            <div
+                                class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-blue-600 rounded-lg">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['reservations_count'] }}</h3>
+                                <p class="text-sm font-medium text-gray-500">Reservations</p>
+                            </div>
                         </div>
-                        <div class="ml-4">
-                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['reservations_count'] }}</h3>
-                            <p class="text-sm font-medium text-gray-500">Reservations</p>
+                    </div>
+
+
+                    {{-- Card 2: Total Revenue --}}
+                    @can('Revenue Reports')
+                        <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center">
+                                <div
+                                    class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-green-500 rounded-lg">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+
+
+                                <div class="ml-4">
+                                    <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }}</h3>
+                                    <p class="text-sm font-medium text-gray-500">Revenue</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
+
+                    {{-- Card 3: Guests --}}
+                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center">
+                            <div
+                                class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-purple-500 rounded-lg">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['guests_count'] }}</h3>
+                                <p class="text-sm font-medium text-gray-500">Active Guests</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {{-- Card 4: Rooms --}}
+
+                    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center">
+                            <div
+                                class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-orange-500 rounded-lg">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['occupancy'] }}%</h3>
+                                <p class="text-sm font-medium text-gray-500">Occupancy Rate</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -99,7 +161,7 @@
                 </div>
 
 
-            {{-- Chart 2: Room Types (Pie/Donut) --}}
+                {{-- Chart 2: Room Types (Pie/Donut) --}}
 
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="flex justify-between mb-4">
@@ -115,14 +177,14 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         @can('Monthly Booking Report')
-        <div
-            style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3 style="margin-bottom: 15px; color: #333;">Monthly Reservations Overview</h3>
-            <canvas id="reservationsChart" style="max-height: 400px;"></canvas>
-        </div>
+            <div
+                style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 15px; color: #333;">Monthly Reservations Overview</h3>
+                <canvas id="reservationsChart" style="max-height: 400px;"></canvas>
+            </div>
         @endcan
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
 
                 const canvas = document.getElementById('reservationsChart');
 
@@ -204,7 +266,7 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
 
             const revenueLabels = @json($chartData['labels']);
             const revenueValues = @json($chartData['values']);
@@ -242,7 +304,7 @@
                             0
                         ],
                         color: "#1A56DB",
-                    }, ],
+                    },],
                     xaxis: {
                         categories: revenueLabels.length > 0 ? revenueLabels : ['No Data'],
                         labels: {
@@ -257,7 +319,7 @@
                     },
                     yaxis: {
                         labels: {
-                            formatter: function(value) {
+                            formatter: function (value) {
                                 return "$" + value;
                             }
                         }
@@ -293,7 +355,7 @@
                                         showAlways: true,
                                         show: true,
                                         label: 'Total',
-                                        formatter: function(w) {
+                                        formatter: function (w) {
                                             return w.globals.seriesTotals.reduce((a, b) => {
                                                 return a + b
                                             }, 0)
