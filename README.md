@@ -83,14 +83,120 @@ The system features a robust API built with **Laravel Sanctum**. Below is a map 
   </thead>
   <tbody>
     <tr><td>🔐 <b>Auth</b></td><td><kbd>POST</kbd></td><td><code>/api/auth/login</code></td><td>Public</td></tr>
-    <tr><td>🏨 <b>RoomTypes</b></td><td><kbd>GET</kbd></td><td><code>/api/room-types</code></td><td>Bearer Token</td></tr>
-    <tr><td>🛏️ <b>Rooms</b></td><td><kbd>POST</kbd></td><td><code>/api/rooms</code></td><td>Bearer Token</td></tr>
+    <tr><td>🏨 <b>RoomTypes</b></td><td><kbd>GET</kbd></td><td><code>/api/room-types</code></td><td></td></tr>
+    <tr><td>🛏️ <b>Rooms</b></td><td><kbd>GET</kbd></td><td><code>/api/rooms</code></td><td></td></tr>
     <tr><td>📅 <b>Booking</b></td><td><kbd>POST</kbd></td><td><code>/api/reservations</code></td><td>Bearer Token</td></tr>
     <tr><td>🧾 <b>Invoices</b></td><td><kbd>GET</kbd></td><td><code>/api/invoices</code></td><td>Admin/Staff</td></tr>
   </tbody>
 </table>
 
 > 💡 **Full Documentation:** Access our complete Postman collection [here](https://documenter.getpostman.com/view/50368281/2sBXVifovz).
+
+<h3>🧰 System Requirements</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Technology</th>
+      <th align="left">Version</th>
+      <th align="left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PHP</td>
+      <td>^8.2</td>
+      <td>Required for Laravel 12</td>
+    </tr>
+    <tr>
+      <td>Laravel</td>
+      <td>12.x</td>
+      <td>Main backend framework</td>
+    </tr>
+    <tr>
+      <td>Composer</td>
+      <td>^2.6</td>
+      <td>Dependency manager</td>
+    </tr>
+    <tr>
+      <td>Node.js</td>
+      <td>^18</td>
+      <td>Frontend build tools</td>
+    </tr>
+    <tr>
+      <td>NPM</td>
+      <td>Latest</td>
+      <td>Asset compilation</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<h3>🔐 Authentication & Security</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Feature</th>
+      <th align="left">Package</th>
+      <th align="left">Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authentication</td>
+      <td>Laravel Breeze</td>
+      <td>Login, Register, Password Reset</td>
+    </tr>
+    <tr>
+      <td>Authorization</td>
+      <td>Laravel Spatie</td>
+      <td>Roles & Permissions (Admin, Staff, Client)</td>
+    </tr>
+    <tr>
+      <td>API Security</td>
+      <td>Laravel Sanctum</td>
+      <td>Token-based authentication</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+
+
+<h3>🎨 Frontend Stack</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Tool</th>
+      <th align="left">Purpose</th>
+      <th align="left">Used In</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tailwind CSS</td>
+      <td>Utility-first CSS framework</td>
+      <td>All UI components</td>
+    </tr>
+    <tr>
+      <td>Flowbite</td>
+      <td>UI components & dashboard layout</td>
+      <td>Admin Dashboard</td>
+    </tr>
+    <tr>
+      <td>Blade</td>
+      <td>Laravel templating engine</td>
+      <td>Server-side rendering</td>
+    </tr>
+  </tbody>
+</table>
+
 
 ### ⚡ Quick Installation
 ```bash
@@ -166,7 +272,7 @@ php artisan serve
 
 <table> <thead> <tr style="background-color: #f8f9fa;"> <th align="right">الوحدة</th> <th align="right">الطريقة</th> <th align="right">الرابط (Endpoint)</th> <th align="right">المصادقة</th> </tr> </thead> <tbody> <tr><td>🔐 <b>المصادقة</b></td><td><kbd>POST</kbd></td><td><code>/api/auth/login</code></td><td>عام</td></tr> <tr><td>🏨 <b>أنواع الغرف</b></td><td><kbd>GET</kbd></td><td><code>/api/room-types</code></td><td>Bearer Token</td></tr> <tr><td>🛏️ <b>الغرف</b></td><td><kbd>POST</kbd></td><td><code>/api/rooms</code></td><td>Bearer Token</td></tr> <tr><td>📅 <b>الحجوزات</b></td><td><kbd>POST</kbd></td><td><code>/api/reservations</code></td><td>Bearer Token</td></tr> <tr><td>🧾 <b>الفواتير</b></td><td><kbd>GET</kbd></td><td><code>/api/invoices</code></td><td>المدير/الموظف</td></tr> </tbody> </table>
 
-💡 التوثيق الكامل: يمكنك الوصول إلى كوليكشن بوستمان الكامل من هنا.
+💡 التوثيق الكامل: يمكنك الوصول إلى كوليكشن بوستمان الكامل من [هنا](https://documenter.getpostman.com/view/50368281/2sBXVifovz)..
 
 ⚡ التثبيت والتشغيل السريع
 
