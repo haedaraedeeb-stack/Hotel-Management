@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\DB;
  * This controller manages the dashboard view for different user roles,
  * providing relevant statistics and recent activity data.
  * Summary of DashboardController
- * @package App\Http\Controllers\Web
  */
 class DashboardController extends Controller
 {
     /**
      * Display the dashboard with statistics based on user roles
      * Summary of index
+     *
      * @return \Illuminate\View\View
      */
     public function index()
@@ -78,13 +78,13 @@ class DashboardController extends Controller
     /**
      * Calculate the current occupancy rate of rooms
      * Summary of calculateOccupancy
+     *
      * @return int
      */
     private function calculateOccupancy()
     {
         $total = Room::count();
         $occupied = Room::where('status', 'occupied')->count();
-
         return $total > 0 ? round(($occupied / $total) * 100) : 0;
 
     }
@@ -92,6 +92,7 @@ class DashboardController extends Controller
     /**
      * Retrieve monthly revenue data for the current year
      * Summary of getMonthlyRevenue
+     *
      * @return array
      */
     private function getMonthlyRevenue()
@@ -112,10 +113,11 @@ class DashboardController extends Controller
             'values' => $data->pluck('total'),
         ];
     }
-
+    
     /**
      * Retrieve room type statistics based on reservations
      * Summary of getRoomTypeStats
+     *
      * @return array
      */
     private function getRoomTypeStats()
@@ -135,6 +137,7 @@ class DashboardController extends Controller
     /**
      * Retrieve monthly reservation counts for the current year
      * Summary of getMonthlyReservations
+     *
      * @return \Illuminate\Support\Collection
      */
     private function getMonthlyReservations()
