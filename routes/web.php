@@ -113,8 +113,3 @@ Route::middleware('auth')->group(function () {
     Route::delete('services/{id}/force-delete', [ServiceController::class, 'forceDelete'])
         ->name('services.forceDelete');
 });
-// login with google
-Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirectToProvider'])->name('login.provider');
-Route::get('auth/callback/{provider}', [SocialiteController::class, 'handleProviderCallback']);
-
-

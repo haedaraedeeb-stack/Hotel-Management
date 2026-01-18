@@ -64,8 +64,9 @@ class RoleSeeder extends Seeder
 
 
             'Room and profit reports',
-            'General Reports',
+            // 'General Reports',
             'Monthly Booking Report',
+            'Revenue Reports',
 
             'list_user',
             'view_user',
