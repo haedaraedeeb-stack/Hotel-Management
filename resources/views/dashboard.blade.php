@@ -7,7 +7,6 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
             {{-- Card 1: Total Bookings --}}
-            {{-- @can('General Reports') --}}
                     <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                         <div class="flex items-center">
                             <div
@@ -27,6 +26,7 @@
 
 
                     {{-- Card 2: Total Revenue --}}
+
                     @can('Revenue Reports')
                         <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                             <div class="flex items-center">
@@ -46,9 +46,13 @@
                                 </div>
                             </div>
                         </div>
-                    @endcan
+                        @endcan
+
+
+
 
                     {{-- Card 3: Guests --}}
+            @can('General Reports')
                     <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                         <div class="flex items-center">
                             <div
@@ -86,70 +90,10 @@
                         </div>
                     </div>
                 </div>
-
-
-            {{-- Card 2: Total Revenue --}}
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="flex items-center">
-                        <div
-                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-green-500 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }} $</h3>
-                            <p class="text-sm font-medium text-gray-500">Revenue</p>
-                        </div>
-                    </div>
-                </div>
-
-            {{-- Card 3: Guests --}}
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="flex items-center">
-                        <div
-                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-purple-500 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-1a4 4 0 00-5-3.87M9 20H4v-1a4 4 0 015-3.87m6-7a4 4 0 11-8 0 4 4 0 018 0z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['guests_count'] }}</h3>
-                            <p class="text-sm font-medium text-gray-500">Active Guests</p>
-                        </div>
-                    </div>
-                </div>
-
-
-            {{-- Card 4: Rooms --}}
-
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
-                    <div class="flex items-center">
-                        <div
-                            class="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-orange-500 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['occupancy'] }}%</h3>
-                            <p class="text-sm font-medium text-gray-500">Occupancy Rate</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
             @endcan
 
-
-
         {{-- 2. Charts Section (Charts Grid) --}}
-        @can('Room and profit reports')
+        @can('Monthly Revenue')
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
 
                 {{-- Chart 1: Revenue Chart (Area) --}}
@@ -159,10 +103,11 @@
                     </div>
                     <div id="revenue-chart"></div>
                 </div>
+                @endcan
 
 
                 {{-- Chart 2: Room Types (Pie/Donut) --}}
-
+        @can('Room and profit reports')
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="flex justify-between mb-4">
                         <h3 class="text-lg font-bold text-gray-900">Room Preferences</h3>
