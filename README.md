@@ -1,12 +1,5 @@
 # 🏨 Vistana Hotel Management System
 
-## Leader : Haedara Deeb 
-## Deputy Commander : Mohammad Shaheen 
-## Develop 1 : Bedoor Ali Deeb 
-## Develop 2 : Zaher Sankari 
-## Develop 3 : Ali Mohammad Abbas 
-## Develop 4 : Mais Ahmad 
-
 ### **1. صفحة تسجيل الدخول (Login Page)**
 *واجهة تسجيل الدخول الآمنة مع تحقق متعدد الطبقات*
 <img width="1893" height="972" alt="Screenshot 2026-01-14 225615" src="https://github.com/user-attachments/assets/2e7fbecf-4651-427a-bd2a-56f1eb194bd2" />
@@ -171,29 +164,48 @@ cp .env.example .env
 # 5. إنشاء مفتاح التطبيق
 php artisan key:generate
 
-# 6. تكوين قاعدة البيانات (في ملف .env)
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=hotelmanagement
-DB_USERNAME=root
-DB_PASSWORD=
 
-# 7. إنشاء جميع جداول التطبيق ووحداته 
+
+# 6. إنشاء جميع جداول التطبيق ووحداته 
 php artisan migrate 
 
-# 8. ملء قاعدة البيانات 
+# 7. ملء قاعدة البيانات 
 php artisan db:seed
 
-# 9. بناء الأصول
+# 8. بناء الأصول
 npm run build
 
-# 10. تشغيل الخادم
+# 9. تشغيل الخادم
 php artisan serve
 
 مطور بـ ❤️ باستخدام Laravel 12, Flowbite, Sanctum, Spatie, Breeze
 نظام متكامل لإدارة الفنادق مع لوحة تحكم حديثة وواجهة برمجة تطبيقات قوية
 
-📄 الترخيص
-هذا المشروع مرخص تحت MIT License.
+Mentors
+Mr. Hashim Othman
 
+Technical guidance
+Concept clarification
+Inspirational mentorship
+Mr. Ayham Ibrahim
+
+Support throughout development
+Supervisors
+
+Ms Nourhan almohammed & Ms Muna alrays Technical support and daily follow-up
+
+Focal X Team
+For building and supporting this educational journey
+
+ceo and founder Alaa Darwish
+
+Development Team
+## Leader : Haedara Deeb 
+## Deputy Commander : Mohammad Shaheen 
+## FullSTACK : Bedoor Ali Deeb 
+## FullStack : Zaher Sankari 
+## Backend Developer : Ali Mohammad Abbas 
+## Backend Developer : Mais Ahmad 
+
+📄 الترخيص
+هذا المشروع مرخص تحت MIT License

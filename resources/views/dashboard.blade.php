@@ -41,7 +41,7 @@
 
 
                                 <div class="ml-4">
-                                    <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }}</h3>
+                                    <h3 class="mb-1 text-2xl font-bold text-gray-900">{{ $stats['revenue'] }}$</h3>
                                     <p class="text-sm font-medium text-gray-500">Revenue</p>
                                 </div>
                             </div>
@@ -184,8 +184,8 @@
                         @foreach ($recentBookings as $recentBooking)
                             <tr class="border-b">
                                 <td class="px-4 py-3 font-medium text-gray-900">{{ $recentBooking->user->name }}</td>
-                                <td class="px-4 py-3">{{ $recentBooking->room->roomType->type }} '
-                                    '{{ $recentBooking->room->room_number }}</td>
+                                <td class="px-4 py-3">{{ $recentBooking->room->roomType->type }}
+                                    {{ $recentBooking->room->room_number }}</td>
                                 <td class="px-4 py-3">{{ $recentBooking->start_date }} ->
                                     {{ $recentBooking->end_date }}
                                 </td>

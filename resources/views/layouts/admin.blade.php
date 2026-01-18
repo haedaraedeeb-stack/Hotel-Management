@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard')</title>
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 
@@ -81,14 +81,6 @@
                             <div class="text-sm text-gray-500 truncate">{{ Auth::user()->email }}</div>
                         </div>
 
-                        <x-dropdown-link :href="route('profile.edit')" class="flex items-center gap-3 py-3">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
 
                         {{-- Authentication --}}
                         <form method="POST" action="{{ route('logout') }}">
