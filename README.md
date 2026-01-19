@@ -280,14 +280,17 @@ php artisan serve
 git clone [https://github.com/haedaraedeeb-stack/Hotel-Management.git](https://github.com/haedaraedeeb-stack/Hotel-Management.git)
 
 # 2. تثبيت المكتبات البرمجية
-composer install && npm install
+composer install 
+npm install
 
 # 3. إعداد البيئة وقاعدة البيانات
-cp .env.example .env && php artisan key:generate
+cp .env.example .env 
+php artisan key:generate
 php artisan migrate --seed
 
 # 4. بناء الواجهات وتشغيل الخادم
-npm run build && php artisan serve
+npm run build 
+php artisan serve
 
 👥 Team & Acknowledgments / فريق العمل والتقدير
 <table width="100%"> <thead> <tr style="background-color: #1a202c; color: white;"> <th align="left">👤 Member / العضو</th> <th align="left">💻 Specialized Role / الدور</th> </tr> </thead> <tbody> <tr><td><b>Haedara Deeb</b></td><td>🚀 Project Lead</td></tr> <tr><td><b>Mohammad Shaheen</b></td><td>🎖️ Deputy Lead</td></tr> <tr><td><b>Bedoor Ali Deeb</b></td><td>💻 Full Stack Developer</td></tr> <tr><td><b>Zaher Sankari</b></td><td>💻 Full Stack Developer</td></tr> <tr><td><b>Ali Mohammad Abbas</b></td><td>⚙️ Backend Specialist</td></tr> <tr><td><b>Mais Ahmad</b></td><td>⚙️ Database Specialist</td></tr> </tbody> </table>
