@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreInvoiceRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return auth()->check() && auth()->user()->hasRole(['admin', 'manager', 'receptionist']);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'reservation_id' => 'required|exists:reservations,id',
+            'payment_method' => 'required|in:cash,credit_card',
+            'payment_status' => 'required|in:paid,unpaid',
+        ];
+    }
+}
