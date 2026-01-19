@@ -30,20 +30,20 @@ class StoreRoleRequest extends FormRequest
                 'unique:roles,name',
                 'regex:/^[a-zA-Z0-9\s\-_]+$/'
             ],
-            
+
             'permission' => [
                 'required',
                 'array',
                 'min:1',
                 'max:100'
             ],
-            
+
             'permission.*' => [
                 'required',
                 'string',
                 'exists:permissions,name'
             ],
-            
+
             'guard_name' => [
                 'sometimes',
                 'string',
@@ -63,16 +63,16 @@ class StoreRoleRequest extends FormRequest
             'name.min' => 'Role name must be at least 3 characters',
             'name.regex' => 'Role name can only contain letters, numbers, spaces, hyphens, and underscores',
             'name.unique' => 'This role name already exists',
-            
+
             'permission.required' => 'At least one permission is required',
             'permission.min' => 'At least one permission must be selected',
             'permission.max' => 'Maximum 100 permissions can be selected',
-            
+
             'permission.*.required' => 'Permission ID is required',
             'permission.*.string' => 'Permission ID must be a string',
             'permission.*.exists' => 'Selected permission does not exist in the system',
-            
-            
+
+
             'guard_name.in' => 'Guard name must be either web or api'
         ];
     }
@@ -101,27 +101,20 @@ class StoreRoleRequest extends FormRequest
                 'name' => trim($this->name)
             ]);
         }
-        
+
         // Ensure permission is an array
         if ($this->has('permission') && !is_array($this->permission)) {
             $this->merge([
                 'permission' => (array) $this->permission
             ]);
         }
-        
+
         // Set default guard_name if not provided
         if (!$this->has('guard_name') || empty($this->guard_name)) {
             $this->merge([
                 'guard_name' => 'web'
             ]);
         }
-        
-        // Convert permission IDs to integers
-        // if ($this->has('permission') && is_array($this->permission)) {
-        //     $this->merge([
-        //         'permission' => array_map('intval', $this->permission)
-        //     ]);
-        // }
     }
 
     /**

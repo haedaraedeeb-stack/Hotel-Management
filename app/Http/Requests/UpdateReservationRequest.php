@@ -64,24 +64,6 @@ class UpdateReservationRequest extends FormRequest
                 'date',
                 'after:start_date',
             ],
-
-            // 'status' => [
-            //     'nullable',
-            //     Rule::in(['pending','completed']),
-            // ],
-
-            // 'check_in' => [
-            //     'nullable',
-            //     'date',
-            //     'after_or_equal:start_date',
-            // ],
-
-            // 'check_out' => [
-            //     'nullable',
-            //     'date',
-            //     'after:check_in',
-            // ],
-
         ];
     }
 
@@ -93,7 +75,7 @@ class UpdateReservationRequest extends FormRequest
         return [
             'user_id.integer' => 'User ID must be an integer.',
             'user_id.exists' => 'User does not exist',
-            
+
             'room_id.exists' => 'Room does not exist',
             'room_id.integer' => 'Room ID must be an integer.',
 
@@ -103,13 +85,6 @@ class UpdateReservationRequest extends FormRequest
             'end_date.required' => 'end_date date is required',
             'end_date.date' => 'Invalid end_date date',
             'end_date.after' => 'end_date date must be after check-in date',
-
-            // 'status.in' => 'Invalid status value.',
-
-            // 'check_in.date' => 'Invalid check-in date',
-            // 'check_out.date' => 'Invalid check-out date',
-            // 'check_out.after' => 'Check-out date must be after check-in date',
-
         ];
     }
 

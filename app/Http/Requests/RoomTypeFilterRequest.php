@@ -8,7 +8,7 @@ class RoomTypeFilterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // الزائر والزبون مسموح لهم
+        return true;
     }
 
     public function rules(): array
@@ -20,10 +20,6 @@ class RoomTypeFilterRequest extends FormRequest
         ];
     }
 
-    /**
-     * معالجة الاستجابة في حال الفشل
-     * بدل ما يطلع 422، نرجع JSON فارغ أو رسالة مناسبة
-     */
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $response = response()->json([

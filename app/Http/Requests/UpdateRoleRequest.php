@@ -22,13 +22,11 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         $roleId = $this->route('role');
-        
-        // If route parameter is a string (ID), convert it to integer
-        // If it's already a model instance, get the ID
+
         if ($roleId instanceof Role) {
             $roleId = $roleId->id;
         }
-        
+
         return [
             'name' => [
                 'nullable',
@@ -38,19 +36,19 @@ class UpdateRoleRequest extends FormRequest
                 Rule::unique('roles', 'name')->ignore($roleId),
                 'regex:/^[a-zA-Z0-9\s\-_]+$/'
             ],
-            
+
             'permission' => [
                 'nullable',
                 'array',
                 'max:50'
             ],
-            
+
             'permission.*' => [
                 'nullable',
                 'string',
                 Rule::exists('permissions', 'name')
             ],
-            
+
             'guard_name' => [
                 'sometimes',
                 'string',
@@ -70,14 +68,14 @@ class UpdateRoleRequest extends FormRequest
             'name.min' => 'Role name must be at least 3 characters',
             'name.regex' => 'Role name can only contain English letters, numbers, spaces, hyphens, or underscores',
             'name.unique' => 'This role name is already taken',
-            
+
             'permission.required' => 'At least one permission must be selected',
             'permission.max' => 'Cannot select more than 50 permissions',
-            
+
             'permission.*.exists' => 'The selected permission does not exist in the system',
-            
+
             'description.max' => 'Description must not exceed 500 characters',
-            
+
             'guard_name.in' => 'Guard name must be either web or api'
         ];
     }
@@ -106,7 +104,7 @@ class UpdateRoleRequest extends FormRequest
                 'name' => trim($this->name)
             ]);
         }
-        
+
         // Ensure permission is an array
         if ($this->has('permission') && !is_array($this->permission)) {
             $this->merge([
@@ -122,15 +120,15 @@ class UpdateRoleRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $roleId = $this->route('role');
-            
+
             // Get role instance
             $role = $roleId instanceof Role ? $roleId : Role::find($roleId);
-            
+
             if (!$role) {
                 $validator->errors()->add('role', 'Role not found');
                 return;
             }
-            
+
             // Prevent changing name of protected roles
             $protectedRoles = ['super-admin', 'admin', 'owner', 'system'];
             if (in_array($role->name, $protectedRoles) && $this->name !== $role->name) {
@@ -146,11 +144,6 @@ class UpdateRoleRequest extends FormRequest
                     $validator->errors()->add('permission', 'Cannot remove permissions from the protected role: ' . implode(', ', $removedPermissions));
                 }
             }
-            
-            // Check that not all permissions are removed
-            // if (empty($this->permission)) {
-            //     $validator->errors()->add('permission', 'Cannot remove all permissions from the role');
-            // }
         });
     }
 }

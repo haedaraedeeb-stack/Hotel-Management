@@ -13,8 +13,7 @@ class StoreRoomRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // يمكنك تغيير هذا بناءً على نظام المصادقة الخاص بك
-        return true; // أو return auth()->check();
+        return true; 
     }
 
     /**
