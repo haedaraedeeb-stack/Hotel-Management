@@ -17,23 +17,29 @@
   <details>
     <summary><b>🌐 Choose Documentation Language / اختر لغة التوثيق</b></summary>
     <p>
-      <a href="#en-version">English Version</a> • 
-      <a href="#ar-version">النسخة العربية</a>
+    <a href="#english">English Version</a> • 
+    <a href="#arabic">النسخة العربية</a>
     </p>
   </details>
 </div>
 
 ---
 
-<div id="en-version">
-
-## 🚀 English Version
+<img width="1918" height="970" alt="image" src="https://github.com/user-attachments/assets/1f780475-ede4-4cf8-9228-0595cc2e70c2" />
+<img width="1918" height="967" alt="image" src="https://github.com/user-attachments/assets/500847e3-20bf-4352-91d6-6c3eb35b62cd" />
+<img width="1901" height="971" alt="image" src="https://github.com/user-attachments/assets/aa4bdf40-550c-4b49-bd92-155be8b7a838" />
+<img width="1901" height="971" alt="image" src="https://github.com/user-attachments/assets/5ce42e7f-ed49-41ba-b5fd-8a0f02c54c2e" />
+<img width="1918" height="968" alt="image" src="https://github.com/user-attachments/assets/7dd15b90-a207-4d1e-b7f9-3fd8e5de2aff" />
+<img width="1902" height="967" alt="image" src="https://github.com/user-attachments/assets/270fe168-6e08-494c-b4e0-9bcc2a46d022" />
+    
+<h2 id="english">🚀 English Version</h2>
 
 ### 📖 Project Description
 **Vistana Hotel Management System** is a comprehensive, modern hotel management solution built with **Laravel 12**. The system provides end-to-end management capabilities for hotel operations including reservations, room management, billing, customer relationships, and staff management. With a sleek dashboard built using **Flowbite** and **Tailwind CSS**, it offers real-time insights and streamlined operations.
 
 ### 🏗️ Advanced Architecture (Service Layer)
 The system utilizes a sophisticated **Service Layer Pattern** to decouple business logic from controllers, ensuring maximum maintainability and testability.
+<img width="1060" height="790" alt="Screenshot 2026-01-15 005213" src="https://github.com/user-attachments/assets/fd65b70e-bc99-4947-9766-bdb8e4df0c9a" />
 
 #### 📁 Key Structure Overview (Sample Files)
 <table>
@@ -77,14 +83,120 @@ The system features a robust API built with **Laravel Sanctum**. Below is a map 
   </thead>
   <tbody>
     <tr><td>🔐 <b>Auth</b></td><td><kbd>POST</kbd></td><td><code>/api/auth/login</code></td><td>Public</td></tr>
-    <tr><td>🏨 <b>RoomTypes</b></td><td><kbd>GET</kbd></td><td><code>/api/room-types</code></td><td>Bearer Token</td></tr>
-    <tr><td>🛏️ <b>Rooms</b></td><td><kbd>POST</kbd></td><td><code>/api/rooms</code></td><td>Bearer Token</td></tr>
+    <tr><td>🏨 <b>RoomTypes</b></td><td><kbd>GET</kbd></td><td><code>/api/room-types</code></td><td></td></tr>
+    <tr><td>🛏️ <b>Rooms</b></td><td><kbd>GET</kbd></td><td><code>/api/rooms</code></td><td></td></tr>
     <tr><td>📅 <b>Booking</b></td><td><kbd>POST</kbd></td><td><code>/api/reservations</code></td><td>Bearer Token</td></tr>
     <tr><td>🧾 <b>Invoices</b></td><td><kbd>GET</kbd></td><td><code>/api/invoices</code></td><td>Admin/Staff</td></tr>
   </tbody>
 </table>
 
 > 💡 **Full Documentation:** Access our complete Postman collection [here](https://documenter.getpostman.com/view/50368281/2sBXVifovz).
+
+<h3>🧰 System Requirements</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Technology</th>
+      <th align="left">Version</th>
+      <th align="left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PHP</td>
+      <td>^8.2</td>
+      <td>Required for Laravel 12</td>
+    </tr>
+    <tr>
+      <td>Laravel</td>
+      <td>12.x</td>
+      <td>Main backend framework</td>
+    </tr>
+    <tr>
+      <td>Composer</td>
+      <td>^2.6</td>
+      <td>Dependency manager</td>
+    </tr>
+    <tr>
+      <td>Node.js</td>
+      <td>^18</td>
+      <td>Frontend build tools</td>
+    </tr>
+    <tr>
+      <td>NPM</td>
+      <td>Latest</td>
+      <td>Asset compilation</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<h3>🔐 Authentication & Security</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Feature</th>
+      <th align="left">Package</th>
+      <th align="left">Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authentication</td>
+      <td>Laravel Breeze</td>
+      <td>Login, Register, Password Reset</td>
+    </tr>
+    <tr>
+      <td>Authorization</td>
+      <td>Laravel Spatie</td>
+      <td>Roles & Permissions (Admin, Staff, Client)</td>
+    </tr>
+    <tr>
+      <td>API Security</td>
+      <td>Laravel Sanctum</td>
+      <td>Token-based authentication</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+
+
+<h3>🎨 Frontend Stack</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Tool</th>
+      <th align="left">Purpose</th>
+      <th align="left">Used In</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tailwind CSS</td>
+      <td>Utility-first CSS framework</td>
+      <td>All UI components</td>
+    </tr>
+    <tr>
+      <td>Flowbite</td>
+      <td>UI components & dashboard layout</td>
+      <td>Admin Dashboard</td>
+    </tr>
+    <tr>
+      <td>Blade</td>
+      <td>Laravel templating engine</td>
+      <td>Server-side rendering</td>
+    </tr>
+  </tbody>
+</table>
+
 
 ### ⚡ Quick Installation
 ```bash
@@ -106,11 +218,9 @@ php artisan serve
 
 ```
 
-</div>
-<div id="ar-version" dir="rtl">
 
-🚀 النسخة العربية
-
+    
+<h2 id="arabic">🚀 النسخة العربية</h2>
 📖 وصف المشروع
 نظام فيستانا لإدارة الفنادق هو حل تقني متكامل وعصري، تم تطويره باستخدام Laravel 12. يوفر النظام إمكانيات إدارة شاملة لعمليات الفنادق تشمل الحجوزات، إدارة الغرف، الفواتير، علاقات العملاء، وإدارة الموظفين. بفضل لوحة تحكم أنيقة مصممة بـ Flowbite و Tailwind CSS، يقدم النظام رؤى فورية وعمليات مبسطة للمديرين.
 
@@ -162,7 +272,7 @@ php artisan serve
 
 <table> <thead> <tr style="background-color: #f8f9fa;"> <th align="right">الوحدة</th> <th align="right">الطريقة</th> <th align="right">الرابط (Endpoint)</th> <th align="right">المصادقة</th> </tr> </thead> <tbody> <tr><td>🔐 <b>المصادقة</b></td><td><kbd>POST</kbd></td><td><code>/api/auth/login</code></td><td>عام</td></tr> <tr><td>🏨 <b>أنواع الغرف</b></td><td><kbd>GET</kbd></td><td><code>/api/room-types</code></td><td>Bearer Token</td></tr> <tr><td>🛏️ <b>الغرف</b></td><td><kbd>POST</kbd></td><td><code>/api/rooms</code></td><td>Bearer Token</td></tr> <tr><td>📅 <b>الحجوزات</b></td><td><kbd>POST</kbd></td><td><code>/api/reservations</code></td><td>Bearer Token</td></tr> <tr><td>🧾 <b>الفواتير</b></td><td><kbd>GET</kbd></td><td><code>/api/invoices</code></td><td>المدير/الموظف</td></tr> </tbody> </table>
 
-💡 التوثيق الكامل: يمكنك الوصول إلى كوليكشن بوستمان الكامل من هنا.
+💡 التوثيق الكامل: يمكنك الوصول إلى كوليكشن بوستمان الكامل من [هنا](https://documenter.getpostman.com/view/50368281/2sBXVifovz)..
 
 ⚡ التثبيت والتشغيل السريع
 
@@ -183,5 +293,4 @@ npm run build && php artisan serve
 <table width="100%"> <thead> <tr style="background-color: #1a202c; color: white;"> <th align="left">👤 Member / العضو</th> <th align="left">💻 Specialized Role / الدور</th> </tr> </thead> <tbody> <tr><td><b>Haedara Deeb</b></td><td>🚀 Project Lead</td></tr> <tr><td><b>Mohammad Shaheen</b></td><td>🎖️ Deputy Lead</td></tr> <tr><td><b>Bedoor Ali Deeb</b></td><td>💻 Full Stack Developer</td></tr> <tr><td><b>Zaher Sankari</b></td><td>💻 Full Stack Developer</td></tr> <tr><td><b>Ali Mohammad Abbas</b></td><td>⚙️ Backend Specialist</td></tr> <tr><td><b>Mais Ahmad</b></td><td>⚙️ Database Specialist</td></tr> </tbody> </table>
 
 Special Thanks to our Mentors: Mr. Hashim Othman • Mr. Ayham Ibrahim • Ms. Nourhan Almohammed • Ms. Muna Alrays • CEO Alaa Darwish & Focal X Team.
-
 <p align="center"> Licensed under <b>MIT License</b> </p>
