@@ -112,7 +112,6 @@ class AuthController extends Controller
         }
     }
 
-    // POST /api/client/logout
     /**
      * Logout the authenticated client.
      * Summary of logout

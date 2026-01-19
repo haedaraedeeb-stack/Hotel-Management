@@ -20,7 +20,7 @@ class UserRequest extends FormRequest
             'name' => ['required','string','max:255'],
             'email' => ['required','email', Rule::unique('users','email')->ignore($id)],
             'password' => $id ? ['nullable','min:8'] : ['required','min:8'],
-            'role' => ['required','string'], // مدير فندق أو موظف استقبال
+            'role' => ['required','string'], 
         ];
     }
 }

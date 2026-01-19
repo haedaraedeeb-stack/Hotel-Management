@@ -63,13 +63,6 @@
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <input type="text"  id="status" value="{{ old('status', $reservation->status) }}" readonly class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            {{-- <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" >
-                                <option value="pending" {{ old('status', $reservation->status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="confirmed" {{ old('status', $reservation->status) == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                <option value="rejected" {{ old('status', $reservation->status) == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                <option value="cancelled" {{ old('status', $reservation->status) == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                <option value="completed" {{ old('status', $reservation->status) == 'completed' ? 'selected' : '' }}>Completed</option>
-                            </select> --}}
                             @error('status')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -108,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const roomCount = document.getElementById('room-count');
     const reservationId = {{ $reservation->id }};
     const currentRoomId = {{ $reservation->room_id }};
-    
+
     let debounceTimer;
 
     // Initialize with current dates
@@ -117,14 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchAvailableRooms() {
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
-        
+
         if (!startDate || !endDate) {
             roomSelect.innerHTML = '<option value="">First select dates</option>';
             roomSelect.disabled = true;
             roomInfo.classList.add('hidden');
             return;
         }
-        
+
         // Validate dates
         if (new Date(startDate) >= new Date(endDate)) {
             roomSelect.innerHTML = '<option value="">End date must be after start date</option>';
@@ -132,15 +125,15 @@ document.addEventListener('DOMContentLoaded', function() {
             roomInfo.classList.add('hidden');
             return;
         }
-        
+
         // Show loading
         roomSelect.disabled = true;
         roomLoading.classList.remove('hidden');
         roomInfo.classList.add('hidden');
-        
+
         // Get CSRF token
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
+
         // Make AJAX request with reservation_id
         fetch('{{ route("reservations.getAvailableRooms") }}', {
             method: 'POST',
@@ -164,22 +157,22 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             // Update room select options
             roomSelect.innerHTML = '<option value="">Select Room</option>';
-            
+
             if (data.rooms && data.rooms.length > 0) {
                 data.rooms.forEach(room => {
                     const option = document.createElement('option');
                     option.value = room.id;
                     option.textContent = `Room ${room.room_number} (${room.room_type.type}) - $${room.current_price}/night`;
-                    
+
                     // Select current room if available
                     if (room.id == currentRoomId) {
                         option.selected = true;
                     }
-                    
+
                     roomSelect.appendChild(option);
                 });
                 roomSelect.disabled = false;
-                
+
                 // Show room info
                 roomCount.textContent = `Found ${data.rooms.length} available room(s) for the selected dates`;
                 roomInfo.classList.remove('hidden');
@@ -199,17 +192,17 @@ document.addEventListener('DOMContentLoaded', function() {
             roomLoading.classList.add('hidden');
         });
     }
-    
+
     // Debounce function to prevent too many requests
     function debounceFetch() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(fetchAvailableRooms, 300);
     }
-    
+
     // Event listeners for date changes
     startDateInput.addEventListener('change', debounceFetch);
     endDateInput.addEventListener('change', debounceFetch);
-    
+
     // Also trigger on input for better UX
     startDateInput.addEventListener('input', debounceFetch);
     endDateInput.addEventListener('input', debounceFetch);

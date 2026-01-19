@@ -13,8 +13,6 @@ class UpdateRoomRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // يمكنك تغيير هذا بناءً على نظام المصادقة الخاص بك
-        // مثال: return auth()->user()->can('update', $this->room);
         return true;
     }
 
@@ -340,9 +338,6 @@ class UpdateRoomRequest extends FormRequest
      */
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
-        // You can customize the failed validation response here
-        // For example, you can add additional context
-
         // Add room information to the response if available
         $room = $this->route('room');
         if (is_object($room)) {
